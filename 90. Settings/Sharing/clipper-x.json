@@ -1,0 +1,37 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — X (Twitter)",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Post classification, thread reconstruction, claims/evidence split, and authority assessment happen during `/ingest`.\n\n---\n\n## Author Profile\n\n![avatar|80]({{schema:@ProfilePage:mainEntity.image.contentUrl|fallback:image}})\n\n| Field | Value |\n|-------|-------|\n| Name | {{schema:@ProfilePage:mainEntity.name|fallback:author}} |\n| Handle | {{author}} |\n| Bio | {{schema:@ProfilePage:mainEntity.description|fallback:\"—\"}} |\n| Location | {{schema:@ProfilePage:mainEntity.homeLocation.name|fallback:\"—\"}} |\n| Followers | {{schema:@ProfilePage:mainEntity.interactionStatistic[0].userInteractionCount|fallback:\"—\"}} |\n| Tweets | {{schema:@ProfilePage:mainEntity.interactionStatistic[2].userInteractionCount|fallback:\"—\"}} |\n| Joined | {{schema:@ProfilePage:dateCreated|fallback:\"—\"}} |\n| External Links | {{schema:@ProfilePage:relatedLink|join:\", \"|fallback:\"—\"}} |\n\n> [!note] Profile data may be partial\n> X sometimes serves only minimal metadata depending on login state, bot detection, or which URL template loaded. Fields showing `—` mean `schema:@ProfilePage` was not present in the page source at clip time.\n\n---\n\n## Post Info\n\n| Field | Value |\n|-------|-------|\n| Posted | {{published}} |\n| Words | {{words}} |\n| Language | {{language}} |\n| URL | {{url}} |\n\n---\n\n## Original Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Clippings", "type": "text"},
+		{"name": "clip_type", "value": "x-post", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "handle", "value": "{{author}}", "type": "text"},
+		{"name": "author_name", "value": "{{schema:@ProfilePage:mainEntity.name|fallback:author}}", "type": "text"},
+		{"name": "author_bio", "value": "{{schema:@ProfilePage:mainEntity.description|fallback:\"\"}}", "type": "text"},
+		{"name": "author_location", "value": "{{schema:@ProfilePage:mainEntity.homeLocation.name|fallback:\"\"}}", "type": "text"},
+		{"name": "author_followers", "value": "{{schema:@ProfilePage:mainEntity.interactionStatistic[0].userInteractionCount|fallback:\"\"}}", "type": "text"},
+		{"name": "author_tweet_count", "value": "{{schema:@ProfilePage:mainEntity.interactionStatistic[2].userInteractionCount|fallback:\"\"}}", "type": "text"},
+		{"name": "author_joined", "value": "{{schema:@ProfilePage:dateCreated|fallback:\"\"}}", "type": "text"},
+		{"name": "author_avatar", "value": "{{schema:@ProfilePage:mainEntity.image.contentUrl|fallback:image}}", "type": "text"},
+		{"name": "author_external_links", "value": "{{schema:@ProfilePage:relatedLink|join:\",\"|fallback:\"\"}}", "type": "multitext"},
+		{"name": "platform", "value": "X", "type": "text"},
+		{"name": "published", "value": "{{published}}", "type": "date"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "word_count", "value": "{{words}}", "type": "number"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, x-twitter", "type": "multitext"}
+	],
+	"triggers": [
+		"https://x.com/",
+		"https://twitter.com/",
+		"https://mobile.twitter.com/",
+		"https://mobile.x.com/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-X-{{author|truncate:30}}-{{title|truncate:50}}",
+	"path": "00. Inbox/04. Clippings",
+	"context": "X (Twitter) post. Deterministic capture with rich schema:@ProfilePage authority context when available. Falls back gracefully (empty strings for missing schema) so notes always save cleanly. Classification + thread reconstruction + claims analysis deferred to /ingest."
+}

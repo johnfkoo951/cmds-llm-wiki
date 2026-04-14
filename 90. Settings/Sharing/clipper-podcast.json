@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — Podcast",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Action items and linked resources are extracted during `/ingest`.\n\n![cover]({{image}})\n\n---\n\n## Episode Info\n\n| Field | Value |\n|-------|-------|\n| Show | {{site|fallback:author}} |\n| Host/Guest | {{author}} |\n| Published | {{published}} |\n| Platform | {{domain}} |\n| URL | {{url}} |\n\n---\n\n## Description / Show Notes\n\n{{description}}\n\n---\n\n## Content\n\n{{content}}\n\n> [!note] Transcript\n> Podcast pages usually do NOT contain the full audio transcript. Run the `audio-transcriber` skill separately and append the output below if needed.",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Transcripts", "type": "text"},
+		{"name": "clip_type", "value": "podcast", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "show", "value": "{{site|fallback:author}}", "type": "text"},
+		{"name": "author", "value": "{{author}}", "type": "text"},
+		{"name": "platform", "value": "{{domain}}", "type": "text"},
+		{"name": "published", "value": "{{published}}", "type": "date"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, podcast", "type": "multitext"}
+	],
+	"triggers": [
+		"https://podcasts.apple.com/",
+		"https://open.spotify.com/episode/",
+		"https://open.spotify.com/show/",
+		"https://overcast.fm/",
+		"https://pca.st/",
+		"https://castro.fm/",
+		"https://podcasts.google.com/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-podcast-{{title|truncate:70}}",
+	"path": "00. Inbox/03. Transcripts",
+	"context": "Podcast episode page. Deterministic capture only."
+}

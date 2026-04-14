@@ -1,0 +1,48 @@
+# QMD Collections Configuration Template
+# Actual location qmd reads: ~/.config/qmd/index.yml
+# This file is version-controlled in the vault as a template / documentation copy.
+#
+# Usage:
+#   cp "90. Settings/qmd-config-template.yml" ~/.config/qmd/index.yml
+#   qmd update && qmd embed
+#
+# Korean embedding model (set in ~/.zshrc):
+#   export QMD_EMBED_MODEL="hf:Qwen/Qwen3-Embedding-0.6B-GGUF/Qwen3-Embedding-0.6B-Q8_0.gguf"
+
+global_context: |
+  CMDS LLM Wiki — Karpathy 3-Layer Architecture.
+  - Raw Sources (immutable, ingested originals)
+  - Wiki (LLM-maintained pages: Concepts, Entities, Guides, MOCs)
+  - Queries (synthesized answers filed back as compounding knowledge).
+  Wiki pages connect via [[WikiLinks]] and carry YAML frontmatter
+  (type, aliases, description, source, related, confidence).
+  When citing, prefer Wiki pages over Raw Sources; Queries contain
+  pre-synthesized answers.
+
+collections:
+  wiki:
+    path: {PATH_TO_YOUR_LLM_WIKI}/20. Wiki
+    pattern: "**/*.md"
+    context:
+      "/": "LLM-maintained wiki pages. The primary synthesized knowledge layer."
+      "/21. Concepts": "Abstract concepts, patterns, methodologies."
+      "/22. Entities": "People, organizations, products."
+      "/23. Guides": "How-to and practical implementation guides."
+      "/24. Maps": "Map of Content (MOC) — topic-based indexes."
+
+  raw_sources:
+    path: {PATH_TO_YOUR_LLM_WIKI}/10. Raw Sources
+    pattern: "**/*.md"
+    context:
+      "/": "Immutable source documents — Wiki references these via `source:` frontmatter."
+      "/11. Articles": "Web articles, blog posts, gists."
+      "/12. Papers": "Academic papers and technical reports."
+      "/13. Books": "Book notes and chapter summaries."
+      "/14. Transcripts": "Lecture, podcast, and video transcripts."
+      "/15. Clippings": "Short snippets and excerpts."
+
+  queries:
+    path: {PATH_TO_YOUR_LLM_WIKI}/30. Queries
+    pattern: "**/*.md"
+    context:
+      "/": "Synthesized query results — compounding wiki artifacts per Karpathy's pattern."

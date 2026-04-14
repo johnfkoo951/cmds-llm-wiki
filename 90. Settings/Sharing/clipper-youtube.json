@@ -1,0 +1,28 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — YouTube",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Takeaways, topics, and entity extraction happen during `/ingest`.\n\n![thumbnail]({{schema:@VideoObject:thumbnailUrl|fallback:image}})\n\n---\n\n## Video Info\n\n| Field | Value |\n|-------|-------|\n| Channel | {{author}} |\n| Published | {{published}} |\n| URL | {{url}} |\n| Language | {{language}} |\n| Word Count | {{words}} |\n\n---\n\n## Description\n\n{{description}}\n\n---\n\n## Transcript\n\n{{transcript|fallback:content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Transcripts", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "author", "value": "{{author}}", "type": "text"},
+		{"name": "channel", "value": "{{author}}", "type": "text"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "published", "value": "{{published}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "thumbnail", "value": "{{schema:@VideoObject:thumbnailUrl|fallback:image}}", "type": "text"},
+		{"name": "word_count", "value": "{{words}}", "type": "number"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, youtube", "type": "multitext"}
+	],
+	"triggers": [
+		"https://www.youtube.com/watch",
+		"https://youtu.be/",
+		"https://m.youtube.com/watch"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-{{title|truncate:80}}",
+	"path": "00. Inbox/03. Transcripts",
+	"context": "YouTube video. Uses {{transcript}} for the dedicated transcript variable. Deterministic only."
+}

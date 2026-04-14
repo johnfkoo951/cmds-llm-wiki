@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+._*
+
+# Obsidian — machine-local state (do NOT sync these)
+.obsidian/workspace*
+.obsidian/cache
+.obsidian/graph.json
+.obsidian/plugins/*/data.json
+
+# Claude Code — machine-local session state
+.claude/sessions/
+.claude/settings.local.json
+
+# Claudian (if present) — session metadata
+.claudian/
+
+# qmd — local index + auto-generated locks
+.qmd/
+/tmp/qmd-reindex-*.log
+/tmp/qmd-reindex-*.lock*
+
+# Graphify — build output
+graphify-out/
+
+# Personal ingest in-flight files
+# (Inbox contents are intentionally NOT gitignored by default — commit if you want them tracked)

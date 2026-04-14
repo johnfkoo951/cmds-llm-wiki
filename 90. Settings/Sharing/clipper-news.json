@@ -1,0 +1,39 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — News Article",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> 5W1H, facts/framing separation, and entity extraction happen during `/ingest`.\n\n---\n\n## Article Info\n\n| Field | Value |\n|-------|-------|\n| Outlet | {{site|fallback:domain}} |\n| Byline | {{author}} |\n| Published | {{published}} |\n| Language | {{language}} |\n| URL | {{url}} |\n\n---\n\n## Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Articles", "type": "text"},
+		{"name": "clip_type", "value": "news", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "outlet", "value": "{{site|fallback:domain}}", "type": "text"},
+		{"name": "byline", "value": "{{author}}", "type": "text"},
+		{"name": "published", "value": "{{published}}", "type": "date"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, news", "type": "multitext"}
+	],
+	"triggers": [
+		"https://*.nytimes.com/",
+		"https://*.bloomberg.com/",
+		"https://*.reuters.com/",
+		"https://*.ft.com/",
+		"https://*.economist.com/",
+		"https://*.wsj.com/",
+		"https://*.bbc.com/news",
+		"https://*.cnn.com/",
+		"https://*.theguardian.com/",
+		"https://*.washingtonpost.com/",
+		"https://news.naver.com/",
+		"https://news.daum.net/",
+		"https://*.joongang.co.kr/",
+		"https://*.chosun.com/",
+		"https://*.hani.co.kr/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-news-{{title|truncate:70}}",
+	"path": "00. Inbox/01. Articles",
+	"context": "News article. Deterministic capture. Fact/framing analysis deferred to ingest."
+}

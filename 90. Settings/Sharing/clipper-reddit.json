@@ -1,0 +1,26 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — Reddit",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Notable comments, signal/noise separation happen during `/ingest`.\n\n---\n\n## Thread Info\n\n| Field | Value |\n|-------|-------|\n| Subreddit | {{selector:[data-testid=\"subreddit-name\"]|fallback:\"\"}} |\n| OP | {{author}} |\n| Posted | {{published}} |\n| URL | {{url}} |\n\n---\n\n## OP / Thread Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Clippings", "type": "text"},
+		{"name": "clip_type", "value": "reddit-thread", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "op", "value": "{{author}}", "type": "text"},
+		{"name": "subreddit", "value": "{{selector:[data-testid=\"subreddit-name\"]|fallback:\"\"}}", "type": "text"},
+		{"name": "published", "value": "{{published}}", "type": "date"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, reddit", "type": "multitext"}
+	],
+	"triggers": [
+		"https://www.reddit.com/r/",
+		"https://old.reddit.com/r/",
+		"https://new.reddit.com/r/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-reddit-{{title|truncate:70}}",
+	"path": "00. Inbox/04. Clippings",
+	"context": "Reddit thread. Deterministic capture. Comment analysis deferred to ingest."
+}

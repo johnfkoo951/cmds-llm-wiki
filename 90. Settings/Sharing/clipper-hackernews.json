@@ -1,0 +1,23 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — Hacker News",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Top insights, contrarian takes, and external references are extracted during `/ingest`.\n\n---\n\n## Thread Info\n\n| Field | Value |\n|-------|-------|\n| Submitter | {{author}} |\n| Posted | {{published}} |\n| URL | {{url}} |\n\n---\n\n## Content (Story + Comments)\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Clippings", "type": "text"},
+		{"name": "clip_type", "value": "hackernews", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "submitter", "value": "{{author}}", "type": "text"},
+		{"name": "posted", "value": "{{published}}", "type": "date"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "language", "value": "en", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, hackernews, tech-discussion", "type": "multitext"}
+	],
+	"triggers": [
+		"https://news.ycombinator.com/item"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-HN-{{title|truncate:70}}",
+	"path": "00. Inbox/04. Clippings",
+	"context": "Hacker News thread. Deterministic capture."
+}

@@ -1,0 +1,28 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — arXiv / Paper",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Paper summary, contributions, and methodology extraction happen during `/ingest`.\n\n---\n\n## Paper Info\n\n| Field | Value |\n|-------|-------|\n| Title | {{title}} |\n| Authors | {{author}} |\n| Published | {{published}} |\n| Description | {{description}} |\n| URL | {{url}} |\n\n---\n\n## Abstract & Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Papers", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "author", "value": "{{author}}", "type": "multitext"},
+		{"name": "published", "value": "{{published}}", "type": "date"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, paper", "type": "multitext"}
+	],
+	"triggers": [
+		"https://arxiv.org/",
+		"https://huggingface.co/papers/",
+		"https://scholar.google.com/",
+		"https://papers.ssrn.com/",
+		"https://www.semanticscholar.org/",
+		"https://openreview.net/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-paper-{{title|truncate:80}}",
+	"path": "00. Inbox/02. Papers",
+	"context": "Academic paper raw capture. Analysis deferred to /ingest."
+}

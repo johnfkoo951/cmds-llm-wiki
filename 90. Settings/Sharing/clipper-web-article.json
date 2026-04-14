@@ -1,0 +1,23 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — Web Article",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Summary, tags, and cross-references are added when `/ingest` compiles this into the Wiki. Raw content preserved below.\n\n---\n\n## Metadata\n\n| Field | Value |\n|-------|-------|\n| Title | {{title}} |\n| Author | {{author}} |\n| Site | {{site|fallback:domain}} |\n| Published | {{published}} |\n| Words | {{words}} |\n| Language | {{language}} |\n| URL | {{url}} |\n\n---\n\n## Original Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Articles", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "author", "value": "{{author}}", "type": "text"},
+		{"name": "site", "value": "{{site|fallback:domain}}", "type": "text"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "published", "value": "{{published}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "word_count", "value": "{{words}}", "type": "number"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper", "type": "multitext"}
+	],
+	"triggers": [],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-{{title|truncate:80}}",
+	"path": "00. Inbox/01. Articles",
+	"context": "Generic web article. Deterministic capture only — no Interpreter prompts. Analysis happens during /ingest in the LLM Wiki vault."
+}

@@ -1,0 +1,27 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — LinkedIn (Post)",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> LinkedIn clipper variables are often partial. Author, description, and reactions are extracted from `{{content}}` during `/ingest`.\n\n---\n\n## Post Info\n\n| Field | Value |\n|-------|-------|\n| Author (captured) | {{author|fallback:\"—\"}} |\n| Author (DOM try 1) | {{selector:.update-components-actor__name|fallback:\"\"}} |\n| Author (DOM try 2) | {{selector:.feed-shared-actor__name|fallback:\"\"}} |\n| Published | {{published|fallback:\"—\"}} |\n| Words | {{words}} |\n| URL | {{url}} |\n\n---\n\n## Description\n\n{{description|fallback:\"(LinkedIn did not expose description — extract from first paragraph during ingest.)\"}}\n\n---\n\n## Original Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Articles", "type": "text"},
+		{"name": "clip_type", "value": "linkedin-post", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "author", "value": "{{author|fallback:\"\"}}", "type": "text"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "published_raw", "value": "{{published|fallback:\"\"}}", "type": "text"},
+		{"name": "description", "value": "{{description|fallback:\"\"}}", "type": "text"},
+		{"name": "word_count", "value": "{{words}}", "type": "number"},
+		{"name": "platform", "value": "LinkedIn", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, linkedin", "type": "multitext"}
+	],
+	"triggers": [
+		"https://www.linkedin.com/feed/",
+		"https://www.linkedin.com/posts/",
+		"https://www.linkedin.com/in/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-LinkedIn-post-{{title|truncate:70}}",
+	"path": "00. Inbox/01. Articles",
+	"context": "LinkedIn short post (feed / profile activity). LinkedIn rarely exposes schema.org or clean OG metadata — most fields may be empty and rely on ingest extraction from content."
+}

@@ -1,0 +1,33 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — Substack / Newsletter",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Thesis, key claims, counterpoints, and linked resources are extracted during `/ingest`.\n\n---\n\n## Issue Info\n\n| Field | Value |\n|-------|-------|\n| Publication | {{site|fallback:domain}} |\n| Author | {{author}} |\n| Published | {{published}} |\n| Words | {{words}} |\n| URL | {{url}} |\n\n---\n\n## Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Articles", "type": "text"},
+		{"name": "clip_type", "value": "newsletter", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "publication", "value": "{{site|fallback:domain}}", "type": "text"},
+		{"name": "author", "value": "{{author}}", "type": "text"},
+		{"name": "published", "value": "{{published}}", "type": "date"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "word_count", "value": "{{words}}", "type": "number"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, newsletter", "type": "multitext"}
+	],
+	"triggers": [
+		"https://*.substack.com/",
+		"https://substack.com/",
+		"https://*.beehiiv.com/",
+		"https://*.ghost.io/",
+		"https://medium.com/",
+		"https://*.medium.com/",
+		"https://maillist.me/",
+		"https://buttondown.email/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-newsletter-{{title|truncate:70}}",
+	"path": "00. Inbox/01. Articles",
+	"context": "Newsletter / long-form essay. Deterministic capture. Thesis + claims analysis deferred to ingest."
+}

@@ -1,0 +1,23 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — Threads (Meta)",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Context and analysis happen during `/ingest`.\n\n---\n\n## Post Info\n\n| Field | Value |\n|-------|-------|\n| Author | {{author}} |\n| Published | {{published}} |\n| Description | {{description}} |\n| URL | {{url}} |\n\n---\n\n## Original Post\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Clippings", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "author", "value": "{{author}}", "type": "text"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "published", "value": "{{published}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "platform", "value": "Threads", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, threads", "type": "multitext"}
+	],
+	"triggers": [
+		"https://www.threads.net/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-Threads-{{author|truncate:30}}-{{title|truncate:50}}",
+	"path": "00. Inbox/04. Clippings",
+	"context": "Meta Threads post (threads.net only). Deterministic capture."
+}

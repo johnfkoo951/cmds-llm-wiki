@@ -1,0 +1,30 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — GitHub",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Technical summary, linked-projects analysis, and usage extraction happen during `/ingest`.\n\n---\n\n## Repo Info\n\n| Field | Value |\n|-------|-------|\n| Repo | {{selector:strong[itemprop=\"name\"] > a|fallback:title}} |\n| Owner | {{selector:span[itemprop=\"author\"] > a|fallback:author}} |\n| Description | {{selector:p.f4.my-3|fallback:description}} |\n| ⭐ Stars | {{selector:#repo-stars-counter-star}} |\n| 🍴 Forks | {{selector:#repo-network-counter}} |\n| 👀 Watchers | {{selector:a[href$=\"/watchers\"] > strong}} |\n| Primary Language | {{selector:span.color-fg-default.text-bold.mr-1}} |\n| License | {{selector:a[data-analytics-event*=\"license\"]}} |\n| Last Commit | {{selector:relative-time.no-wrap}} |\n| URL | {{url}} |\n\n### Topics\n\n{{selector:a.topic-tag|join:\", \"}}\n\n---\n\n## README / Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Articles", "type": "text"},
+		{"name": "clip_type", "value": "github", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "repo", "value": "{{selector:strong[itemprop=\"name\"] > a|fallback:title}}", "type": "text"},
+		{"name": "owner", "value": "{{selector:span[itemprop=\"author\"] > a|fallback:author}}", "type": "text"},
+		{"name": "stars", "value": "{{selector:#repo-stars-counter-star}}", "type": "text"},
+		{"name": "forks", "value": "{{selector:#repo-network-counter}}", "type": "text"},
+		{"name": "primary_language", "value": "{{selector:span.color-fg-default.text-bold.mr-1}}", "type": "text"},
+		{"name": "license", "value": "{{selector:a[data-analytics-event*=\"license\"]}}", "type": "text"},
+		{"name": "topics", "value": "{{selector:a.topic-tag|join:\",\"}}", "type": "multitext"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "description", "value": "{{selector:p.f4.my-3|fallback:description}}", "type": "text"},
+		{"name": "platform", "value": "GitHub", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, github", "type": "multitext"}
+	],
+	"triggers": [
+		"https://github.com/",
+		"https://gist.github.com/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-gh-{{selector:strong[itemprop=\"name\"] > a|fallback:title|truncate:70}}",
+	"path": "00. Inbox/01. Articles",
+	"context": "GitHub repo/gist/issue/PR. Deterministic DOM selectors capture stars/forks/license/topics. Analysis deferred to /ingest."
+}

@@ -1,0 +1,36 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — Tech Docs",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Quick reference extraction and linked-resources analysis happen during `/ingest`.\n\n---\n\n## Doc Info\n\n| Field | Value |\n|-------|-------|\n| Site | {{site|fallback:domain}} |\n| Section | {{title}} |\n| Description | {{description}} |\n| URL | {{url}} |\n\n---\n\n## Original Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Articles", "type": "text"},
+		{"name": "clip_type", "value": "tech-docs", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "author", "value": "{{author}}", "type": "text"},
+		{"name": "site", "value": "{{site|fallback:domain}}", "type": "text"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, tech-docs", "type": "multitext"}
+	],
+	"triggers": [
+		"https://docs.github.com/",
+		"https://developer.mozilla.org/",
+		"https://devdocs.io/",
+		"https://docs.python.org/",
+		"https://docs.anthropic.com/",
+		"https://platform.openai.com/docs/",
+		"https://nextjs.org/docs/",
+		"https://docs.vercel.com/",
+		"https://react.dev/",
+		"https://developer.apple.com/",
+		"https://cloud.google.com/docs/",
+		"https://docs.aws.amazon.com/",
+		"https://learn.microsoft.com/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-docs-{{title|truncate:70}}",
+	"path": "00. Inbox/01. Articles",
+	"context": "Tech documentation raw capture. Preserves code blocks verbatim. Analysis deferred to /ingest."
+}

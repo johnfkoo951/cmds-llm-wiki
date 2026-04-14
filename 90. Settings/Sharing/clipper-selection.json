@@ -1,0 +1,22 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — Selection (Highlight Only)",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Why-this-matters framing and concept connections are added during `/ingest`.\n\n---\n\n## Highlighted Passage\n\n> {{selection|fallback:highlights}}\n\n---\n\n## Source Context\n\n| Field | Value |\n|-------|-------|\n| From | {{title}} |\n| Site | {{site|fallback:domain}} |\n| Author | {{author}} |\n| URL | {{url}} |\n",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Clippings", "type": "text"},
+		{"name": "clip_type", "value": "selection", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "source_title", "value": "{{title}}", "type": "text"},
+		{"name": "author", "value": "{{author}}", "type": "text"},
+		{"name": "site", "value": "{{site|fallback:domain}}", "type": "text"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, selection", "type": "multitext"}
+	],
+	"triggers": [],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-excerpt-{{title|truncate:60}}",
+	"path": "00. Inbox/04. Clippings",
+	"context": "SELECTION-only clip — user highlighted a specific passage. Uses {{selection}} or {{highlights}}. Deterministic capture."
+}

@@ -1,0 +1,26 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — LinkedIn Pulse Article",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> LinkedIn Pulse articles are long-form essays (often thousands of words). Author, subtitle, and reactions are extracted from `{{content}}` during `/ingest`.\n\n> [!note] Known LinkedIn Clipper Gaps\n> - `{{author}}` is typically EMPTY for Pulse articles (LinkedIn does not expose author via OG/schema).\n> - `{{title}}` may have `(N) ` prefix from browser tab notification counter.\n> - `{{published}}` may be a loose string like `April 13` rather than an ISO date.\n> - `{{language}}` auto-detection can mislabel Korean articles as `en`.\n> - `{{description}}` and `{{image}}` are often empty.\n> - Ingest step (`/ingest`) is responsible for cleaning these.\n\n---\n\n## Article Info\n\n| Field | Value |\n|-------|-------|\n| Title (raw) | {{title}} |\n| Author (captured) | {{author|fallback:\"—\"}} |\n| Author (DOM try) | {{selector:a.article-author-card__name|fallback:\"\"}} |\n| Author (profile link) | {{selector:.reader-author-info__author-lockup a|fallback:\"\"}} |\n| Published | {{published|fallback:\"—\"}} |\n| Words | {{words}} |\n| Language (detected) | {{language}} |\n| URL | {{url}} |\n\n---\n\n## Description\n\n{{description|fallback:\"(LinkedIn did not expose article description — extract from first paragraph during ingest.)\"}}\n\n---\n\n## Original Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Articles", "type": "text"},
+		{"name": "clip_type", "value": "linkedin-pulse", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "author", "value": "{{author|fallback:\"\"}}", "type": "text"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "published_raw", "value": "{{published|fallback:\"\"}}", "type": "text"},
+		{"name": "description", "value": "{{description|fallback:\"\"}}", "type": "text"},
+		{"name": "word_count", "value": "{{words}}", "type": "number"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "platform", "value": "LinkedIn Pulse", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, linkedin, pulse, long-form", "type": "multitext"}
+	],
+	"triggers": [
+		"https://www.linkedin.com/pulse/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-LinkedIn-pulse-{{title|truncate:70}}",
+	"path": "00. Inbox/01. Articles",
+	"context": "LinkedIn Pulse long-form article (/pulse/ URL). Structurally closer to Substack/newsletter than social post. Clipper exposes minimal metadata — content body is rich and preserves headings/code/images, but author/published/description usually require ingest-time extraction."
+}
