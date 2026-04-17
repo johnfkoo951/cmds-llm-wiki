@@ -55,7 +55,7 @@ Check that every wiki page belongs to at least one MOC.
 
 ### Step 8: v2 Frontmatter Coverage (2026-04-14+)
 
-Check the Gold In Gold Out fields introduced with [[Core Context]]:
+Check the 미래의 나에게 보내는 편지 fields introduced with [[Core Context]]:
 - **Raw Sources**: every file in `10. Raw Sources/` should have `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`
   - Missing `collectionPurpose` → flag as "pre-v2 raw source — consider backfill"
   - Report % coverage (e.g., "5/13 raw sources have collectionPurpose = 38%")

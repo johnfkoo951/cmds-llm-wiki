@@ -82,7 +82,7 @@ Then a detail table:
 
 Ask two questions in one turn:
 1. **Scope**: "전부 / 카테고리만 / 선택만" — which files?
-2. **Purpose mode** (Gold In Gold Out, see [[Core Context]] §2):
+2. **Purpose mode** (미래의 나에게 보내는 편지, see [[Core Context]] §2):
    - **Single-axis bulk**: 모두 같은 목적 (예: "이번 주 강의 자료") → 한 번만 묻고 모든 파일에 같은 `collectionPurpose` 적용
    - **Per-file**: 파일마다 다른 목적 → /ingest 가 파일별로 질문
    - **Auto-infer**: "알아서 판단" → /ingest 가 소스 + Core Context 로 추론 + 추론 근거 명시

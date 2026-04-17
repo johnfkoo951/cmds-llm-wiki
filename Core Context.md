@@ -52,7 +52,7 @@ status: template
 
 ## 2. Why — 지식을 수집하는 목적 (재활용 축)
 
-**Gold In Gold Out 원칙**: "이 소스가 아래 어느 축에 재활용될지" 를 수집 시점에 명시하지 못하면 수집하지 않는다.
+**미래의 나에게 보내는 편지**: "이 소스가 아래 어느 축에 재활용될지" 를 수집 시점에 명시하지 못하면 수집하지 않는다.
 
 아래는 일반적 축 예시 — 본인 맞게 추가/삭제/재배열하세요.
 
@@ -117,7 +117,7 @@ LLM 이 정리 과정에서 따라야 할 사용자의 원칙·manifesto. 본인
 
 ### Ingest 시
 
-1. `/ingest` 는 반드시 "왜 수집했는가?" 를 1회 묻는다 (Gold In Gold Out, §2 축 참조).
+1. `/ingest` 는 반드시 "왜 수집했는가?" 를 1회 묻는다 (미래의 나에게 보내는 편지, §2 축 참조).
 2. 사용자 답변을 받으면 (mothership 이 있다면) 유사 노트 검색하여 `mainVaultRelated` 기록.
 3. Raw Source frontmatter 에 `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds` 기록.
 
@@ -161,4 +161,4 @@ LLM 이 정리 과정에서 따라야 할 사용자의 원칙·manifesto. 본인
 
 ---
 
-*템플릿 v1.0 — Karpathy LLM Wiki pattern + Gold In Gold Out 정책 + CMDSPACE harness*
+*템플릿 v1.0 — Karpathy LLM Wiki pattern + 미래의 나에게 보내는 편지 + CMDSPACE harness*

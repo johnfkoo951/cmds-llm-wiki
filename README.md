@@ -1,10 +1,10 @@
 # cmds-llm-wiki
 
-> **LLM Wiki 볼트 템플릿** — Karpathy LLM Wiki pattern + Gold In Gold Out 목적 게이트 + Claude Code 통합 harness.
+> **LLM Wiki 볼트 템플릿** — Karpathy LLM Wiki pattern + 미래의 나에게 보내는 편지 + Claude Code 통합 harness.
 >
 > Obsidian 볼트이자 Claude Code 프로젝트. 외부 소스 (기사·논문·전사) 를 LLM 이 컴파일하여 복리로 성장하는 persistent wiki 로 축적합니다.
 
-**🌐 Live Showcase**: **[cmds-llm-wiki.vercel.app](https://cmds-llm-wiki.vercel.app)** — 10 섹션 상세 페이지 (아키텍처 · 7 commands · Gold In Gold Out · Quick Start)
+**🌐 Live Showcase**: **[cmds-llm-wiki.vercel.app](https://cmds-llm-wiki.vercel.app)** — 10 섹션 상세 페이지 (아키텍처 · 7 commands · 미래의 나에게 보내는 편지 · Quick Start)
 
 **제작**: Yohan Koo ([@YohanKoo](https://x.com/YohanKoo)) · CMDSPACE 에서 운영 중인 satellite 볼트를 템플릿화
 
@@ -16,7 +16,7 @@
   - Raw Sources (불변) → Wiki (LLM 관리) → Schema (규칙) 3-layer
   - Ingest · Query · Lint 3 operations
   - `index.md` + `log.md` 두 개 핵심 파일
-- **Gold In Gold Out 정책** — `/ingest` 시 "왜 수집?" 목적 질문을 강제하여 파편 축적 방지
+- **미래의 나에게 보내는 편지** — `/ingest` 시 "왜 수집?" 목적 질문을 강제하여 파편 축적 방지
 - **Claude Code 통합 harness**
   - 7 slash commands (`/ingest`, `/query`, `/lint`, `/inbox`, `/status`, `/reindex`, `/refresh-context`)
   - 2 PostToolUse hooks (raw source verbatim 검증 + qmd auto-reindex)

@@ -36,7 +36,7 @@
 - **Mermaid labels in quotes**: `A["label"]`
 - **camelCase for new YAML keys**: `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`
 
-### Gold In Gold Out Policy (v2 frontmatter)
+### 미래의 나에게 보내는 편지 Policy (v2 frontmatter)
 
 - **`collectionPurpose`** — mandatory user answer to "왜 수집?" at ingest time
 - **`mainVaultRelated`** — 2~5 related notes from (optional) mothership vault, found via qmd

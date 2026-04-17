@@ -69,7 +69,7 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cla
 > 5. **Operations**: Ingest → Query → Lint
 > 6. **필수 프로퍼티 7개**: type, aliases, description (English), author, date created, date modified, tags
 > 7. **Core Context 먼저 읽기**: 모든 operation 전에 [[Core Context]] 로 사용자 목적·철학 정렬
-> 8. **Gold In Gold Out**: `/ingest` 는 반드시 수집 목적 1회 질문 → `collectionPurpose` 프로퍼티에 기록
+> 8. **미래의 나에게 보내는 편지**: `/ingest` 는 반드시 수집 목적 1회 질문 → `collectionPurpose` 프로퍼티에 기록
 
 ---
 
@@ -164,7 +164,7 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 
 새 source가 `00. Inbox/`에 들어오면:
 
-0. **🎯 목적 질문 (Gold In Gold Out)**: LLM은 사용자에게 **단일 질문** 을 던진다 — "이 소스를 왜 수집했나요? (7 재활용 축: PhD / 학술 / 강의 / 컨설팅 / CMDS 시스템 / 에세이 / 제품 중 어디에 쓰일 예정인가요?)". 답변 없이 ingest 하지 않음. 답변은 `collectionPurpose` 프로퍼티에 기록.
+0. **🎯 목적 질문 (미래의 나에게 보내는 편지)**: LLM은 사용자에게 **단일 질문** 을 던진다 — "이 소스를 왜 수집했나요? (7 재활용 축: PhD / 학술 / 강의 / 컨설팅 / CMDS 시스템 / 에세이 / 제품 중 어디에 쓰일 예정인가요?)". 답변 없이 ingest 하지 않음. 답변은 `collectionPurpose` 프로퍼티에 기록.
 0-a. **🔗 메인 볼트 연결 검색 (옵션, mothership 운영 시만)**: 사용자 답변을 받으면 **메인 볼트에서 유사 노트·개념을 검색** 한다 (`mcp__qmd__query` vec/hyde + `Grep` path=`{PATH_TO_YOUR_MOTHERSHIP_VAULT}`). 2~5개 후보를 `mainVaultRelated` 프로퍼티에 기록하고 사용자에게 확인. mothership 이 없다면 이 단계는 건너뜀.
 1. **분석**: source의 핵심 주제, 엔티티, 개념 추출
 2. **저장**: `10. Raw Sources/{적절한 하위폴더}/`로 이동 (원본 보존). Raw Source frontmatter에 `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds` 추가.
@@ -272,7 +272,7 @@ CMDS_LLM_Wiki/
 - `source`: 원본 URL 또는 참조
 - `date ingested`: 인제스트 일시
 - `category`: Articles / Papers / Books / Transcripts / Clippings
-- `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — Gold In Gold Out. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — LG AX 임원교육 사례"`
+- `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — 미래의 나에게 보내는 편지. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — LG AX 임원교육 사례"`
 - `mainVaultRelated`: **(v2 신설)** ingest 시 메인 볼트에서 검색된 유사 노트 2~5개 — `→ CMDSPACE: {path}` 텍스트 참조 형태의 리스트
 - `mainVaultCmds`: **(v2 신설)** 관련 CMDS 카테고리 — `"[[📚 601 Knowledge Management]]"` quoted wikilink (메인 볼트 기준이므로 이 볼트에서는 resolve 안 되지만 메타데이터로 보존)
 

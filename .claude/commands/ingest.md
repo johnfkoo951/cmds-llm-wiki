@@ -37,13 +37,13 @@ Category → Path mapping:
 
 ## Process (execute ALL steps in order)
 
-### Step 0: Ask Collection Purpose (Gold In Gold Out) — MANDATORY
+### Step 0: Ask Collection Purpose (미래의 나에게 보내는 편지) — MANDATORY
 
-**Before doing anything else**, ask the user ONE consolidated question:
+**Before doing anything else**, ask the user ONE consolidated question — 미래의 나에게 보내는 편지:
 
-> "이 소스를 왜 수집하셨나요? 7 재활용 축 중 어디에 쓰일 예정인가요?
-> (1) PhD 연구 · (2) 학술 출판 · (3) 강의·강연 · (4) 컨설팅 · (5) CMDS 시스템 · (6) 에세이·브랜딩 · (7) 제품·플러그인
-> — 한 줄로 맥락을 덧붙여 주시면 됩니다. 예: '(3) 강의 — 4월 기업 임원 세미나 자료'"
+> "미래의 내가 이 자료를 다시 볼 때 — 왜 수집했고, 어디에 쓸 예정인지 한 줄 남겨주세요.
+> 재활용 축 참고: (1) PhD · (2) 학술 · (3) 강의 · (4) 컨설팅 · (5) 시스템 · (6) 에세이 · (7) 제품
+> 예: '(3) 강의 — 4월 기업 임원 세미나 자료'"
 
 Rules:
 - Ask ONLY this question. Do not bombard the user with multiple questions.
