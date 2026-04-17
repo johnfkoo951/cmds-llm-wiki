@@ -31,7 +31,6 @@
 |---|---|
 | **Andrej Karpathy — LLM Wiki Gist** | https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f |
 | **Karpathy X thread** (2026-04-02) | https://x.com/karpathy/status/1... (본 레포 `10. Raw Sources/11. Articles/` 에 예시 포함) |
-| **박준 (Joon Park) — LLM Wiki × Graphify 가이드** | Gold In Gold Out 원칙의 출처 |
 | **kepano (Steph Ango, Obsidian CEO)** — contamination mitigation | 에이전트 playground 와 personal vault 분리 개념 |
 | **cmds-system-files** (mothership pattern 자매 레포) | https://github.com/johnfkoo951/cmds-system-files |
 
@@ -182,10 +181,7 @@ cmds-llm-wiki/
 - 본 레포는 **템플릿** 입니다. 자유롭게 fork·복제하여 본인 볼트로 사용하세요.
 - 개선 PR 환영. 단 `Core Context.md`, `index.md`, `log.md` 같은 템플릿 파일은 placeholder 유지.
 
-제작: [@YohanKoo](https://x.com/YohanKoo)
+제작: [@YohanKoo](https://x.com/YohanKoo) · [CMDSPACE](https://litt.ly/cmds)
 - Karpathy 의 LLM Wiki pattern
-- 박준님의 Gold In Gold Out 가이드
 - kepano 의 contamination mitigation 개념
 - cmds-system-files (자매 mothership pattern)
-
-위 원천들의 영감으로 엮었습니다.

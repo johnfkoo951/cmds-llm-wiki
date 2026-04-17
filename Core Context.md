@@ -26,7 +26,7 @@ status: template
 > 채우는 방법 두 가지:
 > 1. **직접 작성** — 자기소개, 목적, 철학을 아래 섹션에 직접 입력
 > 2. **기존 기록에서 추출** — 이미 블로그·노트·에세이가 있다면, LLM 에게 읽고 이 노트를 채우도록 요청
-> 3. **STT 인터뷰** — 마이크로 자기소개 녹음 → LLM 에게 정리 요청 (박준 가이드 Phase 1 방식)
+> 3. **STT 인터뷰** — 마이크로 자기소개 녹음 → LLM 에게 정리 요청
 
 ---
 
@@ -161,4 +161,4 @@ LLM 이 정리 과정에서 따라야 할 사용자의 원칙·manifesto. 본인
 
 ---
 
-*템플릿 v1.0 — Karpathy LLM Wiki pattern + 박준 Gold In Gold Out 가이드 기반*
+*템플릿 v1.0 — Karpathy LLM Wiki pattern + Gold In Gold Out 정책 + CMDSPACE harness*
