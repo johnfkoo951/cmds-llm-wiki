@@ -162,6 +162,10 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 
 ### 1. Ingest (새 자료 흡수)
 
+> [!info] Variants
+> - **Standard Ingest** (기본): 단일 URL/파일/텍스트 → 1 Raw Source + 10~15 Wiki pages
+> - **Book Ingest (Progressive Stubs)**: 멀티 페이지 책·문서 사이트 (mdBook/VitePress/GitBook/Docusaurus/ReadTheDocs/Nextra, TOC 에 5+ 챕터) → 1 Book Index + N chapter stubs + 소수 Wiki (책·저자·앵커 개념). 사용자가 장을 읽을 때 해당 stub 을 "promote" (verbatim 삽입 + Wiki 컴파일 + `status: stub` → `completed`). 상세: [[Book Ingest Pattern]] + `.claude/commands/ingest.md` "Book Ingest Mode" 섹션.
+
 새 source가 `00. Inbox/`에 들어오면:
 
 0. **🎯 목적 질문 (미래의 나에게 보내는 편지)**: LLM은 사용자에게 **단일 질문** 을 던진다 — "이 소스를 왜 수집했나요? (7 재활용 축: PhD / 학술 / 강의 / 컨설팅 / CMDS 시스템 / 에세이 / 제품 중 어디에 쓰일 예정인가요?)". 답변 없이 ingest 하지 않음. 답변은 `collectionPurpose` 프로퍼티에 기록.
@@ -270,11 +274,18 @@ CMDS_LLM_Wiki/
 
 **Raw Source** (`type: raw-source`):
 - `source`: 원본 URL 또는 참조
-- `date ingested`: 인제스트 일시
+- `date ingested`: 인제스트 일시 (Book Ingest stub 의 경우 scaffold 날짜)
 - `category`: Articles / Papers / Books / Transcripts / Clippings
+- `status`: **(v2 신설)** `ingested` (기본) / `stub` (Book Ingest 미독서) / `reading` (독서 중) / `completed` (독서 완료 + Wiki 컴파일 완료). 표준 ingest 는 `ingested` 만 사용.
 - `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — 미래의 나에게 보내는 편지. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — LG AX 임원교육 사례"`
 - `mainVaultRelated`: **(v2 신설)** ingest 시 메인 볼트에서 검색된 유사 노트 2~5개 — `→ CMDSPACE: {path}` 텍스트 참조 형태의 리스트
 - `mainVaultCmds`: **(v2 신설)** 관련 CMDS 카테고리 — `"[[📚 601 Knowledge Management]]"` quoted wikilink (메인 볼트 기준이므로 이 볼트에서는 resolve 안 되지만 메타데이터로 보존)
+
+**Book Ingest 전용 키** (Raw Source chapter stub, `status: stub`):
+- `bookIndex`: **(v3 신설)** 소속 책의 Book Index — `"[[YYYY-MM-DD-{authorSlug}-{bookSlug}-book-index]]"` quoted wikilink
+- `chapterNumber`: **(v3 신설)** 챕터 번호 (정수, TOC 기준)
+- `chapterPart`: **(v3 신설)** 챕터가 속한 편/파트 이름 — 원문 언어 보존 (예: `"Part I"`, `"第一篇"`)
+- `chapterPrev`, `chapterNext`: **(v3 신설)** 이전·다음 챕터 wikilink, null 가능
 
 **Wiki Page** (`type: wiki-page`):
 - `source`: 참조한 Raw Source 링크 목록
@@ -295,8 +306,8 @@ CMDS_LLM_Wiki/
 
 ### 새 YAML 키는 camelCase (`@CMDS-Guide` 준수)
 
-- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`
-- ❌ `collection_purpose`, `main-vault-related` — 메인 볼트의 camelCase 네이밍 컨벤션 위반
+- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`
+- ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number` — 메인 볼트의 camelCase 네이밍 컨벤션 위반
 
 ---
 
@@ -316,6 +327,8 @@ CMDS_LLM_Wiki/
 | Layer | Pattern | Example |
 |-------|---------|---------|
 | Raw Source | `YYYY-MM-DD-{title}.md` | `2026-04-10-Attention-Is-All-You-Need.md` |
+| Raw Source — Book Index | `YYYY-MM-DD-{authorSlug}-{bookSlug}-book-index.md` | `2026-04-20-author-slug-book-slug-book-index.md` |
+| Raw Source — Book Chapter Stub | `YYYY-MM-DD-{authorSlug}-{bookSlug}-ch{NN}-{slug}.md` | `2026-04-20-author-slug-book-slug-ch03-agent-loop.md` |
 | Wiki Page | `{Topic Name}.md` | `Transformer.md`, `Andrej Karpathy.md` |
 | Query Result | `YYYY-MM-DD-Q-{question}.md` | `2026-04-10-Q-How-does-RLHF-work.md` |
 | MOC | `MOC-{Topic}.md` | `MOC-Large Language Models.md` |

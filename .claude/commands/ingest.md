@@ -17,6 +17,7 @@ Ingest source material into the LLM Wiki. Follow CLAUDE.md rules strictly (YAML:
 - If a **file path** or **filename**: read that file from the vault (check `00. Inbox/` and its subfolders first)
 - If **blank or "all"**: delegate to `/inbox` (scan all Inbox subfolders)
 - If **raw text**: treat the argument itself as the source content
+- If a **multi-page book/docs site** (mdBook, VitePress, GitBook, Docusaurus, ReadTheDocs, Nextra with 5+ chapters in sidebar/TOC): **use Book Ingest Mode** — see dedicated section below.
 
 ## Category Detection
 
@@ -214,3 +215,169 @@ Summarize the ingest result:
 4. Pages updated: list with what changed
 5. Connections: key cross-references added
 6. Open questions: gaps or contradictions discovered
+
+---
+
+## Book Ingest Mode (Multi-Page Sources) — Progressive Stubs
+
+Activate this mode when the source is a **structured multi-page book or documentation site** (typical signals: a sidebar/TOC with ≥5 chapters, mdBook/VitePress/GitBook/Docusaurus/ReadTheDocs/Nextra frontends, or an explicit `book`/`docs` URL pattern). Standard `/ingest` dumps everything into one Raw Source; Book Mode creates a **navigable scaffold** — one Book Index file + N chapter stubs — and fills chapters progressively as the user reads them.
+
+> **Why this is different**: Karpathy's LLM Wiki philosophy = "knowledge is compiled when read, not when scraped." Pre-ingesting 30 unread chapters = hoarding. Pre-creating 30 **stubs** = navigable future-compile targets, linked from the Index. Compile (fill verbatim + Wiki pages) only when the user actually reads each chapter.
+
+### Step 0 + 0-a: same as standard (Purpose + Mothership search)
+
+Still mandatory. Get one purpose answer covering the whole book.
+
+### Step B-1: Fetch TOC + derive chapter URL pattern
+
+```
+WebFetch(url=<preface/readme/index URL>, prompt="Extract full TOC with chapter titles in their original order, preserve part groupings (Part/Section), return as JSON: [{part, ch, title, slug_hint}]")
+```
+
+Test URL pattern by fetching **2 chapter URLs** directly. Common patterns:
+- mdBook: `/ch01-00-foo.html`, `/ch01-01-bar.html` or `/part1/ch01.html`
+- VitePress/Docusaurus: `/ch01-foo/`, `/en/ch01-foo`
+- GitBook: `/book/chapter-1/section-1`
+
+Confirm the pattern matches reality before committing to naming.
+
+### Step B-2: Create Book Index (1 Raw Source)
+
+`10. Raw Sources/11. Articles/YYYY-MM-DD-{authorSlug}-{bookSlug}-book-index.md`
+
+Contains:
+- Full frontmatter (see stub frontmatter below but with `status: ingested` and **no `chapterNumber`**)
+- **Verbatim** preface content in `## Original Content`
+- `## TOC` — every chapter as `- [ ] [[stub filename]] — {TOC one-liner}` grouped by Part
+- `## Reading Paths` — if author provides (e.g., role-based paths), preserve verbatim
+- `## Progress Tracking` — table: `| Ch | Title | Status | Read on |`
+
+### Step B-3: Create chapter stubs (N files)
+
+For each chapter, create `10. Raw Sources/11. Articles/YYYY-MM-DD-{authorSlug}-{bookSlug}-ch{NN}-{slug}.md`:
+
+```yaml
+---
+type: raw-source
+status: stub                                # ← new status value
+aliases:
+  - "ch{NN} {English title}"
+description: "Chapter {N} of {book} — {TOC one-liner}. Stub until read."
+author:
+  - "{book author}"
+date created: {today}
+date modified: {today}
+date ingested: {today}                      # for stubs, = date scaffolded, not date read
+tags:
+  - raw-source
+  - stub
+  - {book-slug}
+  - {topic tags from TOC}
+source: "{direct chapter URL}"
+category: Articles
+bookIndex: "[[YYYY-MM-DD-{...}-book-index]]"   # ← new key
+chapterPart: "{Part I / 第一篇 / etc.}"        # ← new key, preserve original language
+chapterNumber: {N}                             # ← new key, integer
+chapterPrev: "[[...ch{N-1}...]]"              # may be null for ch01
+chapterNext: "[[...ch{N+1}...]]"              # may be null for last ch
+collectionPurpose: "{inherited from book-level purpose}"
+---
+
+# {Ch{NN}: Full chapter title from TOC}
+
+> [!info] Reading Status: Stub
+> This chapter has not been read yet. Only the TOC one-liner is preserved. On reading, re-invoke `/ingest {this file path}` → verbatim body fill + Wiki page compile + `status: stub` → `completed` promotion.
+
+## Source
+
+- Original URL: {direct chapter URL}
+- Book: [[YYYY-MM-DD-{...}-book-index]]
+- Previous: [[...ch{N-1}...]] · Next: [[...ch{N+1}...]]
+
+## TOC Preview
+
+{the one-line summary from TOC, verbatim}
+
+## Original Content
+
+<!-- STUB: pending verbatim fill. Placeholder intentionally non-empty to satisfy validate-raw-source hook. -->
+
+_This chapter body is empty while `status: stub`. Re-invoking `/ingest` on this file will fetch from the original URL and fill this section verbatim._
+
+## Reading Notes
+
+<!-- Notes, questions, wiki-promotion candidates added while reading -->
+```
+
+Pre-flight per stub:
+- [ ] `## Original Content` section present (even as placeholder — required for hook)
+- [ ] `status: stub` in frontmatter
+- [ ] `source` = direct chapter URL (verified resolvable)
+- [ ] `chapterNumber`, `chapterPart`, `bookIndex` set
+- [ ] `chapterPrev` / `chapterNext` wikilinks point to existing stub files (or null for endpoints)
+- [ ] No Wiki pages compiled yet for this chapter (that happens on promotion)
+
+### Step B-4: Book-level Wiki pages (small set)
+
+Compile only what's derivable from TOC + preface:
+
+- **Entity**: `{Book Title (native)}` — the book itself
+- **Entity**: `{Author Name}` — author
+- **Entity** (optional): companion sites (e.g., visualization, discussion)
+- **Concept(s)** (1~3): concepts the author names in the preface that are **anchor** to the whole book (e.g., "Agent Loop" as the book's anchor chapter)
+- **Guide** (optional, 0~1): if preface itself contains a reusable methodology (e.g., reading paths)
+- **MOC update**: link book index to relevant MOC
+
+**Do NOT** pre-compile chapter-specific Wiki pages. Those appear at promotion time.
+
+### Step B-5: Index + Log
+
+- index.md Recent Ingests: `{N chapters scaffolded, M wiki pages}` format
+- log.md: single entry documenting whole book scaffold + noting progressive compile plan
+
+### Promotion Workflow (when user reads ch N)
+
+Trigger: user runs `/ingest 2026-XX-XX-...-chNN-slug.md` OR describes the chapter in chat with intent to compile.
+
+Steps:
+1. Fetch chapter URL → verbatim body into `## Original Content` (replacing stub placeholder)
+2. Flip `status: stub` → `status: completed` (or `reading` if partial)
+3. Update `date modified`
+4. Compile Wiki pages specific to this chapter (concepts/entities/updates to existing pages)
+5. Update book index's Progress Tracking table: `- [ ]` → `- [x]`
+6. Append log.md: `## [YYYY-MM-DD] promote | {book} ch{NN}`
+
+### Frontmatter Keys Added by Book Ingest Mode
+
+Keys introduced by this mode (camelCase per schema conventions):
+- `bookIndex` — wikilink to the book index Raw Source
+- `chapterNumber` — integer
+- `chapterPart` — string, preserve source language
+- `chapterPrev`, `chapterNext` — wikilinks, may be null
+- `status: stub` — new enumerated value alongside `ingested`, `reading`, `completed`
+
+### Hook Interaction
+
+The `validate-raw-source.sh` PostToolUse hook enforces `## Original Content` presence. Book stubs **satisfy this by design** (placeholder block is non-empty). If the hook is upgraded to also check body substantiveness, it should exempt `status: stub`. Document this expectation here so future hook edits stay aware.
+
+### Visual Pattern
+
+```mermaid
+flowchart TB
+	User["User: multi-page book URL"]
+	Detect["Book Mode detection"]
+	Fetch["Fetch TOC + URL pattern"]
+	Index["Create Book Index (verbatim preface)"]
+	Stubs["Create N chapter stubs"]
+	BookWiki["Book / author / anchor concept Wiki pages"]
+
+	User --> Detect --> Fetch --> Index
+	Index --> Stubs
+	Index --> BookWiki
+
+	Read["User reads ch3"]
+	Promote["/ingest {ch3 stub}"]
+	Compile["Fill body + compile Wiki + update Progress"]
+
+	Stubs -.progressive.-> Read --> Promote --> Compile
+```
