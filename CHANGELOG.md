@@ -4,6 +4,53 @@
 
 ---
 
+## v1.2.0 — 2026-04-29 (Cohort Learnings)
+
+**Source**: Distilled from a real classroom cohort that adopted LLM Wiki Starter Kit as the practical backbone of a regular university course (10 students, 10 distinct domains — systematic review, healthcare AI, anti-aging content, silver-care market analysis, sports analytics, biomedical research, embryology AI, etc.). All cohort-specific names, organizations, and personal contexts have been anonymized — only the generalizable patterns and operational learnings ship in this template.
+
+### What's new
+
+#### `/ingest` skill — Inbox cleanup discipline (operational fix)
+
+Previously possible failure mode: writing the Raw Source but forgetting to delete the Inbox original → next `/inbox` scan re-ingests the same source → duplicate Raw Sources. Now explicit:
+
+- **Step 2 renamed** to "Save Raw Source (Move, not Copy)" with prominent warning callout
+- **Inbox cleanup section** added — when source originated from `00. Inbox/`, the Inbox file MUST be deleted after pre-flight checklist passes (with source-origin matrix specifying when delete applies)
+- **Step 7 verification** — explicit Inbox cleanup check (`ls "00. Inbox/{subfolder}/"` should not show consumed file)
+- **Failure modes** section restructured: (1) summarization-instead-of-verbatim, (2) Inbox residue
+
+Edge case documented: delete only AFTER all pre-flight checks pass, otherwise verbatim failure could lose the only copy.
+
+#### New Concepts (4)
+
+- **`Cohort Token Economy`** — Predictable failure pattern when 80%+ of a cohort relies on Pro plan. Distinguishes cohort runs from individual hobbyist usage. Informs curriculum/onboarding design (token economy must be in week 1, not discovered in week 4).
+- **`External Pre-processing Pattern`** — "Claude 가 잘하는 것 만 Claude 에게 시킨다." Heavy raw conversion (long PDFs, video transcripts, large web scrapes, foreign-language content) goes to GPT Deep Research / Google AI Studio / Whisper STT first; only the distilled output enters LLM Wiki via `/ingest`. Cohort estimates: 50-80% token savings.
+- **`Track Classification and Research Gap Detection`** — Custom command pattern for typology-driven domains. Splits ingested papers into thematic tracks during ingest, computes per-track coverage %, surfaces lowest-coverage track as research gap. Generalizable across systematic review · market analysis · content planning · learning path design. Includes `/track` skill proposal.
+- **`Idea Generation Pipeline`** — Each new raw source triggers automatic idea generation tied to a domain seed context. Distinguishes LLM Wiki from passive learning tools (NotebookLM-style) by treating each new input as a divergence prompt, not just a record. Includes `/idea` skill proposal.
+
+#### New Guide (1)
+
+- **`LLM Wiki Token Optimization Strategies`** — 4-step practical guide (1: external preprocessing → 2: model selection → 3: `/effort` throttling → 4: infrastructure decisions). Designed as a curriculum companion when introducing LLM Wiki to a class, lab, or study cohort. Includes decision-flow diagram, week-by-week curriculum recommendation, and policy-change hedge advice (don't lock cohorts into a single vendor).
+
+### Files changed
+
+- `.claude/commands/ingest.md` — Step 2 title + Inbox cleanup section + Step 7 verification + Failure modes restructure
+- `20. Wiki/21. Concepts/Cohort Token Economy.md` — new
+- `20. Wiki/21. Concepts/External Pre-processing Pattern.md` — new
+- `20. Wiki/21. Concepts/Track Classification and Research Gap Detection.md` — new
+- `20. Wiki/21. Concepts/Idea Generation Pipeline.md` — new
+- `20. Wiki/23. Guides/LLM Wiki Token Optimization Strategies.md` — new
+- `CHANGELOG.md` — this entry
+
+### Migration notes
+
+No breaking changes. Existing v1.1.0 vaults can adopt v1.2.0 by:
+1. Pulling the updated `.claude/commands/ingest.md`
+2. Copying the 4 new concept pages and 1 new guide page (or letting `/ingest` auto-generate them as wikilinks resolve)
+3. Reviewing `Cohort Token Economy` if running a cohort
+
+---
+
 ## v1.1.0 — 2026-04-20 (Book Ingest Pattern)
 
 **Addition**: `/ingest` operation gains a new variant — **Book Ingest Mode (Progressive Stubs)** — for multi-page books and documentation sites.

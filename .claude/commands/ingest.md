@@ -93,7 +93,10 @@ Read the source content thoroughly. Extract:
 
 Before creating pages, read `index.md` to check what pages already exist. Prioritize **updating** existing pages over creating new ones.
 
-### Step 2: Save Raw Source
+### Step 2: Save Raw Source (Move, not Copy)
+
+> [!warning] This is a **MOVE** operation, not a copy
+> If the source originated from `00. Inbox/`, the Raw Source write is **step 1 of 2**. Step 2 is **deleting the Inbox original** after verbatim-preservation is verified. Skipping the delete leaves the file visible to `/inbox` and re-ingested next scan — observed failure mode.
 
 Create the raw source file in `10. Raw Sources/{NN. category}/`:
 - Filename: `YYYY-MM-DD-{Title}.md` (today's date)
@@ -113,6 +116,30 @@ Create the raw source file in `10. Raw Sources/{NN. category}/`:
 - [ ] Embedded videos / media URLs preserved
 - [ ] Customer quotes, citations, code blocks preserved verbatim
 - [ ] Frontmatter has 7 required properties (type, aliases, description, author, date created, date modified, tags)
+
+**Inbox cleanup (MANDATORY when source came from Inbox)**:
+
+After the Raw Source file is written AND pre-flight checklist passes:
+
+```bash
+# Source determination rule
+# Delete the Inbox file ONLY when the source originated from 00. Inbox/
+# Do NOT delete when the source was a URL (WebFetch), external file path, or raw text — nothing to clean up.
+
+rm "{vault-root}/00. Inbox/{subfolder}/{original-file.md}"
+```
+
+Matrix of source origin → cleanup action:
+| Source origin | Action after Raw Source write |
+|---------------|-------------------------------|
+| `00. Inbox/NN. {category}/{file}.md` | **Delete** Inbox file |
+| URL (WebFetch) | No file to delete |
+| Absolute path outside Inbox | No delete — user-provided file |
+| Raw text (prompt argument) | No file to delete |
+
+**Edge cases**:
+- If verbatim preservation check in Step 7 fails AFTER Inbox delete: the Inbox file is lost. Therefore, **delete only after all pre-flight checks pass**.
+- If multiple Inbox files were batched into one Raw Source (rare): delete all consumed Inbox files. Document in `## Ingest Notes`.
 
 Frontmatter template:
 ```yaml
@@ -198,13 +225,18 @@ Append a new log entry (Karpathy-style prefix `## [YYYY-MM-DD] ingest | title`):
 ### Step 7: Review
 
 After all writes are complete, do a quick health check:
-- **Raw Source verbatim preservation check**: grep the new raw source for `^## Original Content` — must be present AND followed by substantive body (not just 1-2 lines). If source was from Inbox, compare line count to inbox file body to confirm no accidental summarization.
+- **Raw Source verbatim preservation check**: grep the new raw source for `^## Original Content` — must be present AND followed by substantive body (not just 1-2 lines). If source was from Inbox, compare line count to inbox file body BEFORE the Inbox delete in Step 2, to confirm no accidental summarization.
+- **Inbox cleanup check (MANDATORY if source came from Inbox)**: verify the original Inbox file has been deleted. Run `ls "00. Inbox/{subfolder}/"` — the consumed file should NOT appear. If it still exists, delete it now (Step 2 requirement).
 - Verify all new `[[wikilinks]]` point to existing pages
 - Check that no duplicate pages were created
 - Confirm index.md reflects the current state
 - Report any open questions or knowledge gaps discovered
 
-**Failure mode to watch for**: summarizing the original content into "Key Takeaways" / "Core Thesis" sections INSTEAD OF preserving verbatim body. Summaries belong in Wiki pages, not Raw Sources. Raw Sources are the immutable source-of-truth layer — if verbatim content is missing, the Raw Source is corrupt regardless of how rich the summary is.
+**Failure modes to watch for**:
+
+1. **Summarization instead of verbatim**: summarizing the original content into "Key Takeaways" / "Core Thesis" sections INSTEAD OF preserving verbatim body. Summaries belong in Wiki pages, not Raw Sources. Raw Sources are the immutable source-of-truth layer — if verbatim content is missing, the Raw Source is corrupt regardless of how rich the summary is.
+
+2. **Inbox residue**: writing the Raw Source but forgetting to delete the Inbox original. Symptom — next `/inbox` scan treats the same source as unprocessed and re-ingests it, creating duplicate Raw Sources. Mitigation — Step 2 Inbox cleanup is MANDATORY and Step 7 verifies it.
 
 ## Output
 
