@@ -7,13 +7,13 @@ description: Schema and harness document for the CMDS LLM Wiki vault. Defines th
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-04-10T21:30
+date modified: 2026-05-04
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.0"
+version: "1.3"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -246,11 +246,31 @@ CMDS_LLM_Wiki/
 │   ├── 23. Guides/
 │   └── 24. Maps/
 ├── 30. Queries/            # 합성된 질의 결과
+├── 70. Outputs/            # (옵션) 외부 도구 산출물 (Layer 4: tool outputs)
+│   ├── graphify/           # /graphify 결과 — YYYY-MM-DD-{topic}/ 단위
+│   ├── …/                  # 향후 다른 도구도 같은 패턴
+│   └── .tool-state/        # cross-run 캐시·manifest (gitignore 가능)
 ├── 80. References/         # 첨부 파일
 │   └── Attachments/
 └── 90. Settings/           # 템플릿, 설정
     └── Templates/
 ```
+
+### `70. Outputs/` 규칙 (Tool Output Convention, 옵션)
+
+외부 도구 (graphify, audio-transcriber 등) 가 생성하는 부산물은 Wiki 본체와 격리되어야 한다. Karpathy 패턴에서 Wiki 는 *컴파일 결과물* 이지만, 도구 산출물은 *분석 결과* — 둘은 라이프사이클이 다르다. 해당 도구를 쓰지 않으면 이 폴더 자체를 만들지 않아도 됨.
+
+**경로 패턴**: `70. Outputs/{tool-name}/{YYYY-MM-DD}-{topic-slug}/`
+- 예: `70. Outputs/graphify/2026-04-30-knowledge-graph/`
+- 예: `70. Outputs/audio-transcriber/2026-05-12-meeting-notes/`
+
+**규칙**:
+- 한 번의 실행 = 한 개의 dated 폴더 (덮어쓰지 않음, 비교 가능)
+- 입력 스냅샷이 있으면 `_corpus/` 또는 `_input/` 서브폴더로 보존 (재현성)
+- Cross-run 상태 (캐시, manifest) 는 `70. Outputs/.tool-state/{tool-name}/` 로 분리
+- 결과물에서 발견한 인사이트는 `30. Queries/` 에 별도 노트로 정제 (output != insight)
+- Wiki 본체 (10/20/30/80) 에서 outputs 를 직접 wikilink 하지 않음 — 발견을 정제해 Wiki 페이지로 흡수하거나, Query 결과로 인용
+- Outputs 자체는 LLM 의 schema 규칙 (필수 7 프로퍼티, naming convention) 적용 면제 — 도구가 자기 형식으로 생성
 
 ---
 
@@ -294,6 +314,9 @@ CMDS_LLM_Wiki/
 - `layer`: concepts / entities / guides
 - `mainVaultRelated`: **(v2 신설)** 메인 볼트의 관련 에세이·MOC — `→ CMDSPACE: {path}` 리스트
 - `mainVaultCmds`: **(v2 신설)** 연결될 CMDS 카테고리
+- `explored`: **(v4 신설)** Exploration Gate 상태. 새 Wiki 페이지 기본값은 `false`. 사용자가 직접 읽었거나 에이전트가 별도 검증 루프를 수행한 뒤에만 `true`.
+- `exploredBy`: **(v4 선택)** `explored: true` 로 바꾼 사람 또는 에이전트 이름
+- `exploredDate`: **(v4 선택)** Exploration Gate 완료일 (`YYYY-MM-DD`)
 
 **Query Result** (`type: query-result`):
 - `query`: 원래 질문
@@ -304,10 +327,19 @@ CMDS_LLM_Wiki/
 - `topic`: 주제 영역
 - `related`: 하위 MOC 또는 관련 MOC
 
-### 새 YAML 키는 camelCase (`@CMDS-Guide` 준수)
+### 새 YAML 키는 camelCase
 
-- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`
-- ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number` — 메인 볼트의 camelCase 네이밍 컨벤션 위반
+- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`
+- ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number`, `explored_by` — camelCase 네이밍 컨벤션 위반
+
+### Quality Control Properties (v4)
+
+새 Wiki 페이지와 대형 업데이트는 다음 규칙을 따른다:
+
+- 새 `type: wiki-page` 는 반드시 `explored: false` 를 갖는다.
+- `explored: true` 는 사람이 읽었거나, 별도 검증 루프에서 source-backed review 를 끝낸 뒤에만 사용한다.
+- `confidence: high` 로 올리는 페이지는 반대해석 또는 데이터 공백을 최소 1 줄 기록한다 (Bias Check 콜아웃).
+- `/lint` 는 `explored` 누락, `explored: false` backlog, high-confidence 페이지의 bias check 누락을 보고한다.
 
 ---
 
@@ -330,9 +362,30 @@ CMDS_LLM_Wiki/
 | Raw Source — Book Index | `YYYY-MM-DD-{authorSlug}-{bookSlug}-book-index.md` | `2026-04-20-author-slug-book-slug-book-index.md` |
 | Raw Source — Book Chapter Stub | `YYYY-MM-DD-{authorSlug}-{bookSlug}-ch{NN}-{slug}.md` | `2026-04-20-author-slug-book-slug-ch03-agent-loop.md` |
 | Wiki Page | `{Topic Name}.md` | `Transformer.md`, `Andrej Karpathy.md` |
+| **Wiki Page — CJK Person Entity** | **네이티브 스크립트만 (한글·한자·일본어)** · 영문 이름은 aliases | `홍길동.md` (alias: `Gildong Hong`), `张汉东.md` (alias: `Zhang Handong`) |
+| Wiki Page — Latin Person / Handle | 원어 표기 그대로 | `Andrej Karpathy.md`, `kepano (Steph Ango).md` (핸들 + 실명) |
 | Query Result | `YYYY-MM-DD-Q-{question}.md` | `2026-04-10-Q-How-does-RLHF-work.md` |
 | MOC | `MOC-{Topic}.md` | `MOC-Large Language Models.md` |
 | Log | `log.md` (단일 파일) | — |
+
+### CJK Person Naming Rule
+
+한국어·중국어·일본어 이름의 인물 entity 는 **네이티브 스크립트로만** 파일명을 짓고, 영문 로마자 표기는 `aliases` 프로퍼티에 둔다:
+
+```yaml
+# 20. Wiki/22. Entities/홍길동.md
+---
+type: wiki-page
+aliases:
+  - Gildong Hong
+  - 홍길동
+  - johndoe   # 핸들도 alias
+---
+```
+
+**이유**: (1) 파일명 중복 (`홍길동 (Gildong Hong)`) 은 wikilink 작성 시 인지 부담 증가, (2) 영문 표기는 transliteration 일 뿐 고유 이름이 아니므로 aliases 위치가 맞다, (3) Obsidian graph/검색은 aliases 를 인식하므로 접근성에 손실 없음.
+
+**적용 대상**: 한국인·중국인·일본인 등 CJK 이름을 가진 person entity. **제외**: 영문 핸들 + 실명 조합 (`kepano (Steph Ango)`), 책·제품 등 non-person entity.
 
 ---
 
@@ -353,6 +406,14 @@ CMDS_LLM_Wiki/
 
 > [!note] Update
 > 최근 업데이트 내용
+
+> [!note] Bias Check
+> Counter-argument: 가능한 반대해석 또는 과잉일반화 위험
+> Data gap: 추가 source, 실제 사용 사례, 수치 검증 등 아직 비어 있는 근거
+
+> [!check] Exploration Gate
+> Status: explored / unexplored / needs-review
+> Evidence: 사용자가 읽은 근거 또는 에이전트 검증 요약
 ```
 
 ---

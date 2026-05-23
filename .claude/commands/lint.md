@@ -1,6 +1,7 @@
 ---
 description: Run comprehensive wiki health check — orphans, broken links, contradictions, stale pages, index sync, MOC coverage, v2 frontmatter fields, and Core Context freshness.
 allowed-tools: Read, Edit, Glob, Grep, Bash
+# Antigravity equivalents: view_file, write_to_file, replace_file_content, list_dir, grep_search, run_command
 ---
 
 # /lint — LLM Wiki Lint / Health Check
@@ -53,14 +54,21 @@ Verify `index.md` matches actual wiki structure:
 Check that every wiki page belongs to at least one MOC.
 - Pages without MOC coverage → suggest which MOC to add them to
 
-### Step 8: v2 Frontmatter Coverage (2026-04-14+)
+### Step 8: v2/v4 Frontmatter Coverage
 
 Check the 미래의 나에게 보내는 편지 fields introduced with [[Core Context]]:
 - **Raw Sources**: every file in `10. Raw Sources/` should have `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`
-  - Missing `collectionPurpose` → flag as "pre-v2 raw source — consider backfill"
-  - Report % coverage (e.g., "5/13 raw sources have collectionPurpose = 38%")
-- **Wiki pages**: recent pages (post 2026-04-14) should have `mainVaultRelated`
+	- Missing `collectionPurpose` → flag as "pre-v2 raw source — consider backfill"
+	- Report % coverage (e.g., "5/13 raw sources have collectionPurpose = 38%")
+- **Wiki pages**: recent pages should have `mainVaultRelated` (if mothership configured)
 - **Attachment location**: any `![...](...)` or `![[...]]` in Wiki pages pointing outside `80. References/Attachments/` → flag
+- **Exploration Gate (v4)**: every Wiki page should have `explored: true|false`
+	- Missing `explored` → flag as "pre-v4 page — add `explored: false` during next touch"
+	- `explored: false` → count as review backlog, not an error
+	- `explored: true` without `exploredBy` or `exploredDate` → flag as incomplete review metadata
+- **Bias check (v4)**: high-confidence Wiki pages and synthesis-heavy guides should include `> [!note] Bias Check`
+	- Missing bias check → flag as "quality-control gap"
+	- Bias callout must include `Counter-argument:` and `Data gap:`
 
 ### Step 9: Core Context Freshness
 
@@ -78,5 +86,6 @@ Report in this format:
 5. **Stale Pages**: potentially outdated content
 6. **Index Issues**: sync problems found and fixed
 7. **v2 Coverage**: `collectionPurpose` / `mainVaultRelated` coverage %
-8. **Core Context**: snapshot age + mothership drift
-9. **Recommendations**: suggested improvements
+8. **v4 Quality Coverage**: `explored` / Bias Check coverage %
+9. **Core Context**: snapshot age + mothership drift
+10. **Recommendations**: suggested improvements

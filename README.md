@@ -42,6 +42,8 @@
 
 ## 빠르게 시작하기
 
+> **깊이있는 셋업 매뉴얼**: `90. Settings/Sharing/Setup Guide.md` — Mode A/B 구분, sed 일괄 치환 명령어, 검증용 grep, FAQ 7개 포함. 아래 5단계로 부족하다면 이 문서를 펼쳐놓고 작업.
+
 ### 1. 클론
 
 ```bash

@@ -4,6 +4,71 @@
 
 ---
 
+## v1.3.0 — 2026-05-04 (Quality Control v4 + Tool Outputs + Multi-Harness)
+
+**Source**: Distilled from one month of operating the parent vault since v1.2.0. Three classes of upgrade: (1) a Book Ingest hook bug uncovered during real ingestion, (2) page-level quality-control properties that emerged from a self-audit ("we have 89 wiki pages but 0% are human-verified"), (3) generalised harness compatibility for non-Claude-Code agents.
+
+### Bug fixes
+
+- **`validate-raw-source.sh` — skip `status: stub`**: Book Ingest chapter stubs intentionally have no `## Original Content` until the user reads them and re-invokes `/ingest` for promotion. The v1.1.0 release added Book Ingest but the verbatim-validation hook still blocked stubs as malformed Raw Sources. Hook now reads frontmatter and exits 0 for `status: stub` files.
+- **`lint.md` indentation**: Step 8 sub-bullets used 2-space indent instead of TAB, violating the project's body-uses-TAB rule. Fixed.
+
+### What's new
+
+#### Exploration Gate (v4 frontmatter)
+
+A page-level human-verification track on Wiki pages. Addresses the gap where `confidence: high` was being set by the LLM at compile time without any human read pass.
+
+- New optional Wiki page properties: `explored: false|true`, `exploredBy: "[[Name]]"`, `exploredDate: YYYY-MM-DD`
+- New `> [!note] Bias Check` callout pattern (Counter-argument + Data gap) for high-confidence and synthesis-heavy pages
+- New `> [!check] Exploration Gate` callout for documenting verification status
+- `/ingest` now emits new pages with `explored: false` by default and adds Bias Check on `confidence: high`
+- `/lint` Step 8 reports `explored` coverage % and high-confidence pages without bias check
+- `/status` reports `explored:` and `mainVault*:` coverage %
+- `/query` flags missing `mainVaultRelated`, `explored`, or Bias Check during synthesis
+
+#### `70. Outputs/` Tool Output Convention (optional)
+
+A separate folder for external-tool side products (graphify, audio-transcriber, etc.) that should not pollute the Wiki layer. Generic pattern: `70. Outputs/{tool-name}/{YYYY-MM-DD}-{topic}/`. Outputs are exempt from the standard schema (frontmatter, naming) — they're the tool's format. Insights distilled from outputs go into `30. Queries/` or get absorbed into Wiki pages, so Wiki body never wikilinks into `70. Outputs/`. Skip this folder entirely if you don't run such tools.
+
+#### CJK Person Naming Rule
+
+Native script only for Korean / Chinese / Japanese person entities; English Romanization moves to `aliases`. Examples: `홍길동.md`, `张汉东.md` (not `홍길동 (Gildong Hong).md`). Latin handles + real-name combos (`kepano (Steph Ango).md`) keep their existing form. Reasons: file-name duplication adds wikilink friction, Romanization is transliteration not identity, Obsidian graph/search reads aliases.
+
+#### Multi-harness comment headers
+
+Every `.claude/commands/*.md` now carries a YAML-comment line listing the equivalent tool names on Antigravity (Gemini) and similar harnesses — `view_file`, `write_to_file`, `replace_file_content`, `list_dir`, `grep_search`, `run_command`, `read_url_content`. Helps users running these commands through non-Claude-Code agents identify the equivalent tool surface.
+
+#### Genericised "7 reuse axes"
+
+`/ingest` and `/query` previously hard-coded the parent vault's specific axes (PhD / 학술 / 강의 / 컨설팅 / CMDS 시스템 / 에세이 / 제품). Now both files reference [[Core Context]] §2 directly with neutral examples (학술 / 저술 / 강의 / 컨설팅 / 제품 / 에세이 / 커뮤니티). User-defined axes (5~9 recommended) remain the source of truth.
+
+#### Setup Guide (deeper personalization manual)
+
+New `90. Settings/Sharing/Setup Guide.md` — covers Mode A (standalone) vs Mode B (mothership-satellite) operation, single-pass `sed` replacement commands per mode, verification `grep`, 8-step setup procedure, and 7-item FAQ. Complements README.md (which stays as the GitHub-facing 5-step quick start). Convertible to PDF via the same `md-to-pdf` workflow used to produce the 2026-04-30 standalone PDF.
+
+### Files changed
+
+- `.claude/hooks/validate-raw-source.sh` — stub skip
+- `.claude/commands/{ingest,inbox,lint,query,refresh-context,reindex,status}.md` — Antigravity equivalents header
+- `.claude/commands/ingest.md` — Quality control v4 block + genericised axes
+- `.claude/commands/lint.md` — Step 8 v2/v4 coverage + indent fix
+- `.claude/commands/status.md` — explored + mainVault coverage lines
+- `.claude/commands/query.md` — quality gap flagging + genericised axes
+- `CLAUDE.md` — `70. Outputs/` section, Frontmatter Standards v4 block, CJK naming rule, Bias/Exploration callouts, version bump 1.0 → 1.3
+- `90. Settings/Sharing/Setup Guide.md` — new
+- `README.md` — pointer to Setup Guide above the 5-step quick start
+- `CHANGELOG.md` — this entry
+
+### Migration notes
+
+No breaking changes. Existing v1.2.0 vaults adopt v1.3.0 by:
+1. Pulling the updated hook (`validate-raw-source.sh`) — required if you use Book Ingest
+2. Pulling updated commands and CLAUDE.md — adds optional fields, doesn't break existing pages
+3. (Optional) backfilling `explored: false` on existing Wiki pages via `/lint` flag list
+
+---
+
 ## v1.2.0 — 2026-04-29 (Cohort Learnings)
 
 **Source**: Distilled from a real classroom cohort that adopted LLM Wiki Starter Kit as the practical backbone of a regular university course (10 students, 10 distinct domains — systematic review, healthcare AI, anti-aging content, silver-care market analysis, sports analytics, biomedical research, embryology AI, etc.). All cohort-specific names, organizations, and personal contexts have been anonymized — only the generalizable patterns and operational learnings ship in this template.

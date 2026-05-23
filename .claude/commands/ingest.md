@@ -1,6 +1,7 @@
 ---
 description: Ingest a source (URL/file/text) into Raw Sources + compile 10~15 Wiki pages, with mandatory user-purpose gate and mothership cross-linking.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch, mcp__qmd__query
+# Antigravity equivalents: view_file, write_to_file, replace_file_content, list_dir, grep_search, run_command, read_url_content
 ---
 
 # /ingest — LLM Wiki Ingest
@@ -43,7 +44,7 @@ Category → Path mapping:
 **Before doing anything else**, ask the user ONE consolidated question — 미래의 나에게 보내는 편지:
 
 > "미래의 내가 이 자료를 다시 볼 때 — 왜 수집했고, 어디에 쓸 예정인지 한 줄 남겨주세요.
-> 재활용 축 참고: (1) PhD · (2) 학술 · (3) 강의 · (4) 컨설팅 · (5) 시스템 · (6) 에세이 · (7) 제품
+> 재활용 축 참고: 사용자가 [[Core Context]] §2 에 정의한 5~9 개 축 (예: 학술 / 저술 / 강의 / 컨설팅 / 제품 / 에세이 / 커뮤니티)
 > 예: '(3) 강의 — 4월 기업 임원 세미나 자료'"
 
 Rules:
@@ -195,6 +196,16 @@ For each extracted topic/entity/guide, either **update** an existing page or **c
 - Update `date modified`
 
 **Target: 10~15 wiki pages touched per ingest.**
+
+**Quality control (v4)**:
+- New Wiki pages default to `explored: false`
+- Set `explored: true` only after a human or source-backed review loop has verified the page
+- For `confidence: high` or synthesis-heavy pages, add:
+	```markdown
+	> [!note] Bias Check
+	> Counter-argument: ...
+	> Data gap: ...
+	```
 
 ### Step 4: Connect
 

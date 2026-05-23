@@ -1,6 +1,7 @@
 ---
 description: Re-snapshot Core Context.md from (optional) mothership system files + key personal essays. Run when mothership files change, when new essays signal philosophy shift, or when snapshot is older than 30 days.
 allowed-tools: Read, Edit, Glob, Grep, Bash, mcp__qmd__query
+# Antigravity equivalents: view_file, write_to_file, replace_file_content, list_dir, grep_search, run_command
 ---
 
 # /refresh-context — Core Context Re-Snapshot

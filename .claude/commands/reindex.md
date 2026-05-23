@@ -1,6 +1,7 @@
 ---
 description: Manually re-run qmd indexing (BM25 + vector embeddings) for wiki + raw_sources + queries collections. Use after direct Obsidian edits, bulk file moves, or embedding model swap.
 allowed-tools: Bash
+# Antigravity equivalents: run_command
 ---
 
 # /reindex — qmd 인덱스 재구축

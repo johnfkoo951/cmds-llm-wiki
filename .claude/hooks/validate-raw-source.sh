@@ -34,6 +34,13 @@ if [ ! -f "$FILE_PATH" ]; then
   exit 0
 fi
 
+# Skip Book Ingest chapter stubs — they intentionally have no `## Original Content`
+# until the user reads the chapter and re-invokes /ingest to promote stub → completed.
+IS_STUB=$(awk 'NR==1 && $0=="---"{fm=1; next} fm && $0=="---"{exit} fm && $0 ~ /^status:[[:space:]]*stub([[:space:]]|$)/{print "yes"; exit}' "$FILE_PATH")
+if [ "$IS_STUB" = "yes" ]; then
+  exit 0
+fi
+
 # Check 1: presence of `## Original Content` section
 if ! grep -q "^## Original Content" "$FILE_PATH"; then
   cat >&2 <<EOF

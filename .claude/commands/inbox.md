@@ -1,6 +1,7 @@
 ---
 description: Scan `00. Inbox/` for unprocessed files and batch-ingest them, delegating per-file work to /ingest (which enforces the purpose gate).
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+# Antigravity equivalents: view_file, write_to_file, replace_file_content, list_dir, grep_search, run_command
 ---
 
 # /inbox — LLM Wiki Inbox Scanner
