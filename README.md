@@ -20,7 +20,8 @@
 - **Claude Code 통합 harness**
   - 7 slash commands (`/ingest`, `/query`, `/lint`, `/inbox`, `/status`, `/reindex`, `/refresh-context`)
   - 2 PostToolUse hooks (raw source verbatim 검증 + qmd auto-reindex)
-  - 18 Obsidian Web Clipper JSON 템플릿 (Article / YouTube / Substack / X / arXiv 등)
+  - 18 Obsidian Web Clipper JSON 템플릿 (Article / YouTube / Substack / X / arXiv / Stibee 등)
+  - 73개 Obsidian hotkey 바인딩 (`.obsidian/hotkeys.json`) — heading shortcuts, wikilink/callout 삽입, 사이드바 토글 등
 - **선택적 mothership 볼트 연계** — 별도 PKM 볼트가 있다면 satellite 로 운영 가능
 
 ---
@@ -133,19 +134,21 @@ cmds-llm-wiki/
 │   ├── commands/                # 7 slash commands
 │   ├── hooks/                   # 2 PostToolUse hooks
 │   └── settings.json
+├── .obsidian/
+│   └── hotkeys.json             # 73개 Obsidian hotkey 바인딩 (선택 — 마음에 안 들면 삭제)
 ├── 00. Inbox/                   # Web Clipper 수신 (01~04 서브폴더)
 ├── 10. Raw Sources/             # 불변 원본 (11~15 서브폴더)
 │   └── 11. Articles/            # Karpathy 예시 2개 포함
 ├── 20. Wiki/                    # LLM 관리 위키
-│   ├── 21. Concepts/            # 예시 4개 (LLM Wiki Pattern 등)
-│   ├── 22. Entities/            # 예시 3개 (Karpathy, Bush, Memex)
-│   ├── 23. Guides/              # 예시 1개
-│   └── 24. Maps/                # 예시 2 MOC
-├── 30. Queries/                 # 합성된 질의 결과
+│   ├── 21. Concepts/            # 예시 (LLM Wiki Pattern 등)
+│   ├── 22. Entities/            # 예시 (Karpathy, Bush, Memex)
+│   ├── 23. Guides/              # 예시 가이드
+│   └── 24. Maps/                # 예시 MOC
+├── 30. Queries/                 # 합성된 질의 결과 (빈 폴더, /query 결과로 채워짐)
 ├── 80. References/Attachments/  # 모든 이미지 일원화
 └── 90. Settings/
-    ├── Templates/               # Obsidian 노트 템플릿
-    ├── Sharing/                 # 18 Web Clipper JSON
+    ├── Templates/               # Obsidian 노트 템플릿 (4종)
+    ├── Sharing/                 # 18 Web Clipper JSON + Setup Guide.md + CLAUDE-Template.md
     └── qmd-config-template.yml  # 로컬 검색 엔진 설정
 ```
 

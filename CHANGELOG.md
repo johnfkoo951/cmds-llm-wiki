@@ -4,6 +4,46 @@
 
 ---
 
+## v1.4.0 — 2026-05-27 (Missing Files Audit · Hotkeys · Empty Queries Folder · Stibee Clipper)
+
+**Source**: User audit "왜 옵시디언 웹클리퍼 json 파일들이 빠져있지?" surfaced three template gaps that had silently drifted from the live operating vault. Same release also closes the 3-place sync loop documented at v1.3.0 by promoting the canonical (`_starter-kit/cmds-llm-wiki/`) as single source of truth.
+
+### What's missing → now included
+
+- **`.obsidian/hotkeys.json`** (9.2 KB · 73 bindings) — Korean PKM-friendly Obsidian hotkey set used in the operating vault. Heading shortcuts (`⌘1~4`), wikilink/callout inserters (`⌘[` / `⌘]`), sidebar toggles, etc. Optional — delete if your own keymap suits you.
+- **`30. Queries/`** (empty folder + `.gitkeep`) — Was missing entirely from the v1.3.0 template even though `/query` writes results here and the README structure referenced it. `.gitkeep` ensures the folder ships through git/zip.
+- **`clipper-stibee.json`** — Korean newsletter platform (Stibee) Web Clipper. Operating vault has had this since 2026-04-14; v1.3.0 sanitization excluded it. Re-included for Korean newsletter users. (Sanitization decision retained: `clipper-parkjoon-mdshare.json` stays excluded — it targets a personal domain.)
+
+### Numbers
+
+- Clipper JSON: 17 → **18**
+- Folders shipped: was missing `30. Queries/` and `.obsidian/`; now complete
+- No schema changes (CLAUDE.md still v1.4 over v1.3 structurally identical except frontmatter `version`/`date modified`)
+
+### 3-place sync canonicalised (operational doc, not template content)
+
+Documented in parent vault's `CMDS_LLM_Wiki/CLAUDE.md` "Starter Kit Distribution (3-Place Sync)" section:
+1. Canonical: `_starter-kit/cmds-llm-wiki/` (this folder, unversioned)
+2. DEV mirror: `/DEV/cmds-llm-wiki/` ↔ GitHub `johnfkoo951/cmds-llm-wiki`
+3. ZIP archives: `_starter-kit/cmds-llm-wiki-{starter-kit,vX.Y.Z}.zip`
+
+🚫 `~/Downloads/cmds-llm-wiki-*.zip` is no longer used as a distribution surface. External users obtain releases via GitHub Releases.
+
+### Placeholder coverage
+
+10 files carry placeholders for users to fill before operation. Placeholder types: `{your-name}`, `{Your Name}`, `{PATH_TO_YOUR_LLM_WIKI}`, `{PATH_TO_YOUR_MOTHERSHIP_VAULT}`, `{your-mothership-vault-name}`, `{YYYY-MM-DD}`. Run the `sed` commands in `90. Settings/Sharing/Setup Guide.md` to replace all in one shot per Mode A (standalone) or Mode B (mothership-satellite).
+
+### Files changed
+
+- `.obsidian/hotkeys.json` (new)
+- `30. Queries/.gitkeep` (new)
+- `90. Settings/Sharing/clipper-stibee.json` (new)
+- `CLAUDE.md` — frontmatter `version: "1.3"` → `"1.4"`, `date modified`
+- `README.md` — clipper count 17→18 (with Stibee), hotkeys.json mention, structure section
+- `CHANGELOG.md` — this entry
+
+---
+
 ## v1.3.0 — 2026-05-04 (Quality Control v4 + Tool Outputs + Multi-Harness)
 
 **Source**: Distilled from one month of operating the parent vault since v1.2.0. Three classes of upgrade: (1) a Book Ingest hook bug uncovered during real ingestion, (2) page-level quality-control properties that emerged from a self-audit ("we have 89 wiki pages but 0% are human-verified"), (3) generalised harness compatibility for non-Claude-Code agents.

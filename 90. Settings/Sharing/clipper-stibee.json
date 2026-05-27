@@ -1,0 +1,28 @@
+{
+	"schemaVersion": "0.1.0",
+	"name": "LLM Wiki — Stibee / Korean Newsletter",
+	"behavior": "create",
+	"noteContentFormat": "> [!info]+ Raw Source — Pending Ingest\n> Thesis, key claims, community highlights, and linked resources are extracted during `/ingest`.\n\n---\n\n## Issue Info\n\n| Field | Value |\n|-------|-------|\n| Publication | {{site|fallback:domain}} |\n| Issue | {{title}} |\n| Author | {{author|fallback:site}} |\n| Published | {{published|fallback:date}} |\n| Language | {{language}} |\n| Words | {{words}} |\n| URL | {{url}} |\n\n---\n\n## Original Content\n\n{{content}}",
+	"properties": [
+		{"name": "type", "value": "inbox", "type": "text"},
+		{"name": "category", "value": "Articles", "type": "text"},
+		{"name": "clip_type", "value": "newsletter-kr", "type": "text"},
+		{"name": "source_url", "value": "{{url}}", "type": "text"},
+		{"name": "publication", "value": "{{site|fallback:domain}}", "type": "text"},
+		{"name": "author", "value": "{{author|fallback:site}}", "type": "text"},
+		{"name": "published", "value": "{{published|fallback:date}}", "type": "date"},
+		{"name": "date_clipped", "value": "{{date}}", "type": "date"},
+		{"name": "description", "value": "{{description}}", "type": "text"},
+		{"name": "word_count", "value": "{{words}}", "type": "number"},
+		{"name": "language", "value": "{{language}}", "type": "text"},
+		{"name": "tags", "value": "inbox, web-clipper, newsletter, korean, stibee", "type": "multitext"}
+	],
+	"triggers": [
+		"https://*.stibee.com/",
+		"https://page.stibee.com/",
+		"https://stib.ee/"
+	],
+	"noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}}-stibee-{{title|truncate:70}}",
+	"path": "00. Inbox/01. Articles",
+	"context": "Korean newsletter on Stibee platform (e.g., 더배러, 어피티, NEWNEEK). Often mixes long-form editor essay + community highlights + event announcements. Deterministic capture; thesis + 7-axis reusability mapped at ingest."
+}
