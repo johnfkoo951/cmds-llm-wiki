@@ -4,7 +4,7 @@
 >
 > Obsidian 볼트이자 Claude Code 프로젝트. 외부 소스 (기사·논문·전사) 를 LLM 이 컴파일하여 복리로 성장하는 persistent wiki 로 축적합니다.
 
-**🌐 Live Showcase**: **[cmds-llm-wiki.vercel.app](https://cmds-llm-wiki.vercel.app)** — 10 섹션 상세 페이지 (아키텍처 · 7 commands · 미래의 나에게 보내는 편지 · Quick Start)
+**🌐 Live Showcase**: **[llm-wiki.cmdspace.work](https://llm-wiki.cmdspace.work)** — 10 섹션 상세 페이지 (아키텍처 · 7 commands · 미래의 나에게 보내는 편지 · Quick Start)
 
 **제작**: Yohan Koo ([@YohanKoo](https://x.com/YohanKoo)) · CMDSPACE 에서 운영 중인 satellite 볼트를 템플릿화
 

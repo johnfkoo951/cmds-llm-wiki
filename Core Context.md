@@ -109,7 +109,7 @@ LLM 이 정리 과정에서 따라야 할 사용자의 원칙·manifesto. 본인
 
 최신본 읽기: `Read("{PATH_TO_MOTHERSHIP}/{file}")` 또는 `mcp__qmd__query`.
 
-**Mothership pattern 참고**: [cmds-system-files](https://github.com/johnfkoo951/cmds-system-files) — 5 system files (CLAUDE/AGENTS/CMDS/CMDS Guide/CMDS HQ) 구조와 semver changelog.
+**Mothership pattern 참고**: [cmds-system-files](https://github.com/johnfkoo951/cmds-system-files) — multiple audience-specific system files (CLAUDE.md, AGENTS.md, CMDS.md, …) + semver changelog.
 
 ---
 

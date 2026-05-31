@@ -4,6 +4,22 @@
 
 ---
 
+## v1.4.1 — 2026-05-31 (Doc Fixes · Live Showcase URL · Placeholder Count · Mothership Count Soften)
+
+**Source**: `cmds-system-files` v4.9.0 audit surfaced three documentation bugs in this kit.
+
+### Fixed
+
+- **README "Live Showcase" link** → `https://llm-wiki.cmdspace.work` (the prior `cmds-llm-wiki.vercel.app` returned HTTP 401; the branded apex is live 200).
+- **CHANGELOG placeholder count** corrected from "10 files" to "13 files carry placeholder tokens" (live count).
+- **`Core Context.md` mothership reference** softened from a hard "5 system files" count to durable "multiple audience-specific system files … + semver changelog" phrasing — the mothership is now 9 files / 6 public after the 2026-05-27 8→9 restructure, and an un-counted phrasing won't re-stale.
+
+### Note
+
+- No schema/structure changes. canonical ↔ DEV mirror ↔ ZIP regenerated together.
+
+---
+
 ## v1.4.0 — 2026-05-27 (Missing Files Audit · Hotkeys · Empty Queries Folder · Stibee Clipper)
 
 **Source**: User audit "왜 옵시디언 웹클리퍼 json 파일들이 빠져있지?" surfaced three template gaps that had silently drifted from the live operating vault. Same release also closes the 3-place sync loop documented at v1.3.0 by promoting the canonical (`_starter-kit/cmds-llm-wiki/`) as single source of truth.
@@ -31,7 +47,7 @@ Documented in parent vault's `CMDS_LLM_Wiki/CLAUDE.md` "Starter Kit Distribution
 
 ### Placeholder coverage
 
-10 files carry placeholders for users to fill before operation. Placeholder types: `{your-name}`, `{Your Name}`, `{PATH_TO_YOUR_LLM_WIKI}`, `{PATH_TO_YOUR_MOTHERSHIP_VAULT}`, `{your-mothership-vault-name}`, `{YYYY-MM-DD}`. Run the `sed` commands in `90. Settings/Sharing/Setup Guide.md` to replace all in one shot per Mode A (standalone) or Mode B (mothership-satellite).
+13 files carry placeholder tokens (~10 require user substitution before operation). Placeholder types: `{your-name}`, `{Your Name}`, `{PATH_TO_YOUR_LLM_WIKI}`, `{PATH_TO_YOUR_MOTHERSHIP_VAULT}`, `{your-mothership-vault-name}`, `{YYYY-MM-DD}`. Run the `sed` commands in `90. Settings/Sharing/Setup Guide.md` to replace all in one shot per Mode A (standalone) or Mode B (mothership-satellite).
 
 ### Files changed
 
