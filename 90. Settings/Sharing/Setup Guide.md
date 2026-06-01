@@ -2,7 +2,7 @@
 
 | 항목 | 내용 |
 |------|------|
-| 대상 | `cmds-llm-wiki` v1.3.0 |
+| 대상 | `cmds-llm-wiki` v1.5.0+ |
 | 작성 | 2026-05-04 |
 | 전제 | macOS · Obsidian 1.5+ · Claude Code · Git |
 
@@ -49,6 +49,8 @@ Karpathy LLM Wiki 패턴을 그대로 실행 가능한 형태로 옮긴 **Obsidi
 ---
 
 ## 3. 셋업 절차
+
+> 💡 **대화형으로 하려면**: Claude Code에서 **`/onboard`** 실행 (트리거: "온보딩해줘", "처음 시작할게"). 아래 Step 1·4·5(위치·placeholder 치환·Core Context)를 필수 질문 인터뷰로 자동 진행한다. 수동으로 하려면 아래 절차를 그대로 따른다.
 
 ### Step 1 — 위치 결정 및 이름 변경
 

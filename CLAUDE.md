@@ -7,13 +7,13 @@ description: Schema and harness document for the CMDS LLM Wiki vault. Defines th
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-05-31
+date modified: 2026-06-01
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.4.1"
+version: "1.5.0"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
