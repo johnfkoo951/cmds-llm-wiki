@@ -4,6 +4,20 @@
 
 ---
 
+## v1.5.0 — 2026-06-01 (/onboard 인터뷰 셋업 커맨드)
+
+**Source**: 온보딩이 수동 `Setup Guide.md`(sed)뿐이라, "온보딩해줘/처음 시작할게" 트리거로 필수 질문을 물으며 placeholder·Core Context를 자동으로 채우는 대화형 단계 신설.
+
+### Added
+
+- **`.claude/commands/onboard.md`** — 인터뷰 기반 first-run 셋업 커맨드. pre-flight 감지 → 필수 5문항(위치/이름 · Mode A·B · 모선 경로 · Core Context §1 정체성 · §2 재활용 축) + 옵션(§3·§4) → placeholder 일괄 치환 + Core Context 작성 + `status: active`. answer-1-of-many · resume · 음성 모드 · passive fallback 포함 (cmds-onboarding 철학 차용).
+
+### Changed
+
+- `Setup Guide.md`: 상단에 `/onboard` 대화형 경로 안내 추가, 대상 버전 v1.3.0 → v1.5.0+.
+
+---
+
 ## v1.4.1 — 2026-05-31 (Doc Fixes · Live Showcase URL · Placeholder Count · Mothership Count Soften)
 
 **Source**: `cmds-system-files` v4.9.0 audit surfaced three documentation bugs in this kit.
