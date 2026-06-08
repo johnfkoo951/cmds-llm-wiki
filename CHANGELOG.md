@@ -4,6 +4,27 @@
 
 ---
 
+## v1.6.0 — 2026-06-08 (Codex 호환 — dual-harness)
+
+**Source**: 운영 볼트가 Claude Code + Codex 양 harness 로 정합화(같은 operation 이름을 `.claude/` · `.codex/` · `.agents/skills/` 에 1:1 유지)된 것을 공개 킷에도 반영. 이전 킷은 Claude 전용이었음.
+
+### Added
+
+- **`AGENTS.md`** — Codex / 타 에이전트용 schema mirror (CLAUDE.md 와 같은 규칙, audience 만 다름).
+- **`.codex/`** — Codex operation harness: `commands/` 10개 (Claude commands 와 1:1 mirror) + `hooks/` (`validate-raw-source.sh`, `qmd-reindex.sh`) + `hooks.json`. 코덱스 hook 은 단순 payload shape (`tool_input.path` / `file_path` / `path`) 도 처리하고, Book Ingest `status: stub` chapter 는 body-length 검사에서 제외.
+- **`.agents/skills/`** — Codex reusable operation skills 10개 (`{operation}/SKILL.md`).
+- **`.claude/commands/`** 에 `capture-tabs`, `verify`, `audit` 3개 추가 (기존 8 → 11). Capture Tabs = AI research / 브라우저 탭 묶음 → Inbox pre-ingest layer. Verify = 단일 페이지 3-기준 검증. Audit = vault/MOC 전체 점검 + `/verify` 큐.
+
+### Changed
+
+- `CLAUDE.md`: Operations 섹션에 Agent Note + Cross-Agent Compatibility Matrix + Codex Compatibility Notes 추가, Folder Structure 에 `.codex/` · `.agents/` · `AGENTS.md` 반영, Essential operations 한 줄 갱신. version 1.5.0 → 1.6.0.
+
+### Notes
+
+- Codex hook 경로는 `{PATH_TO_YOUR_LLM_WIKI}` placeholder — 셋업 시 절대 경로로 치환 (또는 `/onboard` 가 처리). Claude hook 은 `$CLAUDE_PROJECT_DIR` 라 치환 불필요.
+
+---
+
 ## v1.5.0 — 2026-06-01 (/onboard 인터뷰 셋업 커맨드)
 
 **Source**: 온보딩이 수동 `Setup Guide.md`(sed)뿐이라, "온보딩해줘/처음 시작할게" 트리거로 필수 질문을 물으며 placeholder·Core Context를 자동으로 채우는 대화형 단계 신설.

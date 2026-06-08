@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'{PATH_TO_YOUR_LLM_WIKI}/.codex/hooks/validate-raw-source.sh'",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "'{PATH_TO_YOUR_LLM_WIKI}/.codex/hooks/qmd-reindex.sh'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

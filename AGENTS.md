@@ -7,23 +7,23 @@ description: Schema and harness document for the CMDS LLM Wiki vault. Defines th
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-06-08
+date modified: 2026-06-06
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.6.0"
+version: "1.3"
 ---
 
-# CLAUDE.md — LLM Wiki Schema
+# AGENTS.md — LLM Wiki Schema
 
-This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Claude Code, Cursor, etc.) read, write, and maintain this vault.
+This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Codex, Cursor, etc.) read, write, and maintain this vault.
 
 > **Architecture**: Karpathy LLM Wiki Pattern
 > - Raw Sources = 소스코드 (immutable)
 > - Wiki = 실행 파일 (LLM이 관리)
-> - Schema = 이 문서 (CLAUDE.md)
+> - Schema = 이 문서 (AGENTS.md)
 
 ---
 
@@ -66,7 +66,7 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cla
 > 2. **Wikilinks in YAML: 큰따옴표** `"[[link]]"`
 > 3. **Mermaid 라벨: 큰따옴표** `A["label"]` / `[/` 로 시작 금지
 > 4. **3 Layers**: Raw Sources (immutable) → Wiki (LLM-maintained) → Schema (this file)
-> 5. **Operations**: Capture Tabs → Inbox → Ingest → Query → Verify/Audit → Lint (+Status/Reindex/Refresh). Codex/Claude 양 harness 공유 — `.codex/commands/` + `.agents/skills/` mirror `.claude/commands/`.
+> 5. **Operations**: Capture Tabs → Inbox → Ingest → Query → Verify/Audit → Lint (+Status/Reindex/Refresh)
 > 6. **필수 프로퍼티 7개**: type, aliases, description (English), author, date created, date modified, tags
 > 7. **Core Context 먼저 읽기**: 모든 operation 전에 [[Core Context]] 로 사용자 목적·철학 정렬
 > 8. **미래의 나에게 보내는 편지**: `/ingest` 는 반드시 수집 목적 1회 질문 → `collectionPurpose` 프로퍼티에 기록
@@ -75,15 +75,27 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cla
 
 ## 🧭 Core Context (반드시 먼저 로드)
 
-**모든 ingest / query / lint 전에 [[Core Context]] 를 먼저 읽는다.**
+**모든 capture / inbox / ingest / query / lint 전에 [[Core Context]] 를 먼저 읽는다.**
 
-해당 노트는 (1) 사용자의 정체성·7 재활용 축·철학 + (2) **옵션**: 별도 mothership 볼트가 있다면 그 시스템 파일 snapshot 을 담는다. 이 맥락 없이는 LLM Wiki 의 모든 operation 이 "목적 없는 자동 정리" 로 전락한다.
+해당 노트는 메인 볼트 `{your-mothership-vault-name}` 의 9 system files (precedence 1~9, 2026-05-22 기준 DESIGN.md 추가) + 핵심 에세이 5편에서 추출된 사용자 맥락 snapshot 이다. {your-name}의 정체성·철학·7 재활용 축·CMDS 9 categories 를 담고 있으며, 이 맥락 없이는 LLM Wiki 의 모든 operation 이 "목적 없는 자동 정리" 로 전락한다. 9 system files 전체 alias 표는 `CLAUDE.md` "Core Context" 섹션 또는 [[Core Context]] §8 참조.
 
-### (옵션) Mothership 볼트가 있는 경우
+### 메인 볼트 9 시스템 파일 (최신 원본 동적 참조, precedence 순)
 
-별도의 mothership Obsidian 볼트를 운영하고 있다면 (예: CMDSPACE 같은 개인 PKM 볼트), 그 시스템 파일들을 Core Context 의 "동적 참조" 섹션에 등록한다. mothership pattern 예시는 [cmds-system-files](https://github.com/johnfkoo951/cmds-system-files) 참고.
+6개 공개 (system.cmdspace.work 배포) + 3개 비공개 (vendor·product 전용).
 
-mothership 이 없다면 이 LLM Wiki 단독으로 운영한다 — Core Context §5 는 비워두거나 삭제.
+| # | Alias | 경로 | 역할 | 공개 |
+|:-:|-------|------|------|:----:|
+| 1 | `@CMDS-CLAUDE` | `{your-mothership-vault-name}/CLAUDE.md` | HOW — Claude Code 기술 규칙 | 공개 |
+| 2 | `@CMDS-AGENTS` | `{your-mothership-vault-name}/AGENTS.md` | HOW — 타 AI 에이전트 규칙 (Codex, Cursor, Windsurf) | 공개 |
+| 3 | `@CMDS-Antigravity` | `{your-mothership-vault-name}/ANTIGRAVITY.md` | HOW — Google Gemini / Antigravity IDE 전용 | 비공개 |
+| 4 | `@CMDS-Context` | `{your-mothership-vault-name}/CMDS.md` | WHY/WHAT — 시스템 철학·사용자 프로필 | 공개 |
+| 5 | `@CMDS-Guide` | `{your-mothership-vault-name}/🏛 CMDS Guide.md` | STANDARDS — 7 프로퍼티·템플릿·camelCase | 공개 |
+| 6 | `@CMDS-HQ` | `{your-mothership-vault-name}/🏛 CMDS Head Quarter.md` | WHERE — 91 카테고리 네비게이션 | 공개 |
+| 7 | `@CMDS-Brain` | `{your-mothership-vault-name}/BRAIN.md` | PERSONA — {your-name} brain profile (Gobi 앱 entry) | 비공개 |
+| 8 | `@CMDS-BrainPrompt` | `{your-mothership-vault-name}/BRAIN_PROMPT.md` | PERSONA — Agent Rules of Engagement | 비공개 |
+| 9 | `@CMDS-DESIGN` | `{your-mothership-vault-name}/DESIGN.md` | VISUAL — v4.3 design constants · Anti-Slop · skill ↔ surface mapping | 공개 |
+
+최신본 읽기: `Read("{PATH_TO_YOUR_MOTHERSHIP_VAULT}/{file}")` 또는 `mcp__qmd__query` (user-scope, cwd 무관).
 
 [[Core Context]] 은 `snapshot_date` 기준. 30일 이상 오래되면 lint 가 flag → re-snapshot.
 
@@ -95,19 +107,15 @@ mothership 이 없다면 이 LLM Wiki 단독으로 운영한다 — Core Context
 
 - **목적**: LLM이 raw sources를 컴파일하여 persistent, structured wiki를 유지
 - **철학**: RAG(매번 검색+합성)가 아닌, 한 번 컴파일된 위키가 compounding artifact로 성장
-- **연결**: (옵션) mothership Obsidian 볼트의 satellite 로 운영 가능
+- **연결**: CMDSPACE 메인 볼트(`{your-mothership-vault-name}`)의 satellite vault
 
-### (옵션) Mothership 볼트 연결
-
-별도 PKM 볼트가 있다면 본 LLM Wiki 를 satellite 로 두고 cross-reference.
+### 메인 볼트 연결
 
 | 항목 | 값 |
 |------|-----|
 | 메인 볼트 경로 | `{PATH_TO_YOUR_MOTHERSHIP_VAULT}` |
 | 이 볼트 경로 | `{PATH_TO_YOUR_LLM_WIKI}` |
 | Cross-reference | `source-vault` 프로퍼티로 메인 볼트 노트 참조 |
-
-Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cmds-system-files) (Karpathy Wiki pattern 과 분리된 PKM harness).
 
 ---
 
@@ -123,7 +131,8 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 ├── 12. Papers/       # 학술 논문, 기술 보고서
 ├── 13. Books/        # 도서 노트, 챕터 요약
 ├── 14. Transcripts/  # 강연, 팟캐스트, 영상 전사
-└── 15. Clippings/    # 웹 클리핑, 스크랩
+├── 15. Clippings/    # 웹 클리핑, 스크랩
+└── 16. AI Research/  # ChatGPT/Gemini/Grok/Claude/Perplexity 선행 조사 묶음
 ```
 
 **규칙**:
@@ -160,46 +169,68 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 
 ## Operations
 
-> **🤖 Agent Note (Claude Code & Codex & Antigravity)**:
-> Claude Code 의 operation entrypoint 는 `.claude/commands/{operation}.md` 이다. Codex mirror 는 `.codex/commands/{operation}.md` 와 `.agents/skills/{operation}/SKILL.md` 에 둔다. 같은 operation 은 양쪽 harness 에 같은 이름으로 둔다. 두 harness 는 같은 Schema(이 파일 + `AGENTS.md`)를 공유하되, Claude 작업에서는 `CLAUDE.md` + `.claude/commands/` 가, Codex 작업에서는 `AGENTS.md` + `.codex/commands/` 가 우선이다.
+> **🤖 Agent Note (Codex & Antigravity)**:
+> Codex 의 operation entrypoint 는 `.codex/commands/{operation}.md` 이다. 재사용 가능한 Codex skills 는 `.agents/skills/{operation}/SKILL.md` 처럼 직관적인 operation 이름을 사용한다 (`ingest`, `query`, `capture-tabs`, `status` 등). Antigravity(Gemini) 등 타 에이전트 역시 해당 operation을 수행하기 전에 대응 command 파일을 읽고 그 절차를 엄격히 따라야 한다.
+> Claude Code 전용 command 는 `.claude/commands/{operation}.md` 에 보존한다. 같은 operation 은 양쪽 harness 에 같은 이름으로 둔다. Codex 작업에서는 `AGENTS.md` + `.codex/commands/` + 필요한 `.agents/skills/{operation}/SKILL.md` 가 우선이다.
 
-### Cross-Agent Compatibility Matrix
+### Codex Compatibility Matrix (v1.3)
 
-같은 operation 을 추가할 때는 **반드시** `.claude/commands/{name}.md`, `.codex/commands/{name}.md`, `.agents/skills/{name}/SKILL.md` 를 함께 맞춘다.
+Codex 에서 가능한 작업은 아래 10개 operation 으로 표준화한다. 새 operation 을 추가할 때는 **반드시** `.codex/commands/{name}.md`, `.agents/skills/{name}/SKILL.md`, 필요 시 `.claude/commands/{name}.md` mirror 를 함께 맞춘다.
 
-| Operation | Claude command | Codex command | Codex skill | Notes |
-|-----------|----------------|---------------|-------------|-------|
-| Capture Tabs | `.claude/commands/capture-tabs.md` | `.codex/commands/capture-tabs.md` | `.agents/skills/capture-tabs/SKILL.md` | AI research / browser tab bundle → Inbox |
-| Inbox | `.claude/commands/inbox.md` | `.codex/commands/inbox.md` | `.agents/skills/inbox/SKILL.md` | pending source preview + ingest routing |
-| Ingest | `.claude/commands/ingest.md` | `.codex/commands/ingest.md` | `.agents/skills/ingest/SKILL.md` | purpose gate + Raw Source + Wiki compile |
-| Query | `.claude/commands/query.md` | `.codex/commands/query.md` | `.agents/skills/query/SKILL.md` | compiled Wiki synthesis + Query Result |
-| Lint | `.claude/commands/lint.md` | `.codex/commands/lint.md` | `.agents/skills/lint/SKILL.md` | health check + frontmatter coverage |
-| Status | `.claude/commands/status.md` | `.codex/commands/status.md` | `.agents/skills/status/SKILL.md` | counts + coverage snapshot |
-| Reindex | `.claude/commands/reindex.md` | `.codex/commands/reindex.md` | `.agents/skills/reindex/SKILL.md` | qmd update/embed/status |
-| Refresh Context | `.claude/commands/refresh-context.md` | `.codex/commands/refresh-context.md` | `.agents/skills/refresh-context/SKILL.md` | Core Context from mothership system files |
-| Verify | `.claude/commands/verify.md` | `.codex/commands/verify.md` | `.agents/skills/verify/SKILL.md` | single-page verification |
-| Audit | `.claude/commands/audit.md` | `.codex/commands/audit.md` | `.agents/skills/audit/SKILL.md` | vault/MOC audit + `/verify` queue |
+| Operation | Codex command | Codex skill | Claude mirror | Status | Notes |
+|-----------|---------------|-------------|---------------|--------|-------|
+| Capture Tabs | `.codex/commands/capture-tabs.md` | `.agents/skills/capture-tabs/SKILL.md` | `.claude/commands/capture-tabs.md` | Active | AI research / browser tab bundle → Inbox |
+| Inbox | `.codex/commands/inbox.md` | `.agents/skills/inbox/SKILL.md` | `.claude/commands/inbox.md` | Active | pending source preview + ingest routing |
+| Ingest | `.codex/commands/ingest.md` | `.agents/skills/ingest/SKILL.md` | `.claude/commands/ingest.md` | Active | purpose gate + Raw Source + Wiki compile |
+| Query | `.codex/commands/query.md` | `.agents/skills/query/SKILL.md` | `.claude/commands/query.md` | Active | compiled Wiki synthesis + Query Result |
+| Lint | `.codex/commands/lint.md` | `.agents/skills/lint/SKILL.md` | `.claude/commands/lint.md` | Active | health check + v2/v4/v5 coverage |
+| Status | `.codex/commands/status.md` | `.agents/skills/status/SKILL.md` | `.claude/commands/status.md` | Active | counts + coverage snapshot |
+| Reindex | `.codex/commands/reindex.md` | `.agents/skills/reindex/SKILL.md` | `.claude/commands/reindex.md` | Active | qmd update/embed/status |
+| Refresh Context | `.codex/commands/refresh-context.md` | `.agents/skills/refresh-context/SKILL.md` | `.claude/commands/refresh-context.md` | Active | Core Context from 9 mothership files |
+| Verify | `.codex/commands/verify.md` | `.agents/skills/verify/SKILL.md` | `.claude/commands/verify.md` | Active | single-page v5 verification |
+| Audit | `.codex/commands/audit.md` | `.agents/skills/audit/SKILL.md` | `.claude/commands/audit.md` | Active | vault/MOC audit + `/verify` queue |
 
-> `/onboard` (`.claude/commands/onboard.md`) 는 Claude 전용 first-run 셋업 인터뷰로, mirror 가 없다.
+### Codex Tool Compatibility Rules
 
-### Codex Compatibility Notes
+| Task Type | Codex path | Rule |
+|-----------|------------|------|
+| File search | `rg`, `rg --files`, `find` | Use shell search first; avoid slow broad scans when qmd can scope collections. |
+| File edit | `apply_patch` | Manual edits must use patch-style changes; keep Raw Sources immutable except ingest/update policy. |
+| Wiki search | `qmd query`, `qmd vsearch`, `rg` | Prefer compiled Wiki first, then Raw Sources, then mothership. |
+| Main-vault search | qmd collections + `rg "/Users/.../{your-mothership-vault-name}"` | Record useful cross-vault links in `mainVaultRelated`. |
+| Browser capture | Browser/Computer Use when available, otherwise user export/paste | Never create public share links or modify accounts without action-time confirmation. |
+| Hook validation | `.codex/hooks/validate-raw-source.sh` | Raw Sources need `## Original Content`; `status: stub` chapter stubs are exempt from body-length check. |
+| Auto reindex | `.codex/hooks/qmd-reindex.sh` or `/reindex` | Inbox is excluded until ingest; `qmd status` verifies freshness. |
+| Quality verification | `/verify` and `/audit` | Conflicts become `disputed`; do not delete evidence to force consistency. |
 
-- Codex 작업에서는 `AGENTS.md` 가 primary schema 이고, `.codex/commands/` + `.agents/skills/` 가 operation harness 다.
-- File edits use patch-style changes; Raw Sources remain immutable except ingest/update policy.
-- qmd search (`qmd query`, `qmd vsearch`) is the preferred local retrieval fallback when MCP tools are unavailable.
-- Browser/Computer Use capture may be used for visible tab groups, but public share links, uploads, sends, and account-setting changes need action-time user confirmation.
-- Hooks: `.claude/hooks/*.sh` are wired via `.claude/settings.json` (uses `$CLAUDE_PROJECT_DIR`); `.codex/hooks/*.sh` are wired via `.codex/hooks.json` (set the `{PATH_TO_YOUR_LLM_WIKI}` placeholder to your absolute vault path). Both enforce `## Original Content` on Raw Sources and keep qmd fresh after writes.
+### 0. Capture Tabs / AI Research Capture (선행 조사 보존)
+
+`/capture-tabs` 는 ChatGPT, Gemini, Grok, Claude, Perplexity, 일반 source tab 으로 만든 Chrome 탭 그룹을 `00. Inbox/05. AI Research/` 에 Markdown research bundle 로 저장하는 **pre-ingest capture layer** 다.
+
+**Entrypoints**:
+- Codex command: `.codex/commands/capture-tabs.md`
+- Codex skill trigger: `.agents/skills/capture-tabs/SKILL.md`
+- Claude mirror: `.claude/commands/capture-tabs.md`
+- Template: `90. Settings/Templates/Template_AI Research Capture.md`
+
+**규칙**:
+- 원문·복사본·export 는 `## Original Content` 아래에 보존한다.
+- 에이전트의 요약·불일치·Wiki 제안은 `## Agent Capture Notes` 아래에 둔다. 기존 `## Codex Capture Notes` 파일은 레거시 호환으로 인정한다.
+- 기본 저장 위치는 `00. Inbox/05. AI Research/YYYY-MM-DD-ai-research-{topic-slug}.md` 이다.
+- source URL, platform, visible model/account/workspace, capture method, capture limitation 을 기록한다.
+- 공개 share link 생성, 계정 설정 변경, 대화창 전송, 파일 업로드는 사용자 action-time confirmation 없이 금지한다.
+- `inbox-only`, `run-inbox`, `ingest-now` 중 다음 단계를 명시하고, `ingest-now` 는 `/ingest` 의 목적 질문과 메인 볼트 연결 검색을 그대로 따른다.
 
 ### 1. Ingest (새 자료 흡수)
 
 > [!info] Variants
 > - **Standard Ingest** (기본): 단일 URL/파일/텍스트 → 1 Raw Source + 10~15 Wiki pages
-> - **Book Ingest (Progressive Stubs)**: 멀티 페이지 책·문서 사이트 (mdBook/VitePress/GitBook/Docusaurus/ReadTheDocs/Nextra, TOC 에 5+ 챕터) → 1 Book Index + N chapter stubs + 소수 Wiki (책·저자·앵커 개념). 사용자가 장을 읽을 때 해당 stub 을 "promote" (verbatim 삽입 + Wiki 컴파일 + `status: stub` → `completed`). 상세: [[Book Ingest Pattern]] + `.claude/commands/ingest.md` "Book Ingest Mode" 섹션.
+> - **Book Ingest (Progressive Stubs)**: 멀티 페이지 책·문서 사이트 (mdBook/VitePress/GitBook/Docusaurus/ReadTheDocs, TOC 에 5+ 챕터) → 1 Book Index + N chapter stubs + 소수 Wiki (책·저자·앵커 개념). 사용자가 장을 읽을 때 해당 stub 을 "promote" (verbatim 삽입 + Wiki 컴파일 + `status: stub` → `completed`). 상세: [[Book Ingest Pattern]] + `.codex/commands/ingest.md` "Book Ingest Mode" 섹션.
 
 새 source가 `00. Inbox/`에 들어오면:
 
 0. **🎯 목적 질문 (미래의 나에게 보내는 편지)**: LLM은 사용자에게 **단일 질문** 을 던진다 — "이 소스를 왜 수집했나요? (7 재활용 축: PhD / 학술 / 강의 / 컨설팅 / CMDS 시스템 / 에세이 / 제품 중 어디에 쓰일 예정인가요?)". 답변 없이 ingest 하지 않음. 답변은 `collectionPurpose` 프로퍼티에 기록.
-0-a. **🔗 메인 볼트 연결 검색 (옵션, mothership 운영 시만)**: 사용자 답변을 받으면 **메인 볼트에서 유사 노트·개념을 검색** 한다 (`mcp__qmd__query` vec/hyde + `Grep` path=`{PATH_TO_YOUR_MOTHERSHIP_VAULT}`). 2~5개 후보를 `mainVaultRelated` 프로퍼티에 기록하고 사용자에게 확인. mothership 이 없다면 이 단계는 건너뜀.
+0-a. **🔗 메인 볼트 연결 검색**: 사용자 답변을 받으면 **메인 볼트에서 유사 노트·개념을 검색** 한다 (`mcp__qmd__query` vec/hyde + `Grep` path=`/Users/.../{your-mothership-vault-name}`). 2~5개 후보를 `mainVaultRelated` 프로퍼티에 기록하고 사용자에게 확인.
 1. **분석**: source의 핵심 주제, 엔티티, 개념 추출
 2. **저장**: `10. Raw Sources/{적절한 하위폴더}/`로 이동 (원본 보존). Raw Source frontmatter에 `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds` 추가.
 3. **컴파일**: 관련 Wiki 페이지 10~15개를 incremental update
@@ -249,6 +280,36 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 - 원본 파일의 frontmatter에 `superseded-by: "[[새 파일]]"` 프로퍼티 추가
 - Wiki 페이지의 `source` 프로퍼티에 최신 버전 추가 (기존 참조도 유지)
 
+### 5. Verify (단일 페이지 검증, v5)
+
+`/verify {page}` — 한 Wiki 페이지를 3 기준 (지식요건해당성·정합성·확증가능성) 에 대해 검증.
+
+**Entrypoints**:
+- Codex command: `.codex/commands/verify.md`
+- Codex skill trigger: `.agents/skills/verify/SKILL.md`
+- Claude mirror: `.claude/commands/verify.md`
+
+**규칙**:
+- `verificationStatus`, `verifiedAt`, `verifiedBy`, `claimType`, `evidenceScope`, `disputed` 를 기록한다.
+- source-backed 검증 없이 `explored: true` 로 바꾸지 않는다. 사용자의 명시 확인이 필요하다.
+- 충돌은 삭제하지 않고 `disputed: true` + `> [!warning] Disputed Claim` 으로 보존한다.
+- `confidence` 는 source count, source type, counter-evidence 를 기준으로 독립 재산정한다.
+
+### 6. Audit (전체 볼트 검증, v5)
+
+`/audit` — vault 전체를 3 기준으로 점검. 모든 페이지 개별 검증이 아니라 **drift pattern 발견 + 우선순위 큐 생성** 이 목표.
+
+**Entrypoints**:
+- Codex command: `.codex/commands/audit.md`
+- Codex skill trigger: `.agents/skills/audit/SKILL.md`
+- Claude mirror: `.claude/commands/audit.md`
+
+**규칙**:
+- `/audit` 은 Wiki page 를 직접 수정하지 않는 read-only planning operation 이다.
+- MOC cluster 단위 consistency, high-confidence / stale unexplored / disputed page sampling 을 수행한다.
+- 결과가 substantial 하면 `30. Queries/YYYY-MM-DD-Q-vault-audit.md` 로 저장하고 `log.md` 에 기록한다.
+- Top 10 `/verify` queue 를 출력한다.
+
 ---
 
 ## Folder Structure
@@ -256,31 +317,34 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 ```
 CMDS_LLM_Wiki/
 ├── .obsidian/              # Obsidian 설정
-├── .claude/                # Claude Code commands/hooks (+ settings.json)
-├── .codex/                 # Codex command + hook harness (commands/ · hooks/ · hooks.json)
-├── .agents/skills/         # Codex reusable operation skills ({operation}/SKILL.md)
-├── CLAUDE.md               # Schema — Claude Code (이 파일)
-├── AGENTS.md               # Schema — Codex / 타 에이전트 (mirror)
+├── .codex/                 # Codex command + hook harness
+│   ├── commands/           # Codex operation entrypoints
+│   └── hooks/              # Raw Source validation + qmd reindex hooks
+├── .agents/skills/         # Codex reusable operation skills
+├── .claude/                # Claude Code commands/hooks mirror
+├── AGENTS.md               # Schema (이 파일)
 ├── index.md                # 마스터 인덱스
 ├── log.md                  # 변경 이력
 ├── 00. Inbox/              # 새 자료 임시 저장 (Web Clipper 대상)
 │   ├── 01. Articles/       # 웹 기사, 블로그
 │   ├── 02. Papers/         # 학술 논문, 기술 보고서
 │   ├── 03. Transcripts/    # 강연, 팟캐스트, 영상 전사
-│   └── 04. Clippings/      # 짧은 스니펫, 발췌
+│   ├── 04. Clippings/      # 짧은 스니펫, 발췌
+│   └── 05. AI Research/    # ChatGPT/Gemini/Grok/Claude/Perplexity 선행 조사 묶음
 ├── 10. Raw Sources/        # Layer 1: 불변 원본
 │   ├── 11. Articles/
 │   ├── 12. Papers/
 │   ├── 13. Books/
 │   ├── 14. Transcripts/
-│   └── 15. Clippings/
+│   ├── 15. Clippings/
+│   └── 16. AI Research/
 ├── 20. Wiki/               # Layer 2: LLM 관리 위키
 │   ├── 21. Concepts/
 │   ├── 22. Entities/
 │   ├── 23. Guides/
 │   └── 24. Maps/
 ├── 30. Queries/            # 합성된 질의 결과
-├── 70. Outputs/            # (옵션) 외부 도구 산출물 (Layer 4: tool outputs)
+├── 70. Outputs/            # 외부 도구 산출물 (Layer 4: tool outputs)
 │   ├── graphify/           # /graphify 결과 — YYYY-MM-DD-{topic}/ 단위
 │   ├── …/                  # 향후 다른 도구도 같은 패턴
 │   └── .tool-state/        # cross-run 캐시·manifest (gitignore 가능)
@@ -290,12 +354,12 @@ CMDS_LLM_Wiki/
     └── Templates/
 ```
 
-### `70. Outputs/` 규칙 (Tool Output Convention, 옵션)
+### `70. Outputs/` 규칙 (Tool Output Convention)
 
-외부 도구 (graphify, audio-transcriber 등) 가 생성하는 부산물은 Wiki 본체와 격리되어야 한다. Karpathy 패턴에서 Wiki 는 *컴파일 결과물* 이지만, 도구 산출물은 *분석 결과* — 둘은 라이프사이클이 다르다. 해당 도구를 쓰지 않으면 이 폴더 자체를 만들지 않아도 됨.
+외부 도구 (graphify, markdown-formatter 등) 가 생성하는 부산물은 Wiki 본체와 격리되어야 한다. Karpathy 패턴에서 Wiki 는 *컴파일 결과물* 이지만, 도구 산출물은 *분석 결과* — 둘은 라이프사이클이 다르다.
 
 **경로 패턴**: `70. Outputs/{tool-name}/{YYYY-MM-DD}-{topic-slug}/`
-- 예: `70. Outputs/graphify/2026-04-30-knowledge-graph/`
+- 예: `70. Outputs/graphify/2026-04-30-cmds-multivault/`
 - 예: `70. Outputs/audio-transcriber/2026-05-12-meeting-notes/`
 
 **규칙**:
@@ -305,6 +369,9 @@ CMDS_LLM_Wiki/
 - 결과물에서 발견한 인사이트는 `30. Queries/` 에 별도 노트로 정제 (output != insight)
 - Wiki 본체 (10/20/30/80) 에서 outputs 를 직접 wikilink 하지 않음 — 발견을 정제해 Wiki 페이지로 흡수하거나, Query 결과로 인용
 - Outputs 자체는 LLM 의 schema 규칙 (필수 7 프로퍼티, naming convention) 적용 면제 — 도구가 자기 형식으로 생성
+
+**현재 사용처**:
+- `/graphify` → 자동으로 `70. Outputs/graphify/{date}-{topic}/` 에 저장 (skill 이 ensure)
 
 ---
 
@@ -319,7 +386,7 @@ CMDS_LLM_Wiki/
 | `type` | text | 노트 유형: `raw-source`, `wiki-page`, `query-result`, `moc`, `log` |
 | `aliases` | list | 대체 이름 |
 | `description` | text | English, 1-2 sentences for LLMs |
-| `author` | list | 작성자 (LLM인 경우 `Claude`) |
+| `author` | list | 작성자 (LLM인 경우 `Codex`) |
 | `date created` | datetime | ISO 8601 |
 | `date modified` | datetime | ISO 8601 |
 | `tags` | list | 관련 태그 |
@@ -329,16 +396,16 @@ CMDS_LLM_Wiki/
 **Raw Source** (`type: raw-source`):
 - `source`: 원본 URL 또는 참조
 - `date ingested`: 인제스트 일시 (Book Ingest stub 의 경우 scaffold 날짜)
-- `category`: Articles / Papers / Books / Transcripts / Clippings
+- `category`: Articles / Papers / Books / Transcripts / Clippings / AI Research
 - `status`: **(v2 신설)** `ingested` (기본) / `stub` (Book Ingest 미독서) / `reading` (독서 중) / `completed` (독서 완료 + Wiki 컴파일 완료). 표준 ingest 는 `ingested` 만 사용.
 - `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — 미래의 나에게 보내는 편지. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — LG AX 임원교육 사례"`
-- `mainVaultRelated`: **(v2 신설)** ingest 시 메인 볼트에서 검색된 유사 노트 2~5개 — `→ CMDSPACE: {path}` 텍스트 참조 형태의 리스트
+- `mainVaultRelated`: **(v2 신설)** ingest 시 메인 볼트에서 검색된 유사 노트 2~5개 — `[노트명](obsidian://open?vault={your-mothership-vault-name}&file=URL_ENCODED_PATH)` 클릭 가능 링크
 - `mainVaultCmds`: **(v2 신설)** 관련 CMDS 카테고리 — `"[[📚 601 Knowledge Management]]"` quoted wikilink (메인 볼트 기준이므로 이 볼트에서는 resolve 안 되지만 메타데이터로 보존)
 
 **Book Ingest 전용 키** (Raw Source chapter stub, `status: stub`):
 - `bookIndex`: **(v3 신설)** 소속 책의 Book Index — `"[[YYYY-MM-DD-{authorSlug}-{bookSlug}-book-index]]"` quoted wikilink
 - `chapterNumber`: **(v3 신설)** 챕터 번호 (정수, TOC 기준)
-- `chapterPart`: **(v3 신설)** 챕터가 속한 편/파트 이름 — 원문 언어 보존 (예: `"Part I"`, `"第一篇"`)
+- `chapterPart`: **(v3 신설)** 챕터가 속한 편/파트 이름 — 원문 언어 보존 (예: `"第一篇: 架构"`, `"Part II: Context Management"`)
 - `chapterPrev`, `chapterNext`: **(v3 신설)** 이전·다음 챕터 wikilink, null 가능
 
 **Wiki Page** (`type: wiki-page`):
@@ -346,7 +413,7 @@ CMDS_LLM_Wiki/
 - `related`: 관련 Wiki 페이지 링크
 - `confidence`: high / medium / low (정보 신뢰도)
 - `layer`: concepts / entities / guides
-- `mainVaultRelated`: **(v2 신설)** 메인 볼트의 관련 에세이·MOC — `→ CMDSPACE: {path}` 리스트
+- `mainVaultRelated`: **(v2 신설)** 메인 볼트의 관련 에세이·MOC — `[노트명](obsidian://open?vault=...)` 클릭 가능 링크
 - `mainVaultCmds`: **(v2 신설)** 연결될 CMDS 카테고리
 - `explored`: **(v4 신설)** Exploration Gate 상태. 새 Wiki 페이지 기본값은 `false`. 사용자가 직접 읽었거나 에이전트가 별도 검증 루프를 수행한 뒤에만 `true`.
 - `exploredBy`: **(v4 선택)** `explored: true` 로 바꾼 사람 또는 에이전트 이름
@@ -361,18 +428,18 @@ CMDS_LLM_Wiki/
 - `topic`: 주제 영역
 - `related`: 하위 MOC 또는 관련 MOC
 
-### 새 YAML 키는 camelCase
+### 새 YAML 키는 camelCase (`@CMDS-Guide` 준수)
 
 - ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`
-- ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number`, `explored_by` — camelCase 네이밍 컨벤션 위반
+- ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number`, `explored_by` — 메인 볼트의 camelCase 네이밍 컨벤션 위반
 
 ### Quality Control Properties (v4)
 
-새 Wiki 페이지와 대형 업데이트는 다음 규칙을 따른다:
+`2026-05-04` self-audit 에서 확인된 가장 큰 품질 갭은 Exploration Gate 0% 와 bias check 부재다. 따라서 새 Wiki 페이지와 대형 업데이트는 다음 규칙을 따른다:
 
 - 새 `type: wiki-page` 는 반드시 `explored: false` 를 갖는다.
 - `explored: true` 는 사람이 읽었거나, 별도 검증 루프에서 source-backed review 를 끝낸 뒤에만 사용한다.
-- `confidence: high` 로 올리는 페이지는 반대해석 또는 데이터 공백을 최소 1 줄 기록한다 (Bias Check 콜아웃).
+- `confidence: high` 로 올리는 페이지는 반대해석 또는 데이터 공백을 최소 1 줄 기록한다.
 - `/lint` 는 `explored` 누락, `explored: false` backlog, high-confidence 페이지의 bias check 누락을 보고한다.
 
 ---
@@ -393,33 +460,33 @@ CMDS_LLM_Wiki/
 | Layer | Pattern | Example |
 |-------|---------|---------|
 | Raw Source | `YYYY-MM-DD-{title}.md` | `2026-04-10-Attention-Is-All-You-Need.md` |
-| Raw Source — Book Index | `YYYY-MM-DD-{authorSlug}-{bookSlug}-book-index.md` | `2026-04-20-author-slug-book-slug-book-index.md` |
-| Raw Source — Book Chapter Stub | `YYYY-MM-DD-{authorSlug}-{bookSlug}-ch{NN}-{slug}.md` | `2026-04-20-author-slug-book-slug-ch03-agent-loop.md` |
+| Raw Source — Book Index | `YYYY-MM-DD-{authorSlug}-{bookSlug}-book-index.md` | `2026-04-20-zhanghandong-harness-engineering-book-index.md` |
+| Raw Source — Book Chapter Stub | `YYYY-MM-DD-{authorSlug}-{bookSlug}-ch{NN}-{slug}.md` | `2026-04-20-zhanghandong-harness-engineering-ch03-agent-loop.md` |
 | Wiki Page | `{Topic Name}.md` | `Transformer.md`, `Andrej Karpathy.md` |
-| **Wiki Page — CJK Person Entity** | **네이티브 스크립트만 (한글·한자·일본어)** · 영문 이름은 aliases | `홍길동.md` (alias: `Gildong Hong`), `张汉东.md` (alias: `Zhang Handong`) |
+| **Wiki Page — CJK Person Entity** | **네이티브 스크립트만 (한글·한자)** · 영문 이름은 aliases | `{your-name}.md` (alias: `Yohan Koo`), `안창현.md` (alias: `Changhyun Ahn`), `张汉东.md` (alias: `Zhang Handong`) |
 | Wiki Page — Latin Person / Handle | 원어 표기 그대로 | `Andrej Karpathy.md`, `kepano (Steph Ango).md` (핸들 + 실명) |
 | Query Result | `YYYY-MM-DD-Q-{question}.md` | `2026-04-10-Q-How-does-RLHF-work.md` |
 | MOC | `MOC-{Topic}.md` | `MOC-Large Language Models.md` |
 | Log | `log.md` (단일 파일) | — |
 
-### CJK Person Naming Rule
+### CJK Person Naming Rule (2026-04-23 추가)
 
 한국어·중국어·일본어 이름의 인물 entity 는 **네이티브 스크립트로만** 파일명을 짓고, 영문 로마자 표기는 `aliases` 프로퍼티에 둔다:
 
 ```yaml
-# 20. Wiki/22. Entities/홍길동.md
+# 20. Wiki/22. Entities/{your-name}.md
 ---
 type: wiki-page
 aliases:
-  - Gildong Hong
-  - 홍길동
-  - johndoe   # 핸들도 alias
+  - Yohan Koo
+  - {your-name}
+  - johnfkoo951   # 핸들도 alias
 ---
 ```
 
-**이유**: (1) 파일명 중복 (`홍길동 (Gildong Hong)`) 은 wikilink 작성 시 인지 부담 증가, (2) 영문 표기는 transliteration 일 뿐 고유 이름이 아니므로 aliases 위치가 맞다, (3) Obsidian graph/검색은 aliases 를 인식하므로 접근성에 손실 없음.
+**이유**: (1) 파일명 중복 (`{your-name} (Yohan Koo)`) 은 wikilink 작성 시 인지 부담 증가, (2) 영문 표기는 transliteration 일 뿐 고유 이름이 아니므로 aliases 위치가 맞다, (3) Obsidian graph/검색은 aliases 를 인식하므로 접근성에 손실 없음.
 
-**적용 대상**: 한국인·중국인·일본인 등 CJK 이름을 가진 person entity. **제외**: 영문 핸들 + 실명 조합 (`kepano (Steph Ango)`), 책·제품 등 non-person entity.
+**적용 대상**: 한국인·중국인·일본인 등 CJK 이름을 가진 person entity. **제외**: 영문 핸들 + 실명 조합 (`kepano (Steph Ango)`, `glowingjade (Andy Suh)`), 책·제품 등 non-person entity.
 
 ---
 
@@ -454,14 +521,14 @@ aliases:
 
 ## Cross-Vault Reference
 
-(옵션) 이 볼트를 별도 mothership PKM 볼트의 **satellite** 로 운영할 수 있다. 그럴 경우 양방향 참조 규약:
+이 볼트는 **{your-mothership-vault-name}의 satellite**입니다. 양방향 참조 규약을 명시합니다.
 
-### Vault Registry (채워서 사용)
+### Vault Registry
 
 | 역할 | 볼트 | 경로 |
 |------|------|------|
 | Mothership | `{your-mothership-vault-name}` | `{PATH_TO_YOUR_MOTHERSHIP_VAULT}` |
-| Satellite (this) | `{your-llm-wiki}` | `{PATH_TO_YOUR_LLM_WIKI}` |
+| Satellite (this) | `CMDS_LLM_Wiki` | `{PATH_TO_YOUR_LLM_WIKI}` |
 
 ### 메인 볼트 참조하기 (위성 → 모선)
 
@@ -476,8 +543,8 @@ source-vault: {your-mothership-vault-name}
 **Markdown body**:
 
 ```markdown
-→ CMDSPACE: 00. Inbox/03. AI Agent/03-1. Claude Code (MBP)/2026-04-06-llm-wiki-karpathy.md
-→ CMDSPACE: 30. Permanent Notes/33. Essay/📜 Schema는 Harness다...
+[2026-04-06-llm-wiki-karpathy](obsidian://open?vault={your-mothership-vault-name}&file=00.%20Inbox%2F03.%20AI%20Agent%2F03-1.%20Claude%20Code%20%28MBP%29%2F2026-04-06-llm-wiki-karpathy)
+[📜 Schema는 Harness다 - Karpathy LLM Wiki와 CMDS의 구조적 동치에 관한 보고서](obsidian://open?vault={your-mothership-vault-name}&file=30.%20Permanent%20Notes/33.%20Essay/%F0%9F%93%9C%20Schema%EB%8A%94%20Harness%EB%8B%A4%20-%20Karpathy%20LLM%20Wiki%EC%99%80%20CMDS%EC%9D%98%20%EA%B5%AC%EC%A1%B0%EC%A0%81%20%EB%8F%99%EC%B9%98%EC%97%90%20%EA%B4%80%ED%95%9C%20%EB%B3%B4%EA%B3%A0%EC%84%9C)
 ```
 
 ### 메인 볼트에서 이 볼트 참조하기 (모선 → 위성)
