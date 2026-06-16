@@ -4,6 +4,16 @@
 
 ---
 
+## v1.6.1 — 2026-06-16 (3-Layer 개념층 vs 물리 폴더 정합 노트)
+
+**Source**: 운영 볼트의 지식 레이어 재검증 과정에서, 템플릿이 `30. Queries/` 물리 폴더를 제공하면서도 3-Layer(Raw/Wiki/Schema) 개념과의 관계를 설명하지 않아 신규 사용자가 "30. Queries 는 4번째 레이어인가?" 혼동하던 지점 발견.
+
+### Changed
+
+- `3-Layer Architecture`: "이 볼트에서의 구현" 표 아래에 callout 추가 — `30. Queries/` 는 *4번째 구조 레이어가 아니라* Ingest-Query-Lint 의 Query 단계 산출 위치임을 명시 (구조 축 Raw/Wiki/Schema vs 운영 축 Ingest/Query/Lint 구분). 유저별 콘텐츠가 아닌 일반 개념 정합이라 템플릿에 반영.
+
+---
+
 ## v1.6.0 — 2026-06-08 (Codex 호환 — dual-harness)
 
 **Source**: 운영 볼트가 Claude Code + Codex 양 harness 로 정합화(같은 operation 이름을 `.claude/` · `.codex/` · `.agents/skills/` 에 1:1 유지)된 것을 공개 킷에도 반영. 이전 킷은 Claude 전용이었음.
