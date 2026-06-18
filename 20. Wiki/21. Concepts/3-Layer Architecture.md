@@ -102,6 +102,9 @@ Wiki ◀──── compile ──── Raw Sources
 | Wiki | `20. Wiki/` | 4개 하위 폴더 (21.Concepts, 22.Entities, 23.Guides, 24.Maps) |
 | Schema | `CLAUDE.md` | Frontmatter 규격, 네이밍 컨벤션, Operations 정의 |
 
+> [!note] 개념적 3층 vs 물리적 폴더
+> 이 볼트에는 `30. Queries/` 물리 폴더도 있다 (Query 산출물 위치). 하지만 이는 *4번째 구조 레이어가 아니라* [[Ingest-Query-Lint Cycle]] 의 *Query 단계 산출물*이다. **구조 축**은 Raw/Wiki/Schema 3층이 정본이고, `30. Queries` 는 그 위에서 작동하는 **운영 축**의 결과물.
+
 ---
 
 ## Related

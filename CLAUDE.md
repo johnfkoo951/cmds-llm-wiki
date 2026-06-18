@@ -7,13 +7,13 @@ description: Schema and harness document for the CMDS LLM Wiki vault. Defines th
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-06-08
+date modified: 2026-06-18
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.6.0"
+version: "1.6.1"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -155,6 +155,9 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 ### Layer 3: Schema (이 파일)
 
 **규칙층** — LLM의 행동을 제어하는 harness 문서.
+
+> [!note] `30. Queries/` 는 4번째 레이어가 아니다
+> 3-Layer 는 **구조 축** (Raw Sources → Wiki → Schema) 이고, Ingest → Query → Lint 는 **운영 축** 이다. `30. Queries/` 는 새로운 구조 레이어가 아니라 **Query 단계의 산출물이 떨어지는 위치**다 — 컴파일된 Wiki 에서 합성한 답변을 보관하는 운영 결과물. 마찬가지로 `70. Outputs/` 도 도구 산출물 보관소일 뿐 레이어가 아니다. 구조(무엇을 보관하는가) 와 운영(어떤 동작의 결과인가) 을 혼동하지 말 것.
 
 ---
 
