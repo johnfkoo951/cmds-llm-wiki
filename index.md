@@ -30,12 +30,12 @@ status: active
 | Metric | Count |
 |--------|-------|
 | Raw Sources | 2 (예시) |
-| Wiki Pages | 8 (예시) |
-| Concepts | 4 |
+| Wiki Pages | 16 (예시) |
+| Concepts | 9 |
 | Entities | 3 |
-| Guides | 1 |
+| Guides | 2 |
 | MOCs | 2 |
-| Queries | 1 (예시) |
+| Queries | 0 |
 
 > *Stats 는 `/ingest` 실행 시 자동 갱신됩니다. 본인 컨텐츠를 채워나가면서 업데이트.*
 

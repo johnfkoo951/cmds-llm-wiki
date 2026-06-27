@@ -48,22 +48,20 @@ For each file, capture:
 - `changelog:` first entry — what changed?
 - Sections that affect Core Context §5 table (precedence, audience, focus, memory-type)
 
-### Step 3: Re-Read Key Essays
+### Step 3: (옵션) Re-Read Personal Essays
+
+사용자가 Core Context 의 `source:` 프로퍼티에 등록한 에세이들을 다시 읽는다. 경로는 사용자 환경마다 다르므로 `{PATH_TO_YOUR_ESSAYS}` placeholder 로 등록해두고 사용.
 
 ```
-# Codex: Read(...)
-# Antigravity: view_file(...)
-Read("{PATH_TO_YOUR_MOTHERSHIP_VAULT}/30. Permanent Notes/LLM Wiki보다 먼저 필요한 것은 스키마다.md")
-Read("{PATH_TO_YOUR_MOTHERSHIP_VAULT}/30. Permanent Notes/OpenAI가 말한 Harness와 내가 보는 지식 시스템의 미래.md")
-Read("{PATH_TO_YOUR_MOTHERSHIP_VAULT}/30. Permanent Notes/AI-Ready 볼트는 암묵지를 공유 가능한 자산으로 바꾸는 구조다.md")
-Read("{PATH_TO_YOUR_MOTHERSHIP_VAULT}/30. Permanent Notes/좋은 지식 시스템은 행동 의도를 설계한다.md")
-Read("{PATH_TO_YOUR_MOTHERSHIP_VAULT}/30. Permanent Notes/나는 원래 사람과 학습을 분석하던 사람이다.md")
+# Codex: Read(...)  /  Antigravity: view_file(...)
+# Core Context frontmatter 의 source 리스트에 있는 각 경로에 대해
+Read("<essay path>")
 ```
 
 Also scan for **new** essays (last 60 days) that may signal philosophy shift:
 
 ```bash
-find "{PATH_TO_YOUR_MOTHERSHIP_VAULT}/30. Permanent Notes" -name "*.md" -mtime -60 | head -10
+find "{PATH_TO_YOUR_ESSAYS}" -name "*.md" -mtime -60 | head -10
 ```
 
 ### Step 4: Diff & Propose

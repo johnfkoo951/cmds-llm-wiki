@@ -1,10 +1,10 @@
 # cmds-llm-wiki
 
-> **LLM Wiki 볼트 템플릿** — Karpathy LLM Wiki pattern + 미래의 나에게 보내는 편지 + Claude Code 통합 harness.
+> **LLM Wiki 볼트 템플릿** — Karpathy LLM Wiki pattern + 미래의 나에게 보내는 편지 + Claude Code · Codex 듀얼 harness.
 >
-> Obsidian 볼트이자 Claude Code 프로젝트. 외부 소스 (기사·논문·전사) 를 LLM 이 컴파일하여 복리로 성장하는 persistent wiki 로 축적합니다.
+> Obsidian 볼트이자 Claude Code / Codex 프로젝트. 외부 소스 (기사·논문·전사) 를 LLM 이 컴파일하여 복리로 성장하는 persistent wiki 로 축적합니다.
 
-**🌐 Live Showcase**: **[llm-wiki.cmdspace.work](https://llm-wiki.cmdspace.work)** — 10 섹션 상세 페이지 (아키텍처 · 7 commands · 미래의 나에게 보내는 편지 · Quick Start)
+**🌐 Live Showcase**: **[llm-wiki.cmdspace.work](https://llm-wiki.cmdspace.work)** — 10 섹션 상세 페이지 (아키텍처 · 11 commands · 미래의 나에게 보내는 편지 · Quick Start)
 
 **제작**: Yohan Koo ([@YohanKoo](https://x.com/YohanKoo)) · CMDSPACE 에서 운영 중인 satellite 볼트를 템플릿화
 
@@ -17,9 +17,10 @@
   - Ingest · Query · Lint 3 operations
   - `index.md` + `log.md` 두 개 핵심 파일
 - **미래의 나에게 보내는 편지** — `/ingest` 시 "왜 수집?" 목적 질문을 강제하여 파편 축적 방지
-- **Claude Code 통합 harness**
-  - 7 slash commands (`/ingest`, `/query`, `/lint`, `/inbox`, `/status`, `/reindex`, `/refresh-context`)
+- **Claude Code + Codex 듀얼 harness**
+  - 11 slash commands (`/ingest`, `/query`, `/lint`, `/inbox`, `/status`, `/reindex`, `/refresh-context`, `/onboard`, `/capture-tabs`, `/verify`, `/audit`)
   - 2 PostToolUse hooks (raw source verbatim 검증 + qmd auto-reindex)
+  - **Codex 미러**: `.codex/commands/` (10) + `.agents/skills/` (10) + `AGENTS.md` — 같은 operation 을 Codex·Cursor·Windsurf 등에서도 동일하게 실행
   - 18 Obsidian Web Clipper JSON 템플릿 (Article / YouTube / Substack / X / arXiv / Stibee 등)
   - 73개 Obsidian hotkey 바인딩 (`.obsidian/hotkeys.json`) — heading shortcuts, wikilink/callout 삽입, 사이드바 토글 등
 - **선택적 mothership 볼트 연계** — 별도 PKM 볼트가 있다면 satellite 로 운영 가능
@@ -123,7 +124,8 @@ claude
 
 ```
 cmds-llm-wiki/
-├── CLAUDE.md                    # Schema — LLM 행동 규칙
+├── CLAUDE.md                    # Schema (Claude Code) — LLM 행동 규칙
+├── AGENTS.md                    # Schema (Codex/Cursor/Windsurf) — CLAUDE.md 미러
 ├── Core Context.md              # 사용자 맥락 (채워서 사용)
 ├── index.md                     # 마스터 인덱스
 ├── log.md                       # 변경 이력 (append-only)
@@ -131,12 +133,18 @@ cmds-llm-wiki/
 ├── CHANGELOG.md                 # 템플릿 버전 이력
 ├── LLM-Wiki-Starter-Kit.md      # 간이 공유용 킷
 ├── .claude/
-│   ├── commands/                # 7 slash commands
+│   ├── commands/                # 11 slash commands
 │   ├── hooks/                   # 2 PostToolUse hooks
 │   └── settings.json
+├── .codex/                      # Codex harness (Claude 미러)
+│   ├── commands/                # 10 commands (onboard 제외)
+│   ├── hooks/                   # 2 hooks
+│   └── hooks.json
+├── .agents/
+│   └── skills/                  # 10 Codex reusable operation skills
 ├── .obsidian/
 │   └── hotkeys.json             # 73개 Obsidian hotkey 바인딩 (선택 — 마음에 안 들면 삭제)
-├── 00. Inbox/                   # Web Clipper 수신 (01~04 서브폴더)
+├── 00. Inbox/                   # Web Clipper 수신 (02~05 서브폴더)
 ├── 10. Raw Sources/             # 불변 원본 (11~15 서브폴더)
 │   └── 11. Articles/            # Karpathy 예시 2개 포함
 ├── 20. Wiki/                    # LLM 관리 위키
@@ -173,7 +181,7 @@ cmds-llm-wiki/
 
 - `10. Raw Sources/11. Articles/2026-04-12-Karpathy-LLM-Wiki.md`
 - `10. Raw Sources/11. Articles/2026-04-02-Karpathy-LLM-Knowledge-Bases-X-Thread.md`
-- `20. Wiki/` — 개념·엔티티·MOC 10개
+- `20. Wiki/` — 개념·엔티티·MOC 약 16개 (정확한 수는 `/lint` 가 재집계)
 
 예시 wiki 페이지 일부에는 **orphan wikilinks** (존재하지 않는 페이지로의 링크) 가 포함되어 있습니다. 이는 의도된 것으로, `/ingest` 를 반복하면서 자연스럽게 채워지는 wiki 의 성장 방식을 보여줍니다.
 

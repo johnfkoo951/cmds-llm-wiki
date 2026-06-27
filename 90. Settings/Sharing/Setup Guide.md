@@ -2,9 +2,9 @@
 
 | 항목 | 내용 |
 |------|------|
-| 대상 | `cmds-llm-wiki` v1.5.0+ |
-| 작성 | 2026-05-04 |
-| 전제 | macOS · Obsidian 1.5+ · Claude Code · Git |
+| 대상 | `cmds-llm-wiki` v1.6.2+ |
+| 작성 | 2026-06-27 |
+| 전제 | macOS · Obsidian 1.5+ · Claude Code (또는 Codex) · Git |
 
 ---
 
@@ -16,7 +16,7 @@ Karpathy LLM Wiki 패턴을 그대로 실행 가능한 형태로 옮긴 **Obsidi
 
 **1. Obsidian 볼트 골격** — `00. Inbox`, `10. Raw Sources`, `20. Wiki`, `30. Queries`, `80. References`, `90. Settings` 6 폴더 + `index.md` / `log.md`.
 
-**2. Claude Code harness** — `.claude/commands/` 의 7 슬래시 명령어 (`/ingest`, `/query`, `/lint`, `/inbox`, `/status`, `/reindex`, `/refresh-context`) + `.claude/hooks/` 의 PostToolUse 훅 2개 (raw source verbatim 검증 + qmd 자동 재인덱스) + `.claude/settings.json`.
+**2. Claude Code + Codex 듀얼 harness** — `.claude/commands/` 의 11 슬래시 명령어 (`/ingest`, `/query`, `/lint`, `/inbox`, `/status`, `/reindex`, `/refresh-context`, `/onboard`, `/capture-tabs`, `/verify`, `/audit`) + `.claude/hooks/` 의 PostToolUse 훅 2개 (raw source verbatim 검증 + qmd 자동 재인덱스) + `.claude/settings.json`. Codex 사용자는 `.codex/commands/` (10, onboard 제외) + `.agents/skills/` (10) + `AGENTS.md` 미러를 그대로 사용.
 
 **3. 사용자 맥락 템플릿** — `CLAUDE.md` (스키마), `Core Context.md` (사용자 정체성·재활용 축·철학 placeholder 노트), `90. Settings/Templates/` (raw source · wiki page 템플릿), `90. Settings/Sharing/clipper-*.json` 18 개 (Obsidian Web Clipper 사이트별 템플릿).
 
@@ -84,7 +84,7 @@ Obsidian → `Open folder as vault` → `~/DEV/my-llm-wiki/` 선택.
 
 ### Step 4 — Placeholder 일괄 치환
 
-다음 placeholder 가 12 개 파일에 흩어져 있다. 한 번에 치환한다.
+다음 placeholder 가 여러 파일에 흩어져 있다 (`.codex/` · `.agents/` 추가로 약 22 개 파일). 아래 sed glob 이 `*.md`/`*.json`/`*.yml`/`*.sh` 를 모두 훑으므로 정확한 파일 수는 신경 쓸 필요 없다. 한 번에 치환한다.
 
 | Placeholder | 치환할 값 (예) | 비고 |
 |---|---|---|
@@ -245,7 +245,7 @@ claude
 - [ ] `Core Context.md` §1 정체성 작성
 - [ ] `Core Context.md` §2 재활용 축 5~9 개 정의
 - [ ] `Core Context.md` frontmatter `status: active` + `snapshot_date` 오늘 날짜
-- [ ] `index.md` 의 카운트 (현재 예시 wiki 10 개) 가 본인 볼트 실제 카운트로 업데이트되도록 첫 `/lint` 실행
+- [ ] `index.md` 의 카운트 (현재 예시 wiki 약 16 개) 가 본인 볼트 실제 카운트로 업데이트되도록 첫 `/lint` 실행
 - [ ] `.claude/hooks/*.sh` 실행권한 확인 (`chmod +x .claude/hooks/*.sh`)
 
 ### 권장 항목
@@ -263,7 +263,7 @@ claude
 
 ### 정리 항목
 
-- [ ] 예시 콘텐츠 처리 결정 — Karpathy 예시 raw source 2 개 + wiki 10 개를 (a) 그대로 둘지 (b) 삭제하고 빈 상태로 시작할지. 패턴 학습 목적이면 (a), 처음부터 본인 자료만 원하면 (b).
+- [ ] 예시 콘텐츠 처리 결정 — Karpathy 예시 raw source 2 개 + wiki 약 16 개를 (a) 그대로 둘지 (b) 삭제하고 빈 상태로 시작할지. 패턴 학습 목적이면 (a), 처음부터 본인 자료만 원하면 (b).
 - [ ] (b) 선택 시: `rm "10. Raw Sources/11. Articles/2026-04-"*.md` 와 `20. Wiki/{21-24}/*.md` 삭제 후 `index.md` 재생성 (`/lint`)
 
 ---
@@ -325,4 +325,4 @@ cat .claude/settings.json  # PostToolUse 블록 확인
 - 원본 Karpathy LLM Wiki Gist: `https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f`
 - 템플릿 레포: `https://github.com/johnfkoo951/cmds-llm-wiki`
 - 자매 레포 (모선 패턴): `https://github.com/johnfkoo951/cmds-system-files`
-- 라이브 쇼케이스: `https://cmds-llm-wiki.vercel.app`
+- 라이브 쇼케이스: `https://llm-wiki.cmdspace.work`

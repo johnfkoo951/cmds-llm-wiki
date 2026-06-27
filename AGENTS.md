@@ -7,7 +7,7 @@ description: Schema and harness document for the CMDS LLM Wiki vault. Defines th
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-06-06
+date modified: 2026-06-27
 tags:
   - system
   - schema
@@ -183,12 +183,14 @@ Codex 에서 가능한 작업은 아래 10개 operation 으로 표준화한다. 
 | Inbox | `.codex/commands/inbox.md` | `.agents/skills/inbox/SKILL.md` | `.claude/commands/inbox.md` | Active | pending source preview + ingest routing |
 | Ingest | `.codex/commands/ingest.md` | `.agents/skills/ingest/SKILL.md` | `.claude/commands/ingest.md` | Active | purpose gate + Raw Source + Wiki compile |
 | Query | `.codex/commands/query.md` | `.agents/skills/query/SKILL.md` | `.claude/commands/query.md` | Active | compiled Wiki synthesis + Query Result |
-| Lint | `.codex/commands/lint.md` | `.agents/skills/lint/SKILL.md` | `.claude/commands/lint.md` | Active | health check + v2/v4/v5 coverage |
+| Lint | `.codex/commands/lint.md` | `.agents/skills/lint/SKILL.md` | `.claude/commands/lint.md` | Active | health check + frontmatter coverage |
 | Status | `.codex/commands/status.md` | `.agents/skills/status/SKILL.md` | `.claude/commands/status.md` | Active | counts + coverage snapshot |
 | Reindex | `.codex/commands/reindex.md` | `.agents/skills/reindex/SKILL.md` | `.claude/commands/reindex.md` | Active | qmd update/embed/status |
-| Refresh Context | `.codex/commands/refresh-context.md` | `.agents/skills/refresh-context/SKILL.md` | `.claude/commands/refresh-context.md` | Active | Core Context from 9 mothership files |
-| Verify | `.codex/commands/verify.md` | `.agents/skills/verify/SKILL.md` | `.claude/commands/verify.md` | Active | single-page v5 verification |
+| Refresh Context | `.codex/commands/refresh-context.md` | `.agents/skills/refresh-context/SKILL.md` | `.claude/commands/refresh-context.md` | Active | Core Context from mothership system files |
+| Verify | `.codex/commands/verify.md` | `.agents/skills/verify/SKILL.md` | `.claude/commands/verify.md` | Active | single-page verification |
 | Audit | `.codex/commands/audit.md` | `.agents/skills/audit/SKILL.md` | `.claude/commands/audit.md` | Active | vault/MOC audit + `/verify` queue |
+
+> `/onboard` 는 Claude 전용 first-run 셋업 인터뷰로 Codex mirror 가 없다 (Claude commands 11 = 위 10 + onboard). Codex 사용자는 `90. Settings/Sharing/Setup Guide.md` 의 sed 경로를 따른다.
 
 ### Codex Tool Compatibility Rules
 
@@ -398,7 +400,7 @@ CMDS_LLM_Wiki/
 - `date ingested`: 인제스트 일시 (Book Ingest stub 의 경우 scaffold 날짜)
 - `category`: Articles / Papers / Books / Transcripts / Clippings / AI Research
 - `status`: **(v2 신설)** `ingested` (기본) / `stub` (Book Ingest 미독서) / `reading` (독서 중) / `completed` (독서 완료 + Wiki 컴파일 완료). 표준 ingest 는 `ingested` 만 사용.
-- `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — 미래의 나에게 보내는 편지. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — LG AX 임원교육 사례"`
+- `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — 미래의 나에게 보내는 편지. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — 기업 임원교육 사례"`
 - `mainVaultRelated`: **(v2 신설)** ingest 시 메인 볼트에서 검색된 유사 노트 2~5개 — `[노트명](obsidian://open?vault={your-mothership-vault-name}&file=URL_ENCODED_PATH)` 클릭 가능 링크
 - `mainVaultCmds`: **(v2 신설)** 관련 CMDS 카테고리 — `"[[📚 601 Knowledge Management]]"` quoted wikilink (메인 볼트 기준이므로 이 볼트에서는 resolve 안 되지만 메타데이터로 보존)
 
@@ -460,33 +462,33 @@ CMDS_LLM_Wiki/
 | Layer | Pattern | Example |
 |-------|---------|---------|
 | Raw Source | `YYYY-MM-DD-{title}.md` | `2026-04-10-Attention-Is-All-You-Need.md` |
-| Raw Source — Book Index | `YYYY-MM-DD-{authorSlug}-{bookSlug}-book-index.md` | `2026-04-20-zhanghandong-harness-engineering-book-index.md` |
-| Raw Source — Book Chapter Stub | `YYYY-MM-DD-{authorSlug}-{bookSlug}-ch{NN}-{slug}.md` | `2026-04-20-zhanghandong-harness-engineering-ch03-agent-loop.md` |
+| Raw Source — Book Index | `YYYY-MM-DD-{authorSlug}-{bookSlug}-book-index.md` | `2026-04-20-author-slug-book-slug-book-index.md` |
+| Raw Source — Book Chapter Stub | `YYYY-MM-DD-{authorSlug}-{bookSlug}-ch{NN}-{slug}.md` | `2026-04-20-author-slug-book-slug-ch03-agent-loop.md` |
 | Wiki Page | `{Topic Name}.md` | `Transformer.md`, `Andrej Karpathy.md` |
-| **Wiki Page — CJK Person Entity** | **네이티브 스크립트만 (한글·한자)** · 영문 이름은 aliases | `{your-name}.md` (alias: `Yohan Koo`), `안창현.md` (alias: `Changhyun Ahn`), `张汉东.md` (alias: `Zhang Handong`) |
+| **Wiki Page — CJK Person Entity** | **네이티브 스크립트만 (한글·한자·일본어)** · 영문 이름은 aliases | `홍길동.md` (alias: `Gildong Hong`), `张汉东.md` (alias: `Zhang Handong`) |
 | Wiki Page — Latin Person / Handle | 원어 표기 그대로 | `Andrej Karpathy.md`, `kepano (Steph Ango).md` (핸들 + 실명) |
 | Query Result | `YYYY-MM-DD-Q-{question}.md` | `2026-04-10-Q-How-does-RLHF-work.md` |
 | MOC | `MOC-{Topic}.md` | `MOC-Large Language Models.md` |
 | Log | `log.md` (단일 파일) | — |
 
-### CJK Person Naming Rule (2026-04-23 추가)
+### CJK Person Naming Rule
 
 한국어·중국어·일본어 이름의 인물 entity 는 **네이티브 스크립트로만** 파일명을 짓고, 영문 로마자 표기는 `aliases` 프로퍼티에 둔다:
 
 ```yaml
-# 20. Wiki/22. Entities/{your-name}.md
+# 20. Wiki/22. Entities/홍길동.md
 ---
 type: wiki-page
 aliases:
-  - Yohan Koo
-  - {your-name}
-  - johnfkoo951   # 핸들도 alias
+  - Gildong Hong
+  - 홍길동
+  - johndoe   # 핸들도 alias
 ---
 ```
 
-**이유**: (1) 파일명 중복 (`{your-name} (Yohan Koo)`) 은 wikilink 작성 시 인지 부담 증가, (2) 영문 표기는 transliteration 일 뿐 고유 이름이 아니므로 aliases 위치가 맞다, (3) Obsidian graph/검색은 aliases 를 인식하므로 접근성에 손실 없음.
+**이유**: (1) 파일명 중복 (`홍길동 (Gildong Hong)`) 은 wikilink 작성 시 인지 부담 증가, (2) 영문 표기는 transliteration 일 뿐 고유 이름이 아니므로 aliases 위치가 맞다, (3) Obsidian graph/검색은 aliases 를 인식하므로 접근성에 손실 없음.
 
-**적용 대상**: 한국인·중국인·일본인 등 CJK 이름을 가진 person entity. **제외**: 영문 핸들 + 실명 조합 (`kepano (Steph Ango)`, `glowingjade (Andy Suh)`), 책·제품 등 non-person entity.
+**적용 대상**: 한국인·중국인·일본인 등 CJK 이름을 가진 person entity. **제외**: 영문 핸들 + 실명 조합 (`kepano (Steph Ango)`), 책·제품 등 non-person entity.
 
 ---
 

@@ -72,7 +72,7 @@ LLM이 자동으로:
 | **Query** | "~에 대해 설명해줘" | wiki에서 합성 답변 |
 | **Lint** | "wiki health check 해줘" | orphan, 모순, 누락 검사 |
 
-자료를 추가할수록 wiki가 성장합니다.
+핵심 3개 외에 `/inbox` · `/status` · `/reindex` · `/refresh-context` · `/onboard` · `/capture-tabs` · `/verify` · `/audit` 까지 총 11개 명령이 있다 (전체 목록·설명은 `README.md` / `CLAUDE.md`). 자료를 추가할수록 wiki가 성장합니다.
 
 ---
 
@@ -141,7 +141,7 @@ My-LLM-Wiki/
 ## FAQ
 
 **Q: 어떤 LLM 에이전트를 써야 하나요?**
-Claude Code 권장 (CLAUDE.md 네이티브 지원). Cursor, Windsurf 등도 가능. Codex는 `AGENTS.md`로 이름만 변경.
+Claude Code 권장 (CLAUDE.md 네이티브 지원). **Codex 도 1급 지원** — `.codex/commands/` (10) + `.agents/skills/` (10) + `AGENTS.md` 미러가 함께 포함되어 같은 operation 을 그대로 실행. Cursor, Windsurf 등은 `AGENTS.md` 를 schema 로 참조. 현재 command set 은 `CLAUDE.md` / `README.md` 참조.
 
 **Q: 어떤 주제에 쓸 수 있나요?**
 아무 주제나 — AI 연구, 독서 노트, 경쟁 분석, 수업 정리, 취미 deep-dive 등.

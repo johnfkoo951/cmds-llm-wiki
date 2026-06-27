@@ -7,13 +7,13 @@ description: Schema and harness document for the CMDS LLM Wiki vault. Defines th
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-06-18
+date modified: 2026-06-27
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.6.1"
+version: "1.6.2"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -123,7 +123,8 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 ├── 12. Papers/       # 학술 논문, 기술 보고서
 ├── 13. Books/        # 도서 노트, 챕터 요약
 ├── 14. Transcripts/  # 강연, 팟캐스트, 영상 전사
-└── 15. Clippings/    # 웹 클리핑, 스크랩
+├── 15. Clippings/    # 웹 클리핑, 스크랩
+└── 16. AI Research/  # ChatGPT/Gemini/Grok/Claude/Perplexity 선행 조사 묶음
 ```
 
 **규칙**:
@@ -270,13 +271,15 @@ CMDS_LLM_Wiki/
 │   ├── 01. Articles/       # 웹 기사, 블로그
 │   ├── 02. Papers/         # 학술 논문, 기술 보고서
 │   ├── 03. Transcripts/    # 강연, 팟캐스트, 영상 전사
-│   └── 04. Clippings/      # 짧은 스니펫, 발췌
+│   ├── 04. Clippings/      # 짧은 스니펫, 발췌
+│   └── 05. AI Research/    # ChatGPT/Gemini/Grok/Claude/Perplexity 선행 조사 묶음 (/capture-tabs 대상)
 ├── 10. Raw Sources/        # Layer 1: 불변 원본
 │   ├── 11. Articles/
 │   ├── 12. Papers/
 │   ├── 13. Books/
 │   ├── 14. Transcripts/
-│   └── 15. Clippings/
+│   ├── 15. Clippings/
+│   └── 16. AI Research/
 ├── 20. Wiki/               # Layer 2: LLM 관리 위키
 │   ├── 21. Concepts/
 │   ├── 22. Entities/
@@ -334,7 +337,7 @@ CMDS_LLM_Wiki/
 - `date ingested`: 인제스트 일시 (Book Ingest stub 의 경우 scaffold 날짜)
 - `category`: Articles / Papers / Books / Transcripts / Clippings
 - `status`: **(v2 신설)** `ingested` (기본) / `stub` (Book Ingest 미독서) / `reading` (독서 중) / `completed` (독서 완료 + Wiki 컴파일 완료). 표준 ingest 는 `ingested` 만 사용.
-- `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — 미래의 나에게 보내는 편지. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — LG AX 임원교육 사례"`
+- `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — 미래의 나에게 보내는 편지. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — 기업 임원교육 사례"`
 - `mainVaultRelated`: **(v2 신설)** ingest 시 메인 볼트에서 검색된 유사 노트 2~5개 — `→ CMDSPACE: {path}` 텍스트 참조 형태의 리스트
 - `mainVaultCmds`: **(v2 신설)** 관련 CMDS 카테고리 — `"[[📚 601 Knowledge Management]]"` quoted wikilink (메인 볼트 기준이므로 이 볼트에서는 resolve 안 되지만 메타데이터로 보존)
 

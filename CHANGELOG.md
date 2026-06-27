@@ -4,6 +4,45 @@
 
 ---
 
+## v1.6.2 — 2026-06-27 (정합성 audit — sanitization sync + doc accuracy + folder scaffold)
+
+**Source**: 배포 전 8-차원 정합성 audit (version·inventory·cross-harness·placeholder-PII·frontmatter·doc·zip·hooks), 각 finding 을 적대적으로 검증. blocker 0, confirmed 20 (major 5 / minor 5 / nit 8 + 1 dismissed). 모두 반영.
+
+### Fixed — Sanitization sync (Codex 미러가 Claude gold 와 어긋나 있던 부분)
+
+- **`.agents/skills/refresh-context/SKILL.md`** — 하드코딩돼 있던 5개 실제 개인 에세이 제목을 generic 패턴 (`Read("<essay path>")` + `{PATH_TO_YOUR_ESSAYS}`) 으로 교체. Claude command 는 이미 genericize 돼 있었으나 Codex skill 만 누락됐던 단일 spot.
+- **`AGENTS.md` CJK Person Naming 예시** — 실명(`Yohan Koo`)·핸들(`johnfkoo951`)·제3자(`안창현/Changhyun Ahn`, `Andy Suh`)·실제 저자(`zhanghandong`) 를 CLAUDE.md gold (`홍길동`/`Gildong Hong`/`johndoe`) 로 동기화.
+- **`collectionPurpose` 예시의 실제 클라이언트명 (`LG AX`)** → `기업 임원교육 사례` 로 generic 화 (CLAUDE.md + AGENTS.md 양쪽).
+
+### Fixed — Doc accuracy (제품과 어긋난 사용자 문서)
+
+- **"7 commands" → "11 commands"**: README (×3) + Setup Guide. onboard/capture-tabs/verify/audit 누락분 추가.
+- **README 가 v1.6.0 Codex 듀얼-harness 를 누락** → `.codex/` · `.agents/skills/` · `AGENTS.md` 를 구조도·파일목록·소개 bullet 에 반영.
+- **Setup Guide 의 죽은 vercel 쇼케이스 URL** (`cmds-llm-wiki.vercel.app`, SSO 벽) → `llm-wiki.cmdspace.work`.
+- 예시 wiki 카운트 `10개` → `16` (README·Setup Guide·index.md). index.md Stats 표 자체모순(헤더 8 vs 합계 10) 을 실제 디스크 수치(16: Concepts 9·Entities 3·Guides 2·MOC 2)로 정정.
+- Setup Guide placeholder 파일 수 `12개` → "약 22개 (sed glob 이 전부 커버)". LLM-Wiki-Starter-Kit.md 의 "Codex는 이름만 변경" FAQ + 3-operations 설명을 듀얼-harness/11-command 현실로 갱신.
+- AGENTS.md Codex Compatibility Matrix Notes 칼럼을 CLAUDE.md genericized 표현으로 정렬 (`v2/v4/v5`, 하드코딩 `9` 제거) + onboard Claude-전용 안내 추가.
+
+### Added — Folder scaffold (문서가 참조하나 미생성이던 카테고리)
+
+- `00. Inbox/01. Articles/`, `00. Inbox/05. AI Research/` (/capture-tabs 기본 저장 위치), `10. Raw Sources/12. Papers/`, `10. Raw Sources/16. AI Research/` 에 `.gitkeep` 추가 — 표준 카테고리 세트 완성. CLAUDE.md 폴더 다이어그램도 05/16 AI Research 포함하도록 AGENTS.md 와 정합.
+
+### Housekeeping
+
+- CHANGELOG v1.0.0 의 "18 Web Clipper" 표기를 17 로 정정 (당시 실제 17개, Stibee 는 v1.4.0 에서 18 로). 
+- 정렬: canonical .DS_Store 4개 제거, `archives/cmds-llm-wiki-starter-kit.zip` (구 v1.3.0 가리키던 stale alias) 삭제 — archives/ 는 versioned ZIP 만 보관.
+
+### Deliberately NOT changed
+
+- `.codex/hooks/validate-raw-source.sh` 의 stub-skip 순서 (Check 1 뒤) 는 Claude 와 다르지만 **의도적·문서화된 설계** (stub 도 heading 은 필요). 양 harness 모두 well-formed stub 을 정상 통과하므로 유지.
+- Karpathy X-thread 데모 wiki 페이지의 실제 공개 인물명 (Karpathy·kepano·Changhyun Ahn·Yohan Koo) 은 의도된 예시 출처라 유지 (sanitization 대상 아님).
+
+### No schema/structure breaking changes
+
+기존 v1.6.x 볼트는 갱신된 파일만 pull 하면 됨. 폴더 추가는 비파괴적 (.gitkeep).
+
+---
+
 ## v1.6.1 — 2026-06-16 (3-Layer 개념층 vs 물리 폴더 정합 노트)
 
 **Source**: 운영 볼트의 지식 레이어 재검증 과정에서, 템플릿이 `30. Queries/` 물리 폴더를 제공하면서도 3-Layer(Raw/Wiki/Schema) 개념과의 관계를 설명하지 않아 신규 사용자가 "30. Queries 는 4번째 레이어인가?" 혼동하던 지점 발견.
@@ -302,7 +341,7 @@ Karpathy "지식은 스크랩이 아니라 독서 시점에 컴파일" 원칙의
 
 ### Collection Infrastructure
 
-- **18 Obsidian Web Clipper templates** in `90. Settings/Sharing/`:
+- **17 Obsidian Web Clipper templates** in `90. Settings/Sharing/` (Stibee added in v1.4.0 → 18):
   - Articles (web, tech-blog, news, substack), Social (X, threads, linkedin, reddit, instagram, hackernews)
   - Video (youtube, podcast), Technical (github, arxiv, tech-docs, linkedin-pulse)
   - Selection clipper for ad-hoc highlights
