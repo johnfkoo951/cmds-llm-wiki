@@ -23,16 +23,29 @@ Ask exactly one collection-purpose question before ingest:
 
 If the user says to infer automatically, infer from the source plus [[Core Context]] and record the reasoning in `collectionPurpose`.
 
-### Step 0-a: Mothership Links
+### Step 0-a: Mothership Links (mothership only)
 
-Search `{PATH_TO_YOUR_MOTHERSHIP_VAULT}` for 2-5 related notes. Prefer:
+Skip if no mothership vault is configured in [[Core Context]] §5. Otherwise search `{PATH_TO_YOUR_MOTHERSHIP_VAULT}` for 2-5 related notes. Prefer:
 
 - `30. Permanent Notes/` essays
 - MOCs or hub notes
 - CMDS category pages
 - Recent teaching/consulting notes when the purpose is 강의 or 컨설팅
 
-Record chosen links in `mainVaultRelated` and the best CMDS category in `mainVaultCmds`.
+**URL construction — MANDATORY validation** (do not hand-construct from memory):
+
+1. Use the exact path `qmd`/`rg` returned — do not strip `.md` or add prefixes.
+2. Percent-encode with a real encoder: `ENCODED=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "<exact path>")` (`safe=''` encodes `/`, spaces, non-ASCII).
+3. Stat before writing: `test -f "{PATH_TO_YOUR_MOTHERSHIP_VAULT}/<exact path>"` — if it fails, drop the candidate.
+4. Construct `"[<label>](obsidian://open?vault={your-mothership-vault-name}&file=${ENCODED})"`.
+
+**`mainVaultCmds` — authoritative list**: build the set with `find "{PATH_TO_YOUR_MOTHERSHIP_VAULT}" -maxdepth 3 -name "📚 [0-9][0-9][0-9] *.md" -type f` and pick an exact match. Leave empty rather than inventing a category.
+
+Record the final, stat-verified links in `mainVaultRelated` and the best CMDS category in `mainVaultCmds`.
+
+### Step 0.5: Format Conversion (binary → markdown)
+
+If the source is a binary/non-markdown file (`.pdf`, `.pptx`, `.docx`, `.hwp`, `.epub`, `.html`, image, etc.), convert it to markdown first (an `omni-to-md` skill if available, or `markitdown`/`pandoc`/`hwp5txt`/`defuddle` directly). Move the original binary to `80. References/Attachments/` and carry `source-attachment`, `source-format`, `conversion-tool`, `conversion-date`, `conversion-fidelity` into the Raw Source. Audio (`.mp3`/`.wav`/`.m4a`) → an audio-transcription tool instead. The `## Original Content` section then holds the converted markdown.
 
 ### Step 1: Analyze
 
@@ -111,7 +124,11 @@ Update `index.md` stats and the Queries/Recent Ingests sections as needed. Appen
 
 ### Step 6: Review
 
-Verify `## Original Content`, inbox cleanup, wikilink targets, index sync, and qmd reindex status. Report open questions and any contradictions.
+Verify `## Original Content`, inbox cleanup, wikilink targets, and qmd reindex status. Report open questions and any contradictions. Also run:
+
+**Cross-vault link integrity (mothership only)** — mothership refs are invisible to Obsidian's graph. Stat-check every `obsidian://open?vault={your-mothership-vault-name}&file=...` URL in touched files against `{PATH_TO_YOUR_MOTHERSHIP_VAULT}`; fix or drop any broken path. Never leave a literal `URL_ENCODED_PATH` / `...`. Confirm each `mainVaultCmds` `[[📚 NNN ...]]` matches a live mothership category exactly (emoji included), and that no bare `[[mothership]]` wikilink appears in body text.
+
+**Index sync verification** — for each new Wiki page, `rg -F "[[<newpage>]]" index.md` must find it in the Concepts/Entities/Guides/Maps section; Stats-table counts must match `find "20. Wiki/<subfolder>" -name "*.md" | wc -l`. Fix Step 5 before reporting done.
 
 ## Book Ingest Mode
 

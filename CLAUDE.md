@@ -7,13 +7,13 @@ description: Schema and harness document for the CMDS LLM Wiki vault. Defines th
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-06-27
+date modified: 2026-07-01
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.6.2"
+version: "1.7.0"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -170,6 +170,9 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 ### Cross-Agent Compatibility Matrix
 
 같은 operation 을 추가할 때는 **반드시** `.claude/commands/{name}.md`, `.codex/commands/{name}.md`, `.agents/skills/{name}/SKILL.md` 를 함께 맞춘다.
+
+> [!warning] Parity Contract (CLAUDE.md ↔ AGENTS.md)
+> 이 두 스키마는 같은 규칙의 미러다. 다음 섹션은 **양쪽이 동일해야** 하며 한쪽만 편집 금지: (1) Cross-Agent Compatibility Matrix, (2) Frontmatter Standards (7 필수 + v2/v3/v4/v5 키), (3) Verification Properties (v5) 3 기준, (4) Callout Conventions. 편집 시 CLAUDE.md 와 AGENTS.md 를 함께 고치고 `/lint` + parity 체크리스트로 확인. `.codex/`·`.agents/` 는 untracked 라 diff 에 안 보이므로 수동 대조가 필요하다.
 
 | Operation | Claude command | Codex command | Codex skill | Notes |
 |-----------|----------------|---------------|-------------|-------|
@@ -338,7 +341,7 @@ CMDS_LLM_Wiki/
 - `category`: Articles / Papers / Books / Transcripts / Clippings
 - `status`: **(v2 신설)** `ingested` (기본) / `stub` (Book Ingest 미독서) / `reading` (독서 중) / `completed` (독서 완료 + Wiki 컴파일 완료). 표준 ingest 는 `ingested` 만 사용.
 - `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — 미래의 나에게 보내는 편지. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — 기업 임원교육 사례"`
-- `mainVaultRelated`: **(v2 신설)** ingest 시 메인 볼트에서 검색된 유사 노트 2~5개 — `→ CMDSPACE: {path}` 텍스트 참조 형태의 리스트
+- `mainVaultRelated`: **(v2 신설)** ingest 시 메인 볼트에서 검색된 유사 노트 2~5개 — `[노트명](obsidian://open?vault=...)` 클릭 가능 링크 (ingest Step 0-a 에서 stat 검증한 값만 사용)
 - `mainVaultCmds`: **(v2 신설)** 관련 CMDS 카테고리 — `"[[📚 601 Knowledge Management]]"` quoted wikilink (메인 볼트 기준이므로 이 볼트에서는 resolve 안 되지만 메타데이터로 보존)
 
 **Book Ingest 전용 키** (Raw Source chapter stub, `status: stub`):
@@ -352,11 +355,17 @@ CMDS_LLM_Wiki/
 - `related`: 관련 Wiki 페이지 링크
 - `confidence`: high / medium / low (정보 신뢰도)
 - `layer`: concepts / entities / guides
-- `mainVaultRelated`: **(v2 신설)** 메인 볼트의 관련 에세이·MOC — `→ CMDSPACE: {path}` 리스트
+- `mainVaultRelated`: **(v2 신설)** 메인 볼트의 관련 에세이·MOC — `[노트명](obsidian://open?vault=...)` 클릭 가능 링크
 - `mainVaultCmds`: **(v2 신설)** 연결될 CMDS 카테고리
 - `explored`: **(v4 신설)** Exploration Gate 상태. 새 Wiki 페이지 기본값은 `false`. 사용자가 직접 읽었거나 에이전트가 별도 검증 루프를 수행한 뒤에만 `true`.
 - `exploredBy`: **(v4 선택)** `explored: true` 로 바꾼 사람 또는 에이전트 이름
 - `exploredDate`: **(v4 선택)** Exploration Gate 완료일 (`YYYY-MM-DD`)
+- `claimType`: **(v5 신설)** 페이지의 지배적 claim 유형 — `definition` / `empirical` / `theoretical` / `historical` / `prescriptive` / `interpretive` / `mixed`. `/verify` 가 분류·기록.
+- `evidenceScope`: **(v5 신설)** 증거 범위 — `single-source` / `multi-source-primary` / `multi-source-mixed` / `synthesis-only` / `user-original`. `/verify` 가 분류·기록.
+- `verificationStatus`: **(v5 신설)** 검증 상태 — `verified` (3 기준 모두 통과) / `partial` (일부 통과) / `unverified` (미검증, 기본값) / `disputed` (충돌 미해결). `/verify` 가 기록.
+- `verifiedAt`: **(v5 선택)** 최종 `/verify` 실행일 (`YYYY-MM-DD`)
+- `verifiedBy`: **(v5 선택)** `agent` / `human` / `both`
+- `disputed`: **(v5 선택)** `true` 일 때 충돌하는 다른 Wiki 페이지와 양방향 `> [!warning] Disputed Claim` callout 으로 연결. `/verify` Phase 2.2 또는 `/audit` Phase B 가 기록. 삭제 대신 disputed 처리하는 것이 원칙.
 
 **Query Result** (`type: query-result`):
 - `query`: 원래 질문
@@ -369,8 +378,8 @@ CMDS_LLM_Wiki/
 
 ### 새 YAML 키는 camelCase
 
-- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`
-- ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number`, `explored_by` — camelCase 네이밍 컨벤션 위반
+- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`, `claimType`, `evidenceScope`, `verificationStatus`, `verifiedAt`, `verifiedBy`, `disputed`
+- ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number`, `explored_by`, `claim_type`, `verification-status` — camelCase 네이밍 컨벤션 위반
 
 ### Quality Control Properties (v4)
 
@@ -380,6 +389,22 @@ CMDS_LLM_Wiki/
 - `explored: true` 는 사람이 읽었거나, 별도 검증 루프에서 source-backed review 를 끝낸 뒤에만 사용한다.
 - `confidence: high` 로 올리는 페이지는 반대해석 또는 데이터 공백을 최소 1 줄 기록한다 (Bias Check 콜아웃).
 - `/lint` 는 `explored` 누락, `explored: false` backlog, high-confidence 페이지의 bias check 누락을 보고한다.
+
+### Verification Properties (v5)
+
+v4 Exploration Gate 가 "누가 읽었나"만 추적하던 한계를 보완 — claim 단위 정합성·확증가능성을 형식화. 다음 3 기준으로 모든 Wiki 페이지가 평가될 수 있어야 한다:
+
+1. **지식요건해당성 (Eligibility)** — 주어·술어·객체·출처·증거 범위·Claim type 의 6 요소를 갖춘 형식적 지식 단위인가? `claimType` + `evidenceScope` 가 분류 가능해야 함.
+2. **정합성 (Consistency)** — vs source / vs other Wiki pages / vs CLAUDE.md policy / vs Core Context 4 frame 모두에서 충돌이 없는가? 충돌 시 양쪽 페이지에 `disputed: true` + `> [!warning] Disputed Claim` callout 으로 보존 — 삭제 금지.
+3. **확증가능성 (Confirmability)** — 출처 수·종류·반대증거를 종합해 독립적으로 산출한 confidence 가 declared `confidence:` 와 일치하는가? Overclaim (high-conf + single source) / Underclaim (low-conf + multi-source) 모두 flag.
+
+운영 규칙:
+
+- 신규 `type: wiki-page` 의 기본값: `verificationStatus: unverified`, `claimType`/`evidenceScope` 분류 시도, `disputed: false` (또는 키 생략).
+- `/verify {page}` 가 단일 페이지 3 기준 통과 후 `verificationStatus: verified` + `verifiedAt`/`verifiedBy` 기록.
+- `/audit` 가 MOC cluster 단위 consistency + sampling 기반 confirmability 로 vault 전체 점수 산출 → Top 10 `/verify` 큐 생성.
+- 충돌은 항상 disputed 처리. `/verify --resolve` 만이 disputed → verified 또는 한쪽 confidence 강등 가능.
+- `/query` 는 인용 시 `verificationStatus` + `confidence` 를 함께 읽고, `verified` + `high` 면 단언, `partial` 또는 `medium` 이하면 hedge, `disputed` 면 양쪽 명시 후 답변.
 
 ---
 
@@ -437,6 +462,9 @@ aliases:
 
 > [!warning] Contradiction
 > 모순되는 정보 플래그
+
+> [!warning] Disputed Claim
+> (v5) 다른 Wiki 페이지와 충돌하는 claim. 양쪽 페이지에 `disputed: true` + 상호 링크로 보존 (삭제 금지). `/verify --resolve` 만이 해소.
 
 > [!question] Open Question
 > 아직 해결되지 않은 질문

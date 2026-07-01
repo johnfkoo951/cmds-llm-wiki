@@ -19,6 +19,36 @@ Ingest source material into the LLM Wiki. Follow CLAUDE.md rules strictly (YAML:
 - If **blank or "all"**: delegate to `/inbox` (scan all Inbox subfolders)
 - If **raw text**: treat the argument itself as the source content
 - If a **multi-page book/docs site** (mdBook, VitePress, GitBook, Docusaurus, ReadTheDocs, Nextra with 5+ chapters in sidebar/TOC): **use Book Ingest Mode** — see dedicated section below.
+- If a **binary/non-markdown file** (`.pdf`, `.pptx`, `.docx`, `.xlsx`, `.hwp`, `.hwpx`, `.epub`, `.html`, image, etc.): **run Step 0.5 (Format Conversion)** before any other processing.
+
+## Step 0.5: Format Conversion (binary → markdown)
+
+Detect by extension:
+
+```bash
+ext="${input##*.}"; ext="${ext:l}"
+```
+
+If `ext` is in `{md, markdown, txt}` → skip this step.
+
+If `ext` is in `{mp3, wav, m4a}` → **delegate to an audio-transcription tool** (e.g., an `audio-transcriber` skill or Whisper), not a document converter.
+
+Otherwise → **invoke a binary-to-markdown converter** — an `omni-to-md` skill if you have one, or run `markitdown` / `pandoc` / `hwp5txt` / `defuddle` directly on the file.
+
+The converter should:
+1. Convert the binary to markdown using the right tool for the format
+2. Move the original binary to `80. References/Attachments/<original-filename>`
+3. Produce a converted `.md` file (placed in the same Inbox subfolder, same basename)
+4. Add these conversion frontmatter fields, which must be carried over to the Raw Source in Step 2:
+   - `source-attachment: "[[<original-filename>]]"`
+   - `source-format: pdf|pptx|docx|hwp|hwpx|...`
+   - `conversion-tool: markitdown|pandoc|hwp5txt|defuddle|hwpx-xml`
+   - `conversion-date: YYYY-MM-DD`
+   - `conversion-fidelity: high|medium|low`
+
+After conversion, **proceed to Step 0 (purpose gate) using the converted `.md` as the source**. The `## Original Content` verbatim section in Step 2 holds the *converted markdown* (not the original binary) — the original binary is preserved as an attachment, satisfying the immutable-source principle by reference.
+
+If conversion fails (missing tool, unsupported format, empty output) → halt and tell the user how to install the missing tool, or ask them to convert manually.
 
 ## Category Detection
 
@@ -36,6 +66,7 @@ Category → Path mapping:
 | Books | — | `10. Raw Sources/13. Books/` |
 | Transcripts | `00. Inbox/03. Transcripts/` | `10. Raw Sources/14. Transcripts/` |
 | Clippings | `00. Inbox/04. Clippings/` | `10. Raw Sources/15. Clippings/` |
+| AI Research | `00. Inbox/05. AI Research/` | `10. Raw Sources/16. AI Research/` |
 
 ## Process (execute ALL steps in order)
 
@@ -77,11 +108,38 @@ Filter to **2~5 highest-relevance notes**. Prefer:
 3. CMDS category pages (`📚 N0N ...`)
 4. Recent meeting/consulting notes if the purpose is teaching/consulting
 
-Format each as: `"→ {your-mothership-vault-name}: {relative path from vault root}"`.
+**URL construction — MANDATORY validation** (prevents cross-vault link rot):
 
-Show the user the candidate list, ask: **"이 중 연결할 노트를 골라주시거나, 추가로 생각나는 것 있으면 알려주세요. (그대로 진행하려면 'ok')"**
+For each candidate, do NOT hand-construct the URL from memory. Instead:
 
-Record the final list in `mainVaultRelated` (Raw Source + relevant Wiki pages). Also identify the best-fit CMDS category (`📚 NNN ...`) and record as `mainVaultCmds`.
+1. **Use the actual file path returned by qmd/Grep**, not a reconstructed one. If qmd returned `30. Permanent Notes/33. Essay/foo.md`, use that exact string — do not strip `.md`, do not add prefixes.
+2. **Percent-encode with a real encoder**, not the LLM's string manipulation:
+   ```bash
+   ENCODED=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=''))" "<exact path from qmd>")
+   ```
+   `safe=''` ensures `/`, spaces, non-ASCII (Korean, emoji) all get encoded — Obsidian's URL parser expects this.
+3. **Stat the file BEFORE writing the URL**:
+   ```bash
+   test -f "{PATH_TO_YOUR_MOTHERSHIP_VAULT}/<exact path from qmd>"
+   ```
+   If stat fails → DO NOT include this candidate in `mainVaultRelated`. Print: "qmd returned non-existent path: {path} — skipping".
+4. Construct: `"[<label>](obsidian://open?vault={your-mothership-vault-name}&file=${ENCODED})"` where `<label>` is the filename without `.md`.
+
+**`mainVaultCmds` construction — authoritative category list**:
+
+Do NOT guess CMDS category names from memory. Build the authoritative set from the mothership filesystem first:
+
+```bash
+find "{PATH_TO_YOUR_MOTHERSHIP_VAULT}" -maxdepth 3 -name "📚 [0-9][0-9][0-9] *.md" -type f
+```
+
+Pick from this exact list. Format as `"[[📚 NNN {Name from file}]]"` (quoted wikilink — won't resolve in this satellite vault, but preserved as metadata). If the best-fit category file does not exist, leave `mainVaultCmds` empty rather than inventing one.
+
+Show the user the candidate list (with validation results), ask: **"이 중 연결할 노트를 골라주시거나, 추가로 생각나는 것 있으면 알려주세요. (그대로 진행하려면 'ok')"**
+
+Record the final, **stat-verified** list in `mainVaultRelated` (Raw Source + relevant Wiki pages) and `mainVaultCmds`.
+
+**Failure mode this prevents**: LLM hand-constructed URLs with wrong encoding (missing percent-encoding for non-ASCII, wrong path depth, stale filename from memory). Result was broken `obsidian://` clicks that look valid in YAML but resolve to 404 in Obsidian. `/lint` Step 10 (Cross-Vault Link Check) catches drift after the fact, but ingest-time validation is the upstream fix — cheaper to prevent than to clean up.
 
 ### Step 1: Analyze
 
@@ -101,7 +159,7 @@ Before creating pages, read `index.md` to check what pages already exist. Priori
 
 Create the raw source file in `10. Raw Sources/{NN. category}/`:
 - Filename: `YYYY-MM-DD-{Title}.md` (today's date)
-- Category: Articles (web), Papers (academic), Books, Transcripts, Clippings
+- Category: Articles (web), Papers (academic), Books, Transcripts, Clippings, AI Research
 - **MANDATORY — Preserve original content verbatim in `## Original Content` section.** No exceptions, no summaries, no "redacted for brevity." Including embedded image URLs, YouTube links, customer quote blocks, citation lists. If the source is extremely long (e.g., >10K words), still preserve it — this is the immutable layer of the 3-Layer Architecture.
 	- If the Inbox clipper already wraps the article body in `## Original Content`, copy that section verbatim.
 	- If the source is a URL (WebFetch), preserve the fetched content.
@@ -158,18 +216,23 @@ tags:
   - raw-source
   - {topic tags}
 source: {URL or reference}
-category: {Articles|Papers|Books|Transcripts|Clippings}
+category: {Articles|Papers|Books|Transcripts|Clippings|AI Research}
 status: ingested
 source-vault: "{your-mothership-vault-name}"
 collectionPurpose: {user's answer from Step 0 — verbatim}
 mainVaultRelated:
-  - "→ {your-mothership-vault-name}: {path to related note 1}"
-  - "→ {your-mothership-vault-name}: {path to related note 2}"
+  - "[노트명1](obsidian://open?vault={your-mothership-vault-name}&file=URL_ENCODED_PATH_1)"
+  - "[노트명2](obsidian://open?vault={your-mothership-vault-name}&file=URL_ENCODED_PATH_2)"
 mainVaultCmds: "[[📚 NNN {Category Name}]]"
 ---
 ```
 
 **YAML 준수 체크**: `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds` 는 CMDS camelCase 네이밍 (v2 신설 키). snake_case 금지.
+
+> [!warning] Cross-vault 링크 정확성 (mothership 운영 시)
+> 위 템플릿의 `URL_ENCODED_PATH_*` 와 `📚 NNN {Category Name}` 는 **반드시 실제 값으로 치환**한다. 리터럴 placeholder 를 그대로 커밋 금지.
+> - `mainVaultRelated` URL 의 `file=` 경로는 **모선 실제 파일명을 percent-encode** 한 값 — slug 추측(`03-ai-agent` 같은 lowercase-hyphen) 금지. 실제 폴더는 `03. AI Agent` 처럼 다를 수 있다. Step 0-a 에서 stat 검증한 값만 사용한다.
+> - `mainVaultCmds` 는 **현재 모선 taxonomy 의 정확한 카테고리명**(`📚`/`📖` 이모지 포함)과 일치해야 한다. 리네임된 옛 이름은 조용히 깨진다. 최신 목록: `find "{PATH_TO_YOUR_MOTHERSHIP_VAULT}" -maxdepth 4 \( -name "📚 *.md" -o -name "📖 *.md" \)`.
 
 ### Step 3: Compile Wiki Pages
 
@@ -213,12 +276,16 @@ For each extracted topic/entity/guide, either **update** an existing page or **c
 - Create or update relevant MOC in `20. Wiki/24. Maps/`
 - Ensure no orphan pages (every new page linked from at least one other page)
 
-### Step 5: Update index.md
+### Step 5: Update index.md — MANDATORY full sync
 
-- Add new pages to the appropriate category section (Concepts/Entities/Guides/Maps)
-- Each entry: `- [[Page Name]] — one-line description`
-- Update Stats table (counts)
-- Add entry to Recent Ingests table
+This step is the #1 source of index drift. Every ingest sweep that leaves 10+ files unlinked failed here. Do all four:
+
+- **Each new Wiki page → corresponding category section** (Concepts/Entities/Guides/Maps). Entry format: `- [[Page Name]] — one-line description`. Do NOT skip pages because the section "looks long enough."
+- **Stats table** — recount and update Raw Sources / Wiki Pages / Concepts / Entities / Guides / MOCs / Queries. Run `find "20. Wiki/21. Concepts" -name "*.md" | wc -l` etc. to verify, do not increment-by-guess.
+- **Recent Ingests table** — add one row at the top (most recent first).
+- **`date modified` in index.md frontmatter** — update to today's date.
+
+After writing, re-read index.md and verify all newly-created page names appear in the appropriate section list.
 
 ### Step 6: Update log.md
 
@@ -240,14 +307,53 @@ After all writes are complete, do a quick health check:
 - **Inbox cleanup check (MANDATORY if source came from Inbox)**: verify the original Inbox file has been deleted. Run `ls "00. Inbox/{subfolder}/"` — the consumed file should NOT appear. If it still exists, delete it now (Step 2 requirement).
 - Verify all new `[[wikilinks]]` point to existing pages
 - Check that no duplicate pages were created
-- Confirm index.md reflects the current state
-- Report any open questions or knowledge gaps discovered
+
+**v4 schema compliance** — for every new Wiki page created in this ingest, verify:
+
+- **`explored: false` set** — `grep -L "^explored:" <newpage>.md` should return empty
+- **Bias Check present on high-confidence pages** — for every page with `confidence: high`, the body must contain `> [!note] Bias Check` AND lines starting with `> Counter-argument:` and `> Data gap:`
+- **`mainVaultRelated` populated** — if Step 0-a returned mothership candidates, frontmatter has them as `obsidian://open?vault=...` URLs
+
+**Cross-vault link integrity (mothership only)** — mothership refs are invisible to Obsidian's graph. Verify them against the mothership filesystem BEFORE reporting done:
+
+```bash
+python3 - <<'PY'
+import os, re, urllib.parse, glob
+M = "{PATH_TO_YOUR_MOTHERSHIP_VAULT}"
+VAULT = "{your-mothership-vault-name}"
+U = re.compile(r'obsidian://open\?vault=' + re.escape(VAULT) + r'&file=([^)"\s]+)')
+for f in glob.glob("20. Wiki/**/*.md", recursive=True) + glob.glob("10. Raw Sources/**/*.md", recursive=True):
+    t = re.sub(r'```.*?```', '', open(f, encoding="utf-8").read(), flags=re.S)  # skip fenced code
+    t = re.sub(r'`[^`\n]*`', '', t)  # and inline code (doc examples)
+    for m in U.finditer(t):
+        d = urllib.parse.unquote(m.group(1))
+        if d in ("URL_ENCODED_PATH", "...") or not any(os.path.isfile(os.path.join(M, c)) for c in (d, d+".md", (d[:-3] if d.endswith(".md") else d)+".md")):
+            print("BROKEN", f, "->", d)
+PY
+```
+
+Any `BROKEN` row from a file you touched → fix the `file=` path with the REAL mothership filename (or remove the entry). Never leave a literal `URL_ENCODED_PATH` / `...`.
+
+- **`mainVaultCmds` resolves to a live category** — `[[📚 NNN ...]]` / `[[📖 NNN ...]]` must equal an existing mothership category exactly (emoji included). Renamed names break silently.
+- **No bare `[[mothership]]` in body** — mothership files cited in Wiki/Raw BODY must be `[label](obsidian://open?vault=...)` or plain text, NEVER bare `[[...]]`. The `mainVaultCmds` frontmatter quoted-wikilink is the ONLY allowed non-resolving `[[📚 ...]]`.
+
+**Index sync verification** — the #1 ingest failure mode:
+
+- `grep -F "[[<newpage>]]" index.md` — every new page name must appear in index.md's Concepts/Entities/Guides/Maps section
+- If missing, return to Step 5 and fix before reporting done
+- Stats table counts must match `find "20. Wiki/<subfolder>" -name "*.md" | wc -l` for each category
+
+Report any open questions or knowledge gaps discovered.
 
 **Failure modes to watch for**:
 
 1. **Summarization instead of verbatim**: summarizing the original content into "Key Takeaways" / "Core Thesis" sections INSTEAD OF preserving verbatim body. Summaries belong in Wiki pages, not Raw Sources. Raw Sources are the immutable source-of-truth layer — if verbatim content is missing, the Raw Source is corrupt regardless of how rich the summary is.
 
 2. **Inbox residue**: writing the Raw Source but forgetting to delete the Inbox original. Symptom — next `/inbox` scan treats the same source as unprocessed and re-ingests it, creating duplicate Raw Sources. Mitigation — Step 2 Inbox cleanup is MANDATORY and Step 7 verifies it.
+
+3. **v4 schema drift**: writing Wiki pages without `explored: false` or without Bias Check on high-confidence pages. Symptom — `/lint` Step 8 reports growing gaps. Mitigation — Step 3 quality control + Step 7 v4 schema compliance check. Run the grep one-liners; do not assume.
+
+4. **Index drift**: creating Wiki pages but skipping Step 5 sync. Symptom — `index.md` Stats table out of date and pages missing from the Concepts/Entities sections, even though the Recent Ingests row was added. Mitigation — Step 5 four-part checklist must complete, Step 7 verifies via `grep -F "[[<page>]]" index.md`.
 
 ## Output
 
