@@ -4,6 +4,42 @@
 
 ---
 
+## v1.7.0 — 2026-07-01 (v5 Verification schema completion + ingest/lint cross-vault hardening)
+
+**Source**: 운영 볼트(CMDS_LLM_Wiki)에서 검증·안정화된 v5 검증 스키마와 cross-vault 링크 하드닝을 sanitize 하여 킷으로 이식. schema 는 킷이 아직 v4 수준이었고, ingest/lint 는 링크 rot 방지 로직이 빠져 있던 갭을 메움.
+
+### Added — v5 Verification schema completion (CLAUDE.md + AGENTS.md 양쪽)
+
+- **Verification Properties (v5) 3 기준 블록** (지식요건해당성·정합성·확증가능성 + 운영 규칙) 을 Quality Control (v4) 다음에 추가. CLAUDE.md 는 "vs CLAUDE.md policy", AGENTS.md 는 "vs AGENTS.md policy" 로 각자 자기 스키마 참조.
+- **Wiki Page 6 v5 키**: `claimType`, `evidenceScope`, `verificationStatus`, `verifiedAt`, `verifiedBy`, `disputed` 추가.
+- **camelCase 목록 v5 엔트리 8개**: ✅ 6개(위 키) + ❌ 2개(`claim_type`, `verification-status`).
+- **`> [!warning] Disputed Claim` 콜아웃** 을 Callout Conventions 에 추가 (Contradiction 과 별개 — `/verify --resolve` 로만 해소).
+- **Parity Contract 콜아웃** (CLAUDE.md ↔ AGENTS.md) — 두 스키마 미러가 반드시 동일해야 하는 섹션(Cross-Agent Matrix · Frontmatter Standards · v5 3기준 · Callout Conventions) 을 명문화.
+
+### Added — lint v5 coverage reporting
+
+- `.claude/commands/lint.md`: Step 8 헤더 `v2/v4` → `v2/v4/v5`, v5 검증 필드(`claimType`/`evidenceScope`/`verificationStatus`) 커버리지 체크 + `disputed` → `/verify --resolve` 큐 추가. Output 에 "v5 Verification Coverage" 항목 추가.
+- `.codex/commands/lint.md`: 이미 v5 verification + cross-vault integrity 항목 보유(변경 불필요).
+
+### Added — ingest/lint cross-vault hardening (sanitized)
+
+- **Step 0.5 Format Conversion** (binary → markdown): `.pdf`/`.pptx`/`.docx`/`.hwp`/`.epub`/image 등을 변환 후 ingest, 원본은 `80. References/Attachments/` 로 보존 (`.claude` + `.codex` ingest 양쪽).
+- **`mainVaultRelated` URL percent-encoding 필수 검증**: qmd 반환 실제 경로 사용 → `urllib.parse.quote(safe='')` 인코딩 → `test -f` stat 검증 → `obsidian://open?vault=...&file=` 구성. 손으로 URL 추측 금지.
+- **`mainVaultCmds` authoritative 목록**: `find ... -name "📚 [0-9][0-9][0-9] *.md"` 로 실제 카테고리 집합을 만든 뒤 정확 매칭. 추측 금지.
+- **Cross-vault link integrity 검사** (ingest Step 6/7 + lint Step 10): touched 파일의 `obsidian://` URL 과 `mainVaultCmds` 를 모선 파일시스템에 stat 대조, 깨진 링크·리터럴 placeholder 적발.
+- **Index-sync 검증** 강화: 신규 Wiki 페이지가 index.md 섹션에 실제로 나타나는지 `grep -F`, Stats 카운트를 `find | wc -l` 로 대조.
+- **CLAUDE.md `mainVaultRelated` 설명** 을 AGENTS.md 와 정합하도록 `obsidian://` 클릭 링크 형식으로 통일 (Parity Contract 준수).
+
+### Sanitization
+
+- 모든 이식분에서 실제 경로/볼트명 제거 → `{PATH_TO_YOUR_MOTHERSHIP_VAULT}` · `{your-mothership-vault-name}` placeholder. cross-vault 단계는 "mothership only" 로 표기 — 모선 없이 단독 운영 시 skip.
+
+### No breaking changes
+
+기존 v1.6.x 볼트는 갱신 파일만 pull. v5 키는 전부 추가형(신규 페이지 기본 `verificationStatus: unverified`), 기존 페이지는 `/verify`/`/lint` 접촉 시 점진 backfill.
+
+---
+
 ## v1.6.2 — 2026-06-27 (정합성 audit — sanitization sync + doc accuracy + folder scaffold)
 
 **Source**: 배포 전 8-차원 정합성 audit (version·inventory·cross-harness·placeholder-PII·frontmatter·doc·zip·hooks), 각 finding 을 적대적으로 검증. blocker 0, confirmed 20 (major 5 / minor 5 / nit 8 + 1 dismissed). 모두 반영.
@@ -12,7 +48,7 @@
 
 - **`.agents/skills/refresh-context/SKILL.md`** — 하드코딩돼 있던 5개 실제 개인 에세이 제목을 generic 패턴 (`Read("<essay path>")` + `{PATH_TO_YOUR_ESSAYS}`) 으로 교체. Claude command 는 이미 genericize 돼 있었으나 Codex skill 만 누락됐던 단일 spot.
 - **`AGENTS.md` CJK Person Naming 예시** — 실명(`Yohan Koo`)·핸들(`johnfkoo951`)·제3자(`안창현/Changhyun Ahn`, `Andy Suh`)·실제 저자(`zhanghandong`) 를 CLAUDE.md gold (`홍길동`/`Gildong Hong`/`johndoe`) 로 동기화.
-- **`collectionPurpose` 예시의 실제 클라이언트명 (`LG AX`)** → `기업 임원교육 사례` 로 generic 화 (CLAUDE.md + AGENTS.md 양쪽).
+- **`collectionPurpose` 예시의 실제 클라이언트명** → `기업 임원교육 사례` 로 generic 화 (CLAUDE.md + AGENTS.md 양쪽).
 
 ### Fixed — Doc accuracy (제품과 어긋난 사용자 문서)
 
