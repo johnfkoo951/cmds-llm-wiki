@@ -69,7 +69,10 @@ EOF
 fi
 
 # Check 2: Original Content section must have substantive body (>20 non-empty lines)
-BODY_LINE_COUNT=$(awk '/^## Original Content/{found=1; next} /^## /{if(found) exit} found && NF>0 {count++} END{print count+0}' "$FILE_PATH")
+# Count to EOF or a trailing `## Metadata` section only — verbatim bodies legitimately
+# preserve the source article's own H2 headings, so stopping at any `## ` undercounts
+# real raw sources and false-blocks later edits.
+BODY_LINE_COUNT=$(awk '/^## Original Content/{found=1; next} /^## Metadata/{if(found) exit} found && NF>0 {count++} END{print count+0}' "$FILE_PATH")
 
 if [ "$BODY_LINE_COUNT" -lt 20 ]; then
   cat >&2 <<EOF

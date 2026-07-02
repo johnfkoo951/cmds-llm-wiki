@@ -13,7 +13,7 @@ tags:
   - schema
   - llm-wiki
 status: active
-version: "1.7.0"
+version: "1.7.1"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -510,15 +510,15 @@ source-vault: {your-mothership-vault-name}
 **Markdown body**:
 
 ```markdown
-→ CMDSPACE: 00. Inbox/03. AI Agent/03-1. Claude Code (MBP)/2026-04-06-llm-wiki-karpathy.md
-→ CMDSPACE: 30. Permanent Notes/33. Essay/📜 Schema는 Harness다...
+→ {your-mothership-vault-name}: 00. Inbox/{capture-lane}/2026-04-06-llm-wiki-karpathy.md
+→ {your-mothership-vault-name}: 30. Permanent Notes/{essay-folder}/📜 예시 에세이...
 ```
 
 ### 메인 볼트에서 이 볼트 참조하기 (모선 → 위성)
 
-메인 볼트에 **진입점 노트**가 있습니다:
+메인 볼트에 **진입점 노트**를 만들어 두면 편리합니다 (예시 경로):
 
-- `CMDSPACE/40. Docs/47. CMDS Docs/🛰 CMDS_LLM_Wiki Satellite Vault.md`
+- `{your-mothership-vault-name}/40. Docs/🛰 CMDS_LLM_Wiki Satellite Vault.md`
 
 메인 볼트 노트는 이 진입점을 `[[🛰 CMDS_LLM_Wiki Satellite Vault]]`로 wikilink하고, 구체적 page는 텍스트 참조:
 

@@ -30,17 +30,27 @@ esac
 # Debounce: if a reindex worker is already queued, bump its timer
 touch "$LOCK.request"
 
-# Spawn background worker only if not already running
+# Spawn background worker only if not already running.
+# Stale-lock guard: a worker killed mid-run (reboot, kill, qmd failure under set -e)
+# leaves .running behind — treat locks older than 10 min as dead and reclaim.
 if [[ -f "$LOCK.running" ]]; then
-	exit 0
+	if [[ -n "$(find "$LOCK.running" -mmin +10 2>/dev/null)" ]]; then
+		rm -f "$LOCK.running"
+	else
+		exit 0
+	fi
 fi
 
 (
 	touch "$LOCK.running"
-	# Wait for burst of writes to settle
+	# Ensure lock cleanup on any exit path (incl. qmd failure aborting via set -e)
+	trap 'rm -f "$LOCK.running" "$LOCK.request"' EXIT
+	# Wait for burst of writes to settle.
+	# NOTE: BSD/macOS syntax — options before the format operand
+	# (`date +%s -r FILE` is GNU order and silently fails on macOS).
 	last=""
-	while [[ "$(date +%s -r "$LOCK.request" 2>/dev/null)" != "$last" ]]; do
-		last="$(date +%s -r "$LOCK.request" 2>/dev/null)"
+	while [[ "$(date -r "$LOCK.request" +%s 2>/dev/null)" != "$last" ]]; do
+		last="$(date -r "$LOCK.request" +%s 2>/dev/null)"
 		sleep "$DEBOUNCE_SEC"
 	done
 
@@ -53,8 +63,7 @@ fi
 		qmd embed 2>&1
 		echo "=== done ==="
 	} >> "$LOG" 2>&1
-
-	rm -f "$LOCK.running" "$LOCK.request"
+	# trap EXIT handles lock cleanup (covers qmd failure paths too)
 ) >/dev/null 2>&1 &
 
 disown 2>/dev/null || true

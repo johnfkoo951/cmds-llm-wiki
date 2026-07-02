@@ -13,7 +13,7 @@ tags:
   - schema
   - llm-wiki
 status: active
-version: "1.7.0"
+version: "1.7.1"
 ---
 
 # AGENTS.md — LLM Wiki Schema
@@ -77,11 +77,11 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cod
 
 **모든 capture / inbox / ingest / query / lint 전에 [[Core Context]] 를 먼저 읽는다.**
 
-해당 노트는 메인 볼트 `{your-mothership-vault-name}` 의 9 system files (precedence 1~9, 2026-05-22 기준 DESIGN.md 추가) + 핵심 에세이 5편에서 추출된 사용자 맥락 snapshot 이다. {your-name}의 정체성·철학·7 재활용 축·CMDS 9 categories 를 담고 있으며, 이 맥락 없이는 LLM Wiki 의 모든 operation 이 "목적 없는 자동 정리" 로 전락한다. 9 system files 전체 alias 표는 `CLAUDE.md` "Core Context" 섹션 또는 [[Core Context]] §8 참조.
+해당 노트는 메인 볼트 `{your-mothership-vault-name}` 의 9 system files (precedence 1~9, 2026-05-22 기준 DESIGN.md 추가) + 핵심 에세이 5편에서 추출된 사용자 맥락 snapshot 이다. {your-name}의 정체성·철학·7 재활용 축·CMDS 9 categories 를 담고 있으며, 이 맥락 없이는 LLM Wiki 의 모든 operation 이 "목적 없는 자동 정리" 로 전락한다. 9 system files alias 표는 아래 표 및 [[Core Context]] §8 참조.
 
-### 메인 볼트 9 시스템 파일 (최신 원본 동적 참조, precedence 순)
+### (옵션) 메인 볼트 9 시스템 파일 — 원 저자 CMDSPACE 구성 예시 (precedence 순)
 
-6개 공개 (system.cmdspace.work 배포) + 3개 비공개 (vendor·product 전용).
+Mothership 볼트가 없는 standalone 사용자는 이 표를 건너뛰어도 됩니다. 원 저자 기준: 6개 공개 + 3개 비공개 (vendor·product 전용).
 
 | # | Alias | 경로 | 역할 | 공개 |
 |:-:|-------|------|------|:----:|
@@ -90,7 +90,7 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cod
 | 3 | `@CMDS-Antigravity` | `{your-mothership-vault-name}/ANTIGRAVITY.md` | HOW — Google Gemini / Antigravity IDE 전용 | 비공개 |
 | 4 | `@CMDS-Context` | `{your-mothership-vault-name}/CMDS.md` | WHY/WHAT — 시스템 철학·사용자 프로필 | 공개 |
 | 5 | `@CMDS-Guide` | `{your-mothership-vault-name}/🏛 CMDS Guide.md` | STANDARDS — 7 프로퍼티·템플릿·camelCase | 공개 |
-| 6 | `@CMDS-HQ` | `{your-mothership-vault-name}/🏛 CMDS Head Quarter.md` | WHERE — 91 카테고리 네비게이션 | 공개 |
+| 6 | `@CMDS-HQ` | `{your-mothership-vault-name}/🏛 CMDS Head Quarter.md` | WHERE — 87 서브카테고리 네비게이션 | 공개 |
 | 7 | `@CMDS-Brain` | `{your-mothership-vault-name}/BRAIN.md` | PERSONA — {your-name} brain profile (Gobi 앱 entry) | 비공개 |
 | 8 | `@CMDS-BrainPrompt` | `{your-mothership-vault-name}/BRAIN_PROMPT.md` | PERSONA — Agent Rules of Engagement | 비공개 |
 | 9 | `@CMDS-DESIGN` | `{your-mothership-vault-name}/DESIGN.md` | VISUAL — v4.3 design constants · Anti-Slop · skill ↔ surface mapping | 공개 |
@@ -581,7 +581,7 @@ source-vault: {your-mothership-vault-name}
 
 메인 볼트에 **진입점 노트**가 있습니다:
 
-- `CMDSPACE/40. Docs/47. CMDS Docs/🛰 CMDS_LLM_Wiki Satellite Vault.md`
+- `{your-mothership-vault-name}/40. Docs/🛰 CMDS_LLM_Wiki Satellite Vault.md`
 
 메인 볼트 노트는 이 진입점을 `[[🛰 CMDS_LLM_Wiki Satellite Vault]]`로 wikilink하고, 구체적 page는 텍스트 참조:
 
