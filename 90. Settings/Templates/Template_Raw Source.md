@@ -12,6 +12,10 @@ tags:
   - raw-source
 source: 
 category: 
+collectionPurpose: 
+source-vault: {your-mothership-vault-name}
+mainVaultRelated: []
+mainVaultCmds: 
 status: ingested
 ---
 

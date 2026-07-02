@@ -4,6 +4,36 @@
 
 ---
 
+## v1.7.1 — 2026-07-03 (hook runtime fixes + broken template dependency + sanitization)
+
+Patch release driven by the 2026-07-03 full satellite system-files audit (multi-agent, adversarially verified). No schema or feature changes.
+
+### Fixed — hooks (real runtime bugs, both `.claude/` and `.codex/` copies)
+
+- **`qmd-reindex.sh` debounce was a no-op on macOS** — `date +%s -r FILE` is GNU argument order; BSD date fails silently (empty output), so the settle-wait loop never ran. Replaced with `date -r FILE +%s`.
+- **Stale-lock permanent lockout** — a worker killed mid-run (or aborted by `set -e` on a qmd failure) left `.running` behind, silently disabling all future auto-reindexes. Added a 10-minute mtime expiry on the lock + `trap EXIT` cleanup in the worker.
+- **`validate-raw-source.sh` Check 2 false positives** — the line counter stopped at the first `## ` heading after `## Original Content`, but verbatim bodies legitimately preserve the source article's own H2 headings, so long real bodies were counted as near-empty and would block the next edit. Counter now stops only at a trailing `## Metadata` section (or EOF).
+
+### Fixed — broken dependency
+
+- **`Template_AI Research Capture.md` now shipped** — `/capture-tabs` (distributed since v1.6.0) referenced this template as its required shape, but the kit never included it. Added (sanitized), so the kit's template count is now **5** (Raw Source / Wiki Page / Query Result / MOC / AI Research Capture).
+
+### Fixed — templates vs schema drift
+
+- `Template_Wiki Page.md` — added `explored: false` (v4 mandatory) and `verificationStatus: unverified` (v5 default); pages created from the template no longer violate the schema on creation.
+- `Template_Raw Source.md` — added v2 keys `collectionPurpose` / `source-vault` / `mainVaultRelated` / `mainVaultCmds` (the ingest command already required them).
+- `Template_Query Result.md` — added `reusableFor` (the query command's Step 6 already set it).
+
+### Fixed — sanitization / genericization leftovers
+
+- `CLAUDE.md` / `AGENTS.md` Cross-Vault Reference: hard-coded author paths (`CMDSPACE/40. Docs/...`, `03-1. Claude Code (MBP)/...`) → `{your-mothership-vault-name}` placeholders; entry-point note phrased as optional.
+- `AGENTS.md` Core Context: removed dangling reference to a CLAUDE.md alias table that no longer exists in the kit; the 9-system-files table is now framed as an **optional author example** (standalone users can skip); stale "91 categories" → 87.
+
+### Known gaps (deferred to a future minor)
+
+- Kit `CLAUDE.md` Operations chapter still lacks the Capture Tabs / Verify / Audit sections that kit `AGENTS.md` already has (asymmetry — port planned).
+- `/autoresearch` remains operating-vault-only (Generator half of the Generator-Verifier loop).
+
 ## v1.7.0 — 2026-07-01 (v5 Verification schema completion + ingest/lint cross-vault hardening)
 
 **Source**: 운영 볼트(CMDS_LLM_Wiki)에서 검증·안정화된 v5 검증 스키마와 cross-vault 링크 하드닝을 sanitize 하여 킷으로 이식. schema 는 킷이 아직 v4 수준이었고, ingest/lint 는 링크 rot 방지 로직이 빠져 있던 갭을 메움.

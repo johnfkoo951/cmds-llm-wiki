@@ -12,6 +12,8 @@ source: []
 related: []
 confidence: medium
 layer: concepts
+explored: false
+verificationStatus: unverified
 status: active
 ---
 
