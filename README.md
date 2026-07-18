@@ -1,52 +1,76 @@
+**English** · [한국어](README.ko.md)
+
 # cmds-llm-wiki
 
-> **LLM Wiki 볼트 템플릿** — Karpathy LLM Wiki pattern + 미래의 나에게 보내는 편지 + Claude Code · Codex 듀얼 harness.
+> **An LLM Wiki vault template** — Karpathy's LLM Wiki pattern + a letter to your future self + a dual Claude Code · Codex harness.
 >
-> Obsidian 볼트이자 Claude Code / Codex 프로젝트. 외부 소스 (기사·논문·전사) 를 LLM 이 컴파일하여 복리로 성장하는 persistent wiki 로 축적합니다.
+> It's both an Obsidian vault and a Claude Code / Codex project. An LLM compiles external sources (articles, papers, transcripts) into a persistent wiki that compounds over time.
 
-**🌐 Live Showcase**: **[llm-wiki.cmdspace.work](https://llm-wiki.cmdspace.work)** — 10 섹션 상세 페이지 (아키텍처 · 11 commands · 미래의 나에게 보내는 편지 · Quick Start)
+**🌐 Live Showcase**: **[llm-wiki.cmdspace.work](https://llm-wiki.cmdspace.work)** — a 10-section deep-dive page (architecture · 11 commands · letter to your future self · Quick Start)
 
-**제작**: Yohan Koo ([@YohanKoo](https://x.com/YohanKoo)) · CMDSPACE 에서 운영 중인 satellite 볼트를 템플릿화
+**Built by**: Yohan Koo ([@YohanKoo](https://x.com/YohanKoo)) · templatized from a satellite vault running in production at CMDSPACE
 
 ---
 
-## 무엇인가
+## Try it in 5 minutes
 
-- **Karpathy LLM Wiki pattern** 의 실행 가능한 시작 킷
-  - Raw Sources (불변) → Wiki (LLM 관리) → Schema (규칙) 3-layer
-  - Ingest · Query · Lint 3 operations
-  - `index.md` + `log.md` 두 개 핵심 파일
-- **미래의 나에게 보내는 편지** — `/ingest` 시 "왜 수집?" 목적 질문을 강제하여 파편 축적 방지
-- **Claude Code + Codex 듀얼 harness**
+Want to see the pattern work before committing to a full setup? The repo ships with example content (Karpathy's LLM Wiki, ingested), so you can explore immediately:
+
+```bash
+cd ~/DEV
+git clone https://github.com/johnfkoo951/cmds-llm-wiki.git my-llm-wiki
+cd my-llm-wiki
+claude
+```
+
+Then run these commands in order:
+
+1. `/status` — check the current state of the vault
+2. `/ingest <URL>` — ingest an article you care about (answer the "why am I collecting this?" prompt)
+3. `/query <question>` — ask your first question against the accumulated wiki
+4. `/lint` — run a health check
+
+Filling in placeholders, Core Context, and installing qmd (the local search engine) are all part of the full setup below — they make the vault *yours*, but you don't need them just to see how ingest → query → lint feels.
+
+---
+
+## What it is
+
+- **A runnable starter kit for Karpathy's LLM Wiki pattern**
+  - 3-layer flow: Raw Sources (immutable) → Wiki (LLM-maintained) → Schema (rules)
+  - 3 operations: Ingest · Query · Lint
+  - Two core files: `index.md` + `log.md`
+- **A letter to your future self** — `/ingest` forces the "why am I collecting this?" purpose question up front, so you accumulate intent instead of fragments
+- **A dual Claude Code + Codex harness**
   - 11 slash commands (`/ingest`, `/query`, `/lint`, `/inbox`, `/status`, `/reindex`, `/refresh-context`, `/onboard`, `/capture-tabs`, `/verify`, `/audit`)
-  - 2 PostToolUse hooks (raw source verbatim 검증 + qmd auto-reindex)
-  - **Codex 미러**: `.codex/commands/` (10) + `.agents/skills/` (10) + `AGENTS.md` — 같은 operation 을 Codex·Cursor·Windsurf 등에서도 동일하게 실행
-  - 18 Obsidian Web Clipper JSON 템플릿 (Article / YouTube / Substack / X / arXiv / Stibee 등)
-  - 73개 Obsidian hotkey 바인딩 (`.obsidian/hotkeys.json`) — heading shortcuts, wikilink/callout 삽입, 사이드바 토글 등
-- **선택적 mothership 볼트 연계** — 별도 PKM 볼트가 있다면 satellite 로 운영 가능
+  - 2 PostToolUse hooks (raw-source verbatim verification + qmd auto-reindex)
+  - **Codex mirror**: `.codex/commands/` (10) + `.agents/skills/` (10) + `AGENTS.md` — run the same operations identically from Codex, Cursor, Windsurf, and other agents
+  - 18 Obsidian Web Clipper JSON templates (Article / YouTube / Substack / X / arXiv / Stibee, and more)
+  - 73 Obsidian hotkey bindings (`.obsidian/hotkeys.json`) — heading shortcuts, wikilink/callout insertion, sidebar toggles, and so on
+- **Optional mothership vault integration** — if you already have a separate PKM vault, you can run this as a satellite of it
 
 ---
 
-## 출처 및 참고
+## Sources & credits
 
-| 원천 | 링크 |
+| Source | Link |
 |---|---|
 | **Andrej Karpathy — LLM Wiki Gist** | https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f |
-| **Karpathy X thread** (2026-04-02) | https://x.com/karpathy/status/1... (본 레포 `10. Raw Sources/11. Articles/` 에 예시 포함) |
-| **kepano (Steph Ango, Obsidian CEO)** — contamination mitigation | 에이전트 playground 와 personal vault 분리 개념 |
-| **cmds-system-files** (mothership pattern 자매 레포) | https://github.com/johnfkoo951/cmds-system-files |
+| **Karpathy X thread** (2026-04-02) | https://x.com/karpathy/status/1... (an example is included under `10. Raw Sources/11. Articles/` in this repo) |
+| **kepano (Steph Ango, Obsidian CEO)** — contamination mitigation | the idea of separating the agent playground from your personal vault |
+| **cmds-system-files** (the sibling repo for the mothership pattern) | https://github.com/johnfkoo951/cmds-system-files |
 
-## 관련 레포
+## Related repos
 
-- **[cmds-system-files](https://github.com/johnfkoo951/cmds-system-files)** — CMDS mothership PKM 시스템 (100-900 카테고리 + Connect→Merge→Develop→Share). 본 레포가 optional mothership 으로 연결할 수 있는 사자매 시스템.
+- **[cmds-system-files](https://github.com/johnfkoo951/cmds-system-files)** — the CMDS mothership PKM system (100–900 categories + Connect→Merge→Develop→Share). The sibling system that this repo can optionally connect to as its mothership.
 
 ---
 
-## 빠르게 시작하기
+## Getting started
 
-> **깊이있는 셋업 매뉴얼**: `90. Settings/Sharing/Setup Guide.md` — Mode A/B 구분, sed 일괄 치환 명령어, 검증용 grep, FAQ 7개 포함. 아래 5단계로 부족하다면 이 문서를 펼쳐놓고 작업.
+> **In-depth setup manual**: `90. Settings/Sharing/Setup Guide.md` — covers Mode A/B, one-shot `sed` replacement commands, verification greps, and 7 FAQs. If the 5 steps below aren't enough, keep that document open while you work.
 
-### 1. 클론
+### 1. Clone
 
 ```bash
 cd ~/DEV
@@ -54,147 +78,147 @@ git clone https://github.com/johnfkoo951/cmds-llm-wiki.git my-llm-wiki
 cd my-llm-wiki
 ```
 
-### 2. Obsidian 볼트로 열기
+### 2. Open as an Obsidian vault
 
-Obsidian → Open folder as vault → `my-llm-wiki/` 선택.
+Obsidian → Open folder as vault → select `my-llm-wiki/`.
 
-### 3. placeholder 채우기
+### 3. Fill in the placeholders
 
-아래 placeholder 가 여러 파일에 흩어져 있습니다. 한 번에 바꾸세요:
+The placeholders below are scattered across several files. Replace them all at once:
 
-| placeholder | 채울 값 (예시) |
+| Placeholder | Value to fill in (example) |
 |---|---|
-| `{your-name}` | `[[홍길동]]` 같은 wikilink 친화 이름 |
-| `{Your Name}` | `Jane Doe` 표시용 이름 |
+| `{your-name}` | a wikilink-friendly name like `[[Jane Doe]]` |
+| `{Your Name}` | `Jane Doe`, a display name |
 | `{PATH_TO_YOUR_LLM_WIKI}` | `/Users/foo/DEV/my-llm-wiki` |
-| `{PATH_TO_YOUR_MOTHERSHIP_VAULT}` | (옵션) 별도 PKM 볼트 경로 |
-| `{your-mothership-vault-name}` | (옵션) mothership 폴더 이름 |
+| `{PATH_TO_YOUR_MOTHERSHIP_VAULT}` | (optional) path to a separate PKM vault |
+| `{your-mothership-vault-name}` | (optional) the mothership folder name |
 
-일괄 치환:
+Bulk replace:
 ```bash
 cd my-llm-wiki
 LC_ALL=C find . -name "*.md" -o -name "*.sh" -o -name "*.yml" -o -name "*.json" | xargs sed -i '' \
-  -e 's|{your-name}|홍길동|g' \
+  -e 's|{your-name}|Jane Doe|g' \
   -e 's|{Your Name}|Jane Doe|g' \
   -e 's|{PATH_TO_YOUR_LLM_WIKI}|/Users/foo/DEV/my-llm-wiki|g'
 ```
 
-### 4. Core Context 채우기
+### 4. Fill in Core Context
 
-`Core Context.md` 에서:
-- §1 정체성 (이름·역할·전문 분야·연속성 선언)
-- §2 재활용 축 5~9개 (당신의 지식은 어디에 쓰일 것인가)
-- §3~§5 는 선택
+In `Core Context.md`:
+- §1 Identity (name · role · areas of expertise · continuity declaration)
+- §2 5–9 reuse axes (where will your knowledge be used?)
+- §3–§5 are optional
 
-### 5. qmd (선택, 권장) — 로컬 검색 엔진
+### 5. qmd (optional, recommended) — the local search engine
 
 ```bash
-# 설치 (brew 필요)
+# Install (requires brew)
 brew install qmd-search/qmd/qmd
 
-# 설정 파일 복사
+# Copy the config file
 cp "90. Settings/qmd-config-template.yml" ~/.config/qmd/index.yml
-# ~/.config/qmd/index.yml 의 {PATH_TO_YOUR_LLM_WIKI} 를 실제 경로로 수정
+# Edit {PATH_TO_YOUR_LLM_WIKI} in ~/.config/qmd/index.yml to the real path
 
-# 인덱싱
+# Index
 export QMD_EMBED_MODEL="hf:Qwen/Qwen3-Embedding-0.6B-GGUF/Qwen3-Embedding-0.6B-Q8_0.gguf"
 qmd update && qmd embed
 ```
 
-### 6. Obsidian Web Clipper (선택)
+### 6. Obsidian Web Clipper (optional)
 
-`90. Settings/Sharing/clipper-*.json` 18개 중 원하는 사이트 템플릿을 Web Clipper Settings → Templates → Import 에서 불러오기.
+Among the 18 `90. Settings/Sharing/clipper-*.json` files, import the site templates you want via Web Clipper Settings → Templates → Import.
 
-### 7. Claude Code 실행
+### 7. Run Claude Code
 
 ```bash
 cd my-llm-wiki
 claude
 ```
 
-첫 명령어 추천 순서:
-1. `/status` — 현재 볼트 상태 확인
-2. `/ingest <URL>` — 관심 기사 하나 ingest (목적 질문에 답해보기)
-3. `/query <질문>` — 쌓인 wiki 로 첫 질의
-4. `/lint` — 건강도 체크
+Recommended order for your first commands:
+1. `/status` — check the current state of the vault
+2. `/ingest <URL>` — ingest an article you care about (try answering the purpose question)
+3. `/query <question>` — run your first query against the accumulated wiki
+4. `/lint` — run a health check
 
 ---
 
-## 구조
+## Structure
 
 ```
 cmds-llm-wiki/
-├── CLAUDE.md                    # Schema (Claude Code) — LLM 행동 규칙
-├── AGENTS.md                    # Schema (Codex/Cursor/Windsurf) — CLAUDE.md 미러
-├── Core Context.md              # 사용자 맥락 (채워서 사용)
-├── index.md                     # 마스터 인덱스
-├── log.md                       # 변경 이력 (append-only)
-├── README.md                    # 이 파일
-├── CHANGELOG.md                 # 템플릿 버전 이력
-├── LLM-Wiki-Starter-Kit.md      # 간이 공유용 킷
+├── CLAUDE.md                    # Schema (Claude Code) — LLM behavior rules
+├── AGENTS.md                    # Schema (Codex/Cursor/Windsurf) — mirror of CLAUDE.md
+├── Core Context.md              # User context (fill in before use)
+├── index.md                     # Master index
+├── log.md                       # Change history (append-only)
+├── README.md                    # This file
+├── CHANGELOG.md                 # Template version history
+├── LLM-Wiki-Starter-Kit.md      # Lightweight kit for sharing
 ├── .claude/
 │   ├── commands/                # 11 slash commands
 │   ├── hooks/                   # 2 PostToolUse hooks
 │   └── settings.json
-├── .codex/                      # Codex harness (Claude 미러)
-│   ├── commands/                # 10 commands (onboard 제외)
+├── .codex/                      # Codex harness (mirror of Claude)
+│   ├── commands/                # 10 commands (onboard excluded)
 │   ├── hooks/                   # 2 hooks
 │   └── hooks.json
 ├── .agents/
-│   └── skills/                  # 10 Codex reusable operation skills
+│   └── skills/                  # 10 reusable Codex operation skills
 ├── .obsidian/
-│   └── hotkeys.json             # 73개 Obsidian hotkey 바인딩 (선택 — 마음에 안 들면 삭제)
-├── 00. Inbox/                   # Web Clipper 수신 (02~05 서브폴더)
-├── 10. Raw Sources/             # 불변 원본 (11~15 서브폴더)
-│   └── 11. Articles/            # Karpathy 예시 2개 포함
-├── 20. Wiki/                    # LLM 관리 위키
-│   ├── 21. Concepts/            # 예시 (LLM Wiki Pattern 등)
-│   ├── 22. Entities/            # 예시 (Karpathy, Bush, Memex)
-│   ├── 23. Guides/              # 예시 가이드
-│   └── 24. Maps/                # 예시 MOC
-├── 30. Queries/                 # 합성된 질의 결과 (빈 폴더, /query 결과로 채워짐)
-├── 80. References/Attachments/  # 모든 이미지 일원화
+│   └── hotkeys.json             # 73 Obsidian hotkey bindings (optional — delete if not to your taste)
+├── 00. Inbox/                   # Web Clipper inbox (subfolders 02–05)
+├── 10. Raw Sources/             # Immutable originals (subfolders 11–15)
+│   └── 11. Articles/            # includes 2 Karpathy examples
+├── 20. Wiki/                    # LLM-maintained wiki
+│   ├── 21. Concepts/            # examples (LLM Wiki Pattern, etc.)
+│   ├── 22. Entities/            # examples (Karpathy, Bush, Memex)
+│   ├── 23. Guides/              # example guides
+│   └── 24. Maps/                # example MOCs
+├── 30. Queries/                 # synthesized query results (empty folder, filled by /query)
+├── 80. References/Attachments/  # all images centralized here
 └── 90. Settings/
-    ├── Templates/               # Obsidian 노트 템플릿 (4종)
-    ├── Sharing/                 # 18 Web Clipper JSON + Setup Guide.md + CLAUDE-Template.md
-    └── qmd-config-template.yml  # 로컬 검색 엔진 설정
+    ├── Templates/               # Obsidian note templates (4 types)
+    ├── Sharing/                 # 18 Web Clipper JSONs + Setup Guide.md + CLAUDE-Template.md
+    └── qmd-config-template.yml  # local search engine config
 ```
 
 ---
 
-## 핵심 규약
+## Core conventions
 
-- **YAML 2 SPACES / Body TAB** (혼용 금지)
-- **Wikilink in YAML quoted**: `"[[link]]"`
-- **Mermaid 라벨 큰따옴표**: `A["label"]`
-- **필수 7 프로퍼티**: `type`, `aliases`, `description` (English, LLM hint), `author`, `date created`, `date modified`, `tags`
-- **ISO 8601 날짜**: `YYYY-MM-DD`
-- **새 YAML 키는 camelCase**: `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`
+- **YAML 2 SPACES / Body TAB** (never mix the two)
+- **Wikilinks in YAML are quoted**: `"[[link]]"`
+- **Mermaid labels are double-quoted**: `A["label"]`
+- **7 required properties**: `type`, `aliases`, `description` (English, an LLM hint), `author`, `date created`, `date modified`, `tags`
+- **ISO 8601 dates**: `YYYY-MM-DD`
+- **New YAML keys use camelCase**: `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`
 
-자세한 내용은 `CLAUDE.md` 참조.
+See `CLAUDE.md` for the details.
 
 ---
 
-## 예시 컨텐츠 안내
+## A note on the example content
 
-`10. Raw Sources/` 와 `20. Wiki/` 에 Karpathy 의 LLM Wiki 원문을 ingest 한 결과 일부가 예시로 들어있습니다. 이는 **패턴이 어떻게 동작하는지 보여주기 위한** 샘플입니다:
+`10. Raw Sources/` and `20. Wiki/` contain part of the result of ingesting Karpathy's original LLM Wiki writing, included as an example. These are samples meant **to show how the pattern works**:
 
 - `10. Raw Sources/11. Articles/2026-04-12-Karpathy-LLM-Wiki.md`
 - `10. Raw Sources/11. Articles/2026-04-02-Karpathy-LLM-Knowledge-Bases-X-Thread.md`
-- `20. Wiki/` — 개념·엔티티·MOC 약 16개 (정확한 수는 `/lint` 가 재집계)
+- `20. Wiki/` — roughly 16 concepts, entities, and MOCs (run `/lint` for the exact count)
 
-예시 wiki 페이지 일부에는 **orphan wikilinks** (존재하지 않는 페이지로의 링크) 가 포함되어 있습니다. 이는 의도된 것으로, `/ingest` 를 반복하면서 자연스럽게 채워지는 wiki 의 성장 방식을 보여줍니다.
+Some of the example wiki pages contain **orphan wikilinks** (links to pages that don't exist yet). This is intentional — it demonstrates how the wiki grows and naturally fills in as you repeat `/ingest`.
 
-완전히 빈 상태에서 시작하려면 `10. Raw Sources/11. Articles/*.md` 와 `20. Wiki/**/*.md` 를 삭제하세요.
+To start completely empty, delete `10. Raw Sources/11. Articles/*.md` and `20. Wiki/**/*.md`.
 
 ---
 
-## 라이선스 & 기여
+## License & contributing
 
-- 본 레포는 **템플릿** 입니다. 자유롭게 fork·복제하여 본인 볼트로 사용하세요.
-- 개선 PR 환영. 단 `Core Context.md`, `index.md`, `log.md` 같은 템플릿 파일은 placeholder 유지.
+- This repo is a **template**. Fork or clone it freely and use it as your own vault.
+- Improvement PRs are welcome. Just keep the placeholders intact in template files like `Core Context.md`, `index.md`, and `log.md`.
 
-제작: [@YohanKoo](https://x.com/YohanKoo) · [CMDSPACE](https://litt.ly/cmds)
-- Karpathy 의 LLM Wiki pattern
-- kepano 의 contamination mitigation 개념
-- cmds-system-files (자매 mothership pattern)
+Built by: [@YohanKoo](https://x.com/YohanKoo) · [CMDSPACE](https://litt.ly/cmds)
+- Karpathy's LLM Wiki pattern
+- kepano's contamination mitigation idea
+- cmds-system-files (the sibling mothership pattern)
