@@ -88,6 +88,7 @@ grep -rn "{your-name}\|{Your Name}\|{PATH_TO\|{your-mothership" --include="*.md"
 1. `/status` — 볼트 상태 점검
 2. `/ingest <URL>` — 첫 수집. **목적 질문이 뜨면 §2 재활용 축 중 하나로 답** ("미래의 나에게 보내는 편지")
 3. `/query <질문>` — 첫 질의
-4. (선택) qmd 설치·Web Clipper import → Setup Guide §6·§7
+4. (성장 후) 반복되는 Open Question 은 `20. Wiki/25. Questions/` 의 Research Question 카드로 승격, 주장을 방어할 땐 Synthesis 카드 (v1.9.0+) — Setup Guide FAQ 참고
+5. (선택) qmd 설치·Web Clipper import → Setup Guide §6·§7
 
 > 깊은 인터뷰·도메인별 질문 풀이 필요하면 모선 키트(cmds-vault)의 `cmds-onboarding` 스킬 참고. 이 `/onboard`는 LLM Wiki 단독 셋업에 최적화된 경량 버전.

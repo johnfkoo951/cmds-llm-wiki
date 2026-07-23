@@ -4,6 +4,20 @@
 
 ---
 
+## v1.9.1 — 2026-07-23 (docs: RQ/Synthesis usage guide + onboarding next-steps)
+
+Docs-only patch — no schema, template, or harness behavior changes.
+
+### Added — Setup Guide 사용법 문서화
+
+- FAQ 신설: "Research Question / Synthesis 카드는 언제 쓰나" — 두 카드의 용도 구분 (알게 된 것 vs 묻고 있는 것/주장하는 것), 승격 흐름 (`Open Question` 콜아웃 → RQ 카드, `sourceCallout` 역추적), status 생애 추적, "둘 다 필수 아님 — 산출물 단계에 도입" 가이드, Citation Standard 연계.
+- "다음 단계" 성장 경로에 RQ 승격·Synthesis 작성 시점 2개 bullet 추가.
+- 헤더 대상 버전 `v1.6.2+` → `v1.9.0+`, 갱신일 표기.
+
+### Changed — /onboard wrap-up
+
+- 온보딩 마무리 추천 단계에 "(성장 후) 반복 Open Question → RQ 카드 승격, 주장 방어 → Synthesis 카드" 항목 추가 (4→5단계).
+
 ## v1.9.0 — 2026-07-23 (Research Question + Synthesis cards · Citation Standard · CLAUDE.md Operations parity)
 
 **Source**: 운영 볼트(CMDS_LLM_Wiki) schema v6.1 (2026-07-07) 의 "논문 산출층" 중 **일반화 가능한 절반**만 선별 이식 — 질문·논증의 1급 객체화. 학술 전용 버티컬(v6.2 Paper Ingest Mode, 12단 논문 분석)은 의도적으로 제외하고 운영 볼트 전용으로 유지한다.
