@@ -7,13 +7,13 @@ description: "Schema and harness document for the CMDS LLM Wiki vault. Defines t
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-07-07
+date modified: 2026-07-23
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.8.0"
+version: "1.9.0"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -44,7 +44,7 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cla
 - 값 안에 `"` 가 있으면 `\"` 이스케이프하거나 문장을 재작성. 빈 값도 `description: ""`.
 
 ### Provenance Rule (author + model + effort)
-- 에이전트가 쓰는 모든 콘텐츠 페이지(raw-source·wiki-page·query-result·moc·inbox)는 `author` 바로 뒤에 **`model`·`effort` 를 항상 기록** — Claude Code·Codex·Grok 가 누가·어떤 모델·어떤 강도로 썼는지 교차 확인.
+- 에이전트가 쓰는 모든 콘텐츠 페이지(raw-source·wiki-page·research-question·query-result·synthesis·moc·inbox)는 `author` 바로 뒤에 **`model`·`effort` 를 항상 기록** — Claude Code·Codex·Grok 가 누가·어떤 모델·어떤 강도로 썼는지 교차 확인.
 	- `model`: 상세 모델 id (`claude-opus-4-8`, `claude-sonnet-5`, `gpt-5.4-codex`, `grok-4` …). 복수 기여 시 list.
 	- `effort`: 추론 강도/모드 (`low`/`medium`/`high`/`xhigh`/`max` 또는 타 에이전트 등가). 미상은 `default`.
 	- harness 정의 파일(command/skill)의 자기 frontmatter 엔 넣지 않음 — Description Rule 만 적용.
@@ -89,7 +89,7 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cla
 
 ## 🧭 Core Context (반드시 먼저 로드)
 
-**모든 ingest / query / lint 전에 [[Core Context]] 를 먼저 읽는다.**
+**모든 operation 전에 [[Core Context]] 를 먼저 읽는다.**
 
 해당 노트는 (1) 사용자의 정체성·7 재활용 축·철학 + (2) **옵션**: 별도 mothership 볼트가 있다면 그 시스템 파일 snapshot 을 담는다. 이 맥락 없이는 LLM Wiki 의 모든 operation 이 "목적 없는 자동 정리" 로 전락한다.
 
@@ -156,16 +156,18 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 ├── 21. Concepts/     # 추상 개념 (Attention, Transformer, RLHF, ...)
 ├── 22. Entities/     # 사람, 조직, 제품 (OpenAI, Karpathy, GPT-4, ...)
 ├── 23. Guides/       # How-to, 튜토리얼, 실전 가이드
-└── 24. Maps/         # MOC (Map of Content), 주제별 인덱스
+├── 24. Maps/         # MOC (Map of Content), 주제별 인덱스
+└── 25. Questions/    # Research Question — 1급 연구 질문 카드 (v6.1)
 ```
 
 **규칙**:
-- 모든 페이지는 `type: wiki-page` frontmatter 사용
+- `21~24` 페이지는 `type: wiki-page`, `25. Questions` 카드는 `type: research-question` frontmatter 사용
 - 관련 Raw Source를 `source` 프로퍼티로 역참조
 - 모든 주장에 출처 명시 (Wiki 내 링크 또는 Raw Source 참조)
 - Cross-reference: 관련 개념은 반드시 `[[wikilink]]`로 연결
 - 모순 발견 시 `> [!warning] Contradiction` callout으로 플래그
 - To-do/미해결 항목은 `> [!question] Open Question` callout 사용
+- 반복 등장하거나 산출물로 이어질 질문은 Open Question 콜아웃에서 `25. Questions/` 의 Research Question 카드로 승격 (`sourceCallout` 으로 역추적)
 
 ### Layer 3: Schema (이 파일)
 
@@ -186,7 +188,7 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 같은 operation 을 추가할 때는 **반드시** `.claude/commands/{name}.md`, `.codex/commands/{name}.md`, `.agents/skills/{name}/SKILL.md` 를 함께 맞춘다.
 
 > [!warning] Parity Contract (CLAUDE.md ↔ AGENTS.md)
-> 이 두 스키마는 같은 규칙의 미러다. 다음 섹션은 **양쪽이 동일해야** 하며 한쪽만 편집 금지: (1) Cross-Agent Compatibility Matrix, (2) Frontmatter Standards (7 필수 + v2/v3/v4/v5 키), (3) Verification Properties (v5) 3 기준, (4) Callout Conventions. 편집 시 CLAUDE.md 와 AGENTS.md 를 함께 고치고 `/lint` + parity 체크리스트로 확인. `.codex/`·`.agents/` 는 untracked 라 diff 에 안 보이므로 수동 대조가 필요하다.
+> 이 두 스키마는 같은 규칙의 미러다. 다음 섹션은 **양쪽이 동일해야** 하며 한쪽만 편집 금지: (1) Cross-Agent Compatibility Matrix, (2) Frontmatter Standards (7 필수 + v2/v3/v4/v5/v6/v6.1 키), (3) Verification Properties (v5) 3 기준, (4) Callout Conventions. 편집 시 CLAUDE.md 와 AGENTS.md 를 함께 고치고 `/lint` + parity 체크리스트로 확인. `.codex/`·`.agents/` 는 untracked 라 diff 에 안 보이므로 수동 대조가 필요하다.
 
 | Operation | Claude command | Codex command | Codex skill | Notes |
 |-----------|----------------|---------------|-------------|-------|
@@ -210,6 +212,23 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 - qmd search (`qmd query`, `qmd vsearch`) is the preferred local retrieval fallback when MCP tools are unavailable.
 - Browser/Computer Use capture may be used for visible tab groups, but public share links, uploads, sends, and account-setting changes need action-time user confirmation.
 - Hooks: `.claude/hooks/*.sh` are wired via `.claude/settings.json` (uses `$CLAUDE_PROJECT_DIR`); `.codex/hooks/*.sh` are wired via `.codex/hooks.json` (set the `{PATH_TO_YOUR_LLM_WIKI}` placeholder to your absolute vault path). Both enforce `## Original Content` on Raw Sources and keep qmd fresh after writes.
+
+### 0. Capture Tabs / AI Research Capture (선행 조사 보존)
+
+`/capture-tabs` 는 ChatGPT, Gemini, Grok, Claude, Perplexity, 일반 source tab 으로 만든 Chrome 탭 그룹을 `00. Inbox/05. AI Research/` 에 Markdown research bundle 로 저장하는 **pre-ingest capture layer** 다.
+
+**Entrypoints**:
+- Claude command: `.claude/commands/capture-tabs.md`
+- Codex mirror: `.codex/commands/capture-tabs.md` + `.agents/skills/capture-tabs/SKILL.md`
+- Template: `90. Settings/Templates/Template_AI Research Capture.md`
+
+**규칙**:
+- 원문·복사본·export 는 `## Original Content` 아래에 보존한다.
+- 에이전트의 요약·불일치·Wiki 제안은 `## Agent Capture Notes` 아래에 둔다. 기존 `## Codex Capture Notes` 파일은 레거시 호환으로 인정한다.
+- 기본 저장 위치는 `00. Inbox/05. AI Research/YYYY-MM-DD-ai-research-{topic-slug}.md` 이다.
+- source URL, platform, visible model/account/workspace, capture method, capture limitation 을 기록한다.
+- 공개 share link 생성, 계정 설정 변경, 대화창 전송, 파일 업로드는 사용자 action-time confirmation 없이 금지한다.
+- `inbox-only`, `run-inbox`, `ingest-now` 중 다음 단계를 명시하고, `ingest-now` 는 `/ingest` 의 목적 질문과 메인 볼트 연결 검색을 그대로 따른다.
 
 ### 1. Ingest (새 자료 흡수)
 
@@ -238,6 +257,7 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 2. 정보 종합하여 답변 생성
 3. 답변 과정에서 발견한 gap이나 모순은 Wiki에 피드백
 4. 필요시 `30. Queries/`에 합성 결과 저장
+5. 반응형 답변을 넘어 능동적 논증 구성(thesis + 근거 + 반론)이 필요하면 같은 폴더에 `type: synthesis` 카드로 저장 (v6.1)
 
 ### 3. Lint / Health Check (자가 정화)
 
@@ -270,6 +290,34 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 - 원본 파일의 frontmatter에 `superseded-by: "[[새 파일]]"` 프로퍼티 추가
 - Wiki 페이지의 `source` 프로퍼티에 최신 버전 추가 (기존 참조도 유지)
 
+### 5. Verify (단일 페이지 검증, v5)
+
+`/verify {page}` — 한 Wiki 페이지를 3 기준 (지식요건해당성·정합성·확증가능성) 에 대해 검증.
+
+**Entrypoints**:
+- Claude command: `.claude/commands/verify.md`
+- Codex mirror: `.codex/commands/verify.md` + `.agents/skills/verify/SKILL.md`
+
+**규칙**:
+- `verificationStatus`, `verifiedAt`, `verifiedBy`, `claimType`, `evidenceScope`, `disputed` 를 기록한다.
+- source-backed 검증 없이 `explored: true` 로 바꾸지 않는다. 사용자의 명시 확인이 필요하다.
+- 충돌은 삭제하지 않고 `disputed: true` + `> [!warning] Disputed Claim` 으로 보존한다.
+- `confidence` 는 source count, source type, counter-evidence 를 기준으로 독립 재산정한다.
+
+### 6. Audit (전체 볼트 검증, v5)
+
+`/audit` — vault 전체를 3 기준으로 점검. 모든 페이지 개별 검증이 아니라 **drift pattern 발견 + 우선순위 큐 생성** 이 목표.
+
+**Entrypoints**:
+- Claude command: `.claude/commands/audit.md`
+- Codex mirror: `.codex/commands/audit.md` + `.agents/skills/audit/SKILL.md`
+
+**규칙**:
+- `/audit` 은 Wiki page 를 직접 수정하지 않는 read-only planning operation 이다.
+- MOC cluster 단위 consistency, high-confidence / stale unexplored / disputed page sampling 을 수행한다.
+- 결과가 substantial 하면 `30. Queries/YYYY-MM-DD-Q-vault-audit.md` 로 저장하고 `log.md` 에 기록한다.
+- Top 10 `/verify` queue 를 출력한다.
+
 ---
 
 ## Folder Structure
@@ -301,7 +349,8 @@ CMDS_LLM_Wiki/
 │   ├── 21. Concepts/
 │   ├── 22. Entities/
 │   ├── 23. Guides/
-│   └── 24. Maps/
+│   ├── 24. Maps/
+│   └── 25. Questions/      # Research Question 카드 (RQ-{slug}.md)
 ├── 30. Queries/            # 합성된 질의 결과
 ├── 70. Outputs/            # (옵션) 외부 도구 산출물 (Layer 4: tool outputs)
 │   ├── graphify/           # /graphify 결과 — YYYY-MM-DD-{topic}/ 단위
@@ -339,21 +388,21 @@ CMDS_LLM_Wiki/
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `type` | text | 노트 유형: `raw-source`, `wiki-page`, `query-result`, `moc`, `log` |
+| `type` | text | 노트 유형: `documentation`, `raw-source`, `wiki-page`, `research-question` (v6.1), `query-result`, `synthesis` (v6.1), `moc`, `inbox` (capture 단계 pre-ingest), `log` |
 | `aliases` | list | 대체 이름 |
 | `description` | text | English, 1-2 sentences for LLMs — **값은 항상 큰따옴표** (`description: "..."`) |
-| `author` | list | 작성자 (LLM인 경우 `Claude`) |
+| `author` | list | 작성자 (LLM인 경우 `Claude` / `Codex` / `Grok`) |
 | `date created` | datetime | ISO 8601 |
 | `date modified` | datetime | ISO 8601 |
 | `tags` | list | 관련 태그 |
 
 ### Provenance 프로퍼티 (v6 신설 — 항상 기록)
 
-에이전트가 생성·갱신하는 모든 콘텐츠 페이지(raw-source·wiki-page·query-result·moc·inbox) frontmatter 는 `author` 바로 뒤에 아래 2 키를 **항상** 포함한다. 목적: Claude Code·Codex·Grok 어떤 에이전트가 읽어도 "누가(role) · 어떤 모델(id) · 어떤 강도(effort)로 썼는가" 를 즉시 확인 — cross-agent provenance.
+에이전트가 생성·갱신하는 모든 콘텐츠 페이지(raw-source·wiki-page·research-question·query-result·synthesis·moc·inbox) frontmatter 는 `author` 바로 뒤에 아래 2 키를 **항상** 포함한다. 목적: Claude Code·Codex·Grok 어떤 에이전트가 읽어도 "누가(role) · 어떤 모델(id) · 어떤 강도(effort)로 썼는가" 를 즉시 확인 — cross-agent provenance.
 
 - `author`: **(기존 필수)** 역할/작성자 — `Claude` / `Codex` / `Grok` / `"[[{your-name}]]"` (사람).
 - `model`: **(v6 신설)** 상세 모델 id. 예: `claude-opus-4-8`, `claude-sonnet-5`, `gpt-5.4-codex` (Codex), `grok-4` (Grok). 여러 모델 기여 시 list.
-- `effort`: **(v6 신설)** 작성 시점의 추론 강도·모드. Claude: `low` / `medium` / `high` / `xhigh` / `max`. Codex/Grok: 가장 가까운 등가. 미상은 `default`.
+- `effort`: **(v6 신설)** 작성 시점의 추론 강도·모드. `low` / `medium` / `high` / `xhigh` / `max` 또는 타 에이전트 등가. 미상은 `default`.
 
 ```yaml
 author:
@@ -369,7 +418,7 @@ harness 정의 파일(`.claude/commands/*`, `.codex/commands/*`, `.agents/skills
 **Raw Source** (`type: raw-source`):
 - `source`: 원본 URL 또는 참조
 - `date ingested`: 인제스트 일시 (Book Ingest stub 의 경우 scaffold 날짜)
-- `category`: Articles / Papers / Books / Transcripts / Clippings
+- `category`: Articles / Papers / Books / Transcripts / Clippings / AI Research
 - `status`: **(v2 신설)** `ingested` (기본) / `stub` (Book Ingest 미독서) / `reading` (독서 중) / `completed` (독서 완료 + Wiki 컴파일 완료). 표준 ingest 는 `ingested` 만 사용.
 - `collectionPurpose`: **(필수, v2 신설)** 사용자가 명시한 수집 목적 — 미래의 나에게 보내는 편지. 7 재활용 축 중 하나 이상. 예: `"PhD 연구 — AI readiness 측정 도구"`, `"컨설팅 deliverable — 기업 임원교육 사례"`
 - `mainVaultRelated`: **(v2 신설)** ingest 시 메인 볼트에서 검색된 유사 노트 2~5개 — `[노트명](obsidian://open?vault=...)` 클릭 가능 링크 (ingest Step 0-a 에서 stat 검증한 값만 사용)
@@ -403,14 +452,50 @@ harness 정의 파일(`.claude/commands/*`, `.codex/commands/*`, `.agents/skills
 - `source`: 참조한 Wiki 페이지
 - `reusableFor`: **(v2 신설, 선택)** 7 재활용 축 중 어디에 쓰일지
 
+**Synthesis** (`type: synthesis`, v6.1 신설 — 능동 논증층):
+- `30. Queries/` 에 query-result 와 **같은 폴더**, `type` 으로만 구분 (폴더 분할 안 함 — 결정 근거 아래). Query 가 *반응형 답변* 이면 Synthesis 는 *능동적 논증 구성*: thesis statement + 근거 claim(각 인용) + 반론 + gap + 타깃 산출물.
+- `thesis`: **(필수)** 이 합성이 방어하는 한 문장 주장
+- `targetVenue`: 타깃 산출물·채널 (예: `"논문"`, `"책 챕터"`, `"블로그 시리즈"`, `"제품 결정 문서"`)
+- `supports`: 근거가 되는 Wiki 페이지·Research Question `[[link]]` 목록
+- `counters`: 반론·경쟁 가설 (본문 `> [!warning]` 로도 보존)
+- `cites`: **(권장)** 인용 문헌 citekey 목록 — Citation Standard(옵션) 채택 시 `## References` 의 원천
+- `reusableFor`: 7 재활용 축
+- 공통 7 필수 + `## Thesis` / `## Argument` (claim + 근거) / `## Counter-arguments` / `## Gap` / (`## References`) 섹션.
+
+> [!info] 폴더 결정 — `30. Queries/` 를 쪼개지 않는다
+> Query 와 Synthesis 는 둘 다 "compiled wiki 를 발화한 산출물"(Karpathy: 좋은 답을 위키로 역피드백)의 두 flavor 다 — `type` 필드로 깔끔히 구분된다. Synthesis 가 대량 축적되면 그때 하위폴더로 분리 (파일명 기반 wikilink 라 이동은 저렴). **YAGNI — 지금은 flat + `type: synthesis`.**
+
 **MOC** (`type: moc`):
 - `topic`: 주제 영역
 - `related`: 하위 MOC 또는 관련 MOC
 
+**Research Question** (`type: research-question`, v6.1 신설 — 질문의 1급 객체화):
+- 볼트의 5번째 Wiki 카드 타입. `20. Wiki/25. Questions/` 에 저장. 파일명 `RQ-{slug}.md`. in-page `> [!question] Open Question` 콜아웃을 **1급 카드로 승격** — 반복 등장하거나 산출물(논문·책·블로그 시리즈·제품 결정)로 이어질 질문을 first-class object 로 다뤄 답이 아니라 질문 자체를 추적한다.
+- `status`: **(필수)** `open` / `investigating` / `answered` / `parked` / `superseded`
+- `questionType`: **(필수)** `descriptive` / `causal` / `comparative` / `methodological` / `normative` / `design`
+- `feedsInto`: **(필수)** 어느 산출물로 흘러가나 (예: `"논문 2장"`, `"블로그 시리즈 — AI 도입 가이드"`, `"제품 로드맵 결정"`)
+- `evidenceFor` / `evidenceAgainst`: 지지·반대 증거 — `[[wiki page]]` (+ Citation Standard 채택 시 `[@citekey]`) 혼합
+- `hypotheses`: 후보 답변 목록
+- `cites`: **(권장)** 인용 문헌 citekey 목록 (Citation Standard 채택 시)
+- `sourceCallout`: 이 질문이 승격돼 나온 원본 wiki 페이지 `[[link]]` (역추적)
+- `related`: 관련 RQ·concept
+- 공통 7 필수 + `explored`(기본 false). RQ 는 claim 이 아니라 질문이므로 v5 `claimType`/`verificationStatus` 대신 위 `status` 를 쓴다.
+
 ### 새 YAML 키는 camelCase
 
-- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`, `claimType`, `evidenceScope`, `verificationStatus`, `verifiedAt`, `verifiedBy`, `disputed`, `model`, `effort`
-- ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number`, `explored_by`, `claim_type`, `verification-status` — camelCase 네이밍 컨벤션 위반
+- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`, `claimType`, `evidenceScope`, `verificationStatus`, `verifiedAt`, `verifiedBy`, `disputed`, `model`, `effort`, `citekey`, `cites`, `questionType`, `feedsInto`, `evidenceFor`, `evidenceAgainst`, `sourceCallout`, `thesis`, `targetVenue`, `supports`, `counters`
+- ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number`, `explored_by`, `claim_type`, `verification-status`, `cite_key`, `feeds_into` — camelCase 네이밍 컨벤션 위반
+
+### Citation Standard (v6.1 — 옵션, Zotero-ready 인용 규약)
+
+논문·책·리포트처럼 **엄밀한 인용이 필요한 산출물**을 목표로 하는 사용자를 위한 옵션 규약이다. 채택하지 않아도 볼트 운영에는 지장 없다 — Research Question / Synthesis 의 `cites` 는 이 규약 채택 시에만 채운다. 진리 원천은 **Zotero (BetterBibTeX)** 이며, Wiki 는 citekey 만 참조 → 나중에 Zotero `.bib` export 가 Pandoc/Obsidian 에서 formatted reference 로 자동 렌더.
+
+- **Citekey 규약**: BetterBibTeX 표준 `authYearShorttitle` (예: `yang2024sweAgent`, `wu2024longMemEval`).
+- **Inline citation**: **Pandoc/CSL 스타일 `[@citekey]`** (필요 시 `[@citekey, p. 12]`) — Zotero·Pandoc 네이티브라 export 시 자동 변환.
+- **두 링크의 분리**: 내부 지식 참조는 `[[wikilink]]` ("우리가 컴파일한 X 지식 참조"), 외부 문헌 인용은 `[@citekey]` ("문헌 X 가 확립함"). 둘은 공존한다. 벤더/2차 소스가 아니라 **primary work** 를 citekey 로 가리킨다.
+- **`cites:` frontmatter**: 카드가 인용한 citekey 목록. `## References` 의 원천.
+- **`## References` 섹션**: 인용 문헌을 나열. Zotero 연동 전에는 수기 full citation (`- [@yang2024sweAgent] Yang et al. (2024). SWE-agent... NeurIPS 2024. arXiv:2405.15793`), 연동 후 Pandoc 이 자동 생성.
+- **`citekey:` on Raw Source**: 어떤 raw source 가 특정 primary work 의 ingested 사본이면 그 raw source frontmatter 에 `citekey` 를 달아 `[[raw source]]`(읽은 사본) ↔ `[@citekey]`(정식 인용)를 이중 연결.
 
 ### Quality Control Properties (v4)
 
@@ -462,6 +547,7 @@ v4 Exploration Gate 가 "누가 읽었나"만 추적하던 한계를 보완 — 
 | Wiki Page — Latin Person / Handle | 원어 표기 그대로 | `Andrej Karpathy.md`, `kepano (Steph Ango).md` (핸들 + 실명) |
 | Query Result | `YYYY-MM-DD-Q-{question}.md` | `2026-04-10-Q-How-does-RLHF-work.md` |
 | MOC | `MOC-{Topic}.md` | `MOC-Large Language Models.md` |
+| Research Question | `RQ-{slug}.md` (`20. Wiki/25. Questions/`) | `RQ-agent-memory-architecture.md` |
 | Log | `log.md` (단일 파일) | — |
 
 ### CJK Person Naming Rule

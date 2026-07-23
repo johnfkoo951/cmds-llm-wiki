@@ -71,11 +71,12 @@ This file is the **Schema Layer** of this LLM Wiki vault. It governs how LLMs (C
 ├── 21. Concepts/     # 추상 개념
 ├── 22. Entities/     # 사람, 조직, 제품
 ├── 23. Guides/       # How-to, 튜토리얼
-└── 24. Maps/         # MOC (Map of Content)
+├── 24. Maps/         # MOC (Map of Content)
+└── 25. Questions/    # Research Question 카드 (RQ-{slug}.md)
 ```
 
 **규칙**:
-- 모든 페이지는 `type: wiki-page` frontmatter 사용
+- `21~24` 페이지는 `type: wiki-page`, `25. Questions` 카드는 `type: research-question` frontmatter 사용
 - 관련 Raw Source를 `source` 프로퍼티로 역참조
 - 모든 주장에 출처 명시 (Wiki 내 링크 또는 Raw Source 참조)
 - Cross-reference: 관련 개념은 반드시 `[[wikilink]]`로 연결
@@ -146,8 +147,9 @@ This file is the **Schema Layer** of this LLM Wiki vault. It governs how LLMs (C
 │   ├── 21. Concepts/
 │   ├── 22. Entities/
 │   ├── 23. Guides/
-│   └── 24. Maps/
-├── 30. Queries/            # 합성된 질의 결과
+│   ├── 24. Maps/
+│   └── 25. Questions/      # Research Question 카드
+├── 30. Queries/            # 합성된 질의 결과 + synthesis
 ├── 80. References/         # 첨부 파일
 │   └── Attachments/
 └── 90. Settings/           # 템플릿
@@ -164,7 +166,7 @@ This file is the **Schema Layer** of this LLM Wiki vault. It governs how LLMs (C
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `type` | text | `raw-source`, `wiki-page`, `query-result`, `moc`, `log` |
+| `type` | text | `raw-source`, `wiki-page`, `research-question`, `query-result`, `synthesis`, `moc`, `log` |
 | `aliases` | list | 대체 이름 |
 | `description` | text | English, 1-2 sentences |
 | `author` | list | 작성자 (LLM인 경우 `Claude`) |
@@ -193,6 +195,19 @@ This file is the **Schema Layer** of this LLM Wiki vault. It governs how LLMs (C
 - `topic`: 주제 영역
 - `related`: 하위 MOC 또는 관련 MOC
 
+**Synthesis** (`type: synthesis`, `30. Queries/` 에 query-result 와 동거):
+- `thesis`: 이 합성이 방어하는 한 문장 주장 (필수)
+- `targetVenue`: 타깃 산출물·채널 (논문 / 책 챕터 / 블로그 시리즈 / 제품 결정)
+- `supports`: 근거 Wiki 페이지·RQ `[[link]]` 목록
+- `counters`: 반론·경쟁 가설
+
+**Research Question** (`type: research-question`, `20. Wiki/25. Questions/`):
+- `status`: open / investigating / answered / parked / superseded (필수)
+- `questionType`: descriptive / causal / comparative / methodological / normative / design (필수)
+- `feedsInto`: 어느 산출물로 흘러가나 (필수)
+- `sourceCallout`: 승격돼 나온 원본 wiki 페이지 `[[link]]`
+- `explored`: 기본 false
+
 ---
 
 ## File Naming Convention
@@ -203,6 +218,7 @@ This file is the **Schema Layer** of this LLM Wiki vault. It governs how LLMs (C
 | Wiki Page | `{Topic Name}.md` | `Transformer.md`, `OpenAI.md` |
 | Query Result | `YYYY-MM-DD-Q-{question}.md` | `2026-04-13-Q-How-does-RLHF-work.md` |
 | MOC | `MOC-{Topic}.md` | `MOC-Large Language Models.md` |
+| Research Question | `RQ-{slug}.md` (`20. Wiki/25. Questions/`) | `RQ-agent-memory-architecture.md` |
 
 ---
 

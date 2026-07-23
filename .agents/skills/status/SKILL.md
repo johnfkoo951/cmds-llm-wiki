@@ -23,6 +23,7 @@ Show the current state of the wiki at a glance.
    - `20. Wiki/22. Entities/*.md` → entity count
    - `20. Wiki/23. Guides/*.md` → guide count
    - `20. Wiki/24. Maps/*.md` → MOC count
+   - `20. Wiki/25. Questions/*.md` → research question count
    - `30. Queries/*.md` → query count
    - `00. Inbox/**/*` → pending inbox items (scan all subfolders)
 4. Check for discrepancies between index.md counts and actual counts

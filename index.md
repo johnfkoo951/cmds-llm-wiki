@@ -3,7 +3,7 @@ type: moc
 aliases:
   - Wiki Index
   - Master Index
-description: Master index of the LLM Wiki. Central navigation hub listing all Wiki pages organized by category (Concepts, Entities, Guides, Maps). Updated automatically on every ingest operation.
+description: "Master index of the LLM Wiki. Central navigation hub listing all Wiki pages organized by category (Concepts, Entities, Guides, Maps, Questions). Updated automatically on every ingest operation."
 author:
   - "[[{your-name}]]"
 date created: {YYYY-MM-DD}
@@ -74,6 +74,12 @@ status: active
 
 - [[MOC-Knowledge Management]] — 지식 관리 개념, 패턴, 역사 종합
 - [[MOC-LLM Wiki Guide]] — 이 볼트 사용 온보딩 가이드
+
+### Questions (RQ)
+
+> 1급 연구 질문 카드 (`RQ-{slug}.md`) — Open Question 콜아웃의 승격 대상
+
+(첫 Research Question 카드를 만들면 여기에 기록됩니다.)
 
 ---
 
