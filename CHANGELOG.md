@@ -4,6 +4,31 @@
 
 ---
 
+## v1.8.0 — 2026-07-23 (Description Rule + v6 Provenance schema)
+
+**Source**: 운영 볼트(CMDS_LLM_Wiki) schema v6 (2026-07-05) 에서 검증된 두 규칙을 sanitize 하여 이식. Schema/template edits were staged in the canonical on 2026-07-07; this release publishes them.
+
+### Added — Description Rule (CLAUDE.md + AGENTS.md CRITICAL RULES)
+
+- **`description` 값은 항상 큰따옴표** — 값에 콜론(`: `)·엠대시·괄호·`#`·wikilink 가 들면 unquoted YAML 은 파싱 에러로 노트 전체가 렌더 실패하는 실전 사고 클래스를 규칙화. 빈 값도 `description: ""`.
+- Pre-Flight Checklist, Essential (Post-Compact) #6, 필수 프로퍼티 7개 표가 모두 double-quoted 요구사항을 반영하도록 갱신.
+- 두 스키마 파일의 자기 frontmatter `description` 도 큰따옴표로 전환 (dogfooding).
+
+### Added — Provenance Rule (v6): `model` + `effort`
+
+- 에이전트가 쓰는 모든 콘텐츠 페이지(raw-source·wiki-page·query-result·moc·inbox)는 `author` 바로 뒤에 **`model`(상세 세션 모델 id) + `effort`(추론 강도)** 를 항상 기록 — Claude Code·Codex·Grok cross-agent provenance.
+- 새 "Provenance 프로퍼티 (v6 신설)" 섹션 + Essential #9 + Pre-Flight 항목 추가. camelCase 허용 키 목록에 `model`, `effort` 추가.
+- harness 정의 파일(`.claude/commands/*`, `.codex/commands/*`, `.agents/skills/*`)의 자기 frontmatter 는 provenance 면제 (슬래시 커맨드/스킬 파서 혼선 방지) — Description Rule 만 적용.
+
+### Changed — Templates ×5 (schema alignment)
+
+- `Template_Raw Source` / `Template_Wiki Page` / `Template_Query Result` / `Template_MOC` / `Template_AI Research Capture`: `description:` → `description: ""` (quoted empty) + `author` 뒤에 `model:` / `effort:` 키 추가 — 템플릿으로 생성되는 페이지가 생성 시점부터 v6 스키마를 만족.
+
+### Known gaps (carried over from v1.7.1)
+
+- Kit `CLAUDE.md` Operations chapter still lacks the Capture Tabs / Verify / Audit sections that kit `AGENTS.md` already has (asymmetry — port planned).
+- `/autoresearch` remains operating-vault-only (Generator half of the Generator-Verifier loop).
+
 ## v1.7.1 — 2026-07-03 (hook runtime fixes + broken template dependency + sanitization)
 
 Patch release driven by the 2026-07-03 full satellite system-files audit (multi-agent, adversarially verified). No schema or feature changes.

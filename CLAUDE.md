@@ -3,17 +3,17 @@ type: documentation
 aliases:
   - LLM Wiki Schema
   - Wiki Harness
-description: Schema and harness document for the CMDS LLM Wiki vault. Defines the 3-layer architecture (Raw Sources / Wiki / Schema), ingest-query-lint operations, file conventions, and frontmatter standards. This is the single source of truth for LLM behavior in this vault.
+description: "Schema and harness document for the CMDS LLM Wiki vault. Defines the 3-layer architecture (Raw Sources / Wiki / Schema), ingest-query-lint operations, file conventions, and frontmatter standards. This is the single source of truth for LLM behavior in this vault."
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-07-01
+date modified: 2026-07-07
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.7.1"
+version: "1.8.0"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -37,6 +37,18 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cla
 - YAML 내 wikilinks는 반드시 큰따옴표: `"[[link]]"`
 - Markdown body에서는 따옴표 없이: `[[link]]`
 
+### Description Rule
+- **`description` 값은 항상 큰따옴표**로 감쌀 것 — 값에 콜론(`: `)·엠대시(`—`)·괄호·`#`·wikilink 등이 들면 unquoted YAML 은 파싱 에러로 노트 전체가 렌더 실패한다.
+	- ✅ `description: "RLHF: 인간 피드백 기반 정렬 (3단계)."`
+	- ❌ `description: RLHF: 인간 피드백 기반 정렬 (3단계).`
+- 값 안에 `"` 가 있으면 `\"` 이스케이프하거나 문장을 재작성. 빈 값도 `description: ""`.
+
+### Provenance Rule (author + model + effort)
+- 에이전트가 쓰는 모든 콘텐츠 페이지(raw-source·wiki-page·query-result·moc·inbox)는 `author` 바로 뒤에 **`model`·`effort` 를 항상 기록** — Claude Code·Codex·Grok 가 누가·어떤 모델·어떤 강도로 썼는지 교차 확인.
+	- `model`: 상세 모델 id (`claude-opus-4-8`, `claude-sonnet-5`, `gpt-5.4-codex`, `grok-4` …). 복수 기여 시 list.
+	- `effort`: 추론 강도/모드 (`low`/`medium`/`high`/`xhigh`/`max` 또는 타 에이전트 등가). 미상은 `default`.
+	- harness 정의 파일(command/skill)의 자기 frontmatter 엔 넣지 않음 — Description Rule 만 적용.
+
 ### Mermaid Rules
 - **모든 노드/엣지 라벨은 큰따옴표**로 감쌀 것 — 한글·특수문자 안정성
 	- ✅ `A["시작"] --> B{"선택?"}`
@@ -54,7 +66,8 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cla
 - [ ] Mermaid node/edge labels are quoted: `A["label"]`
 - [ ] Arrays use proper format: `- value`
 - [ ] Dates use ISO 8601: `YYYY-MM-DD`
-- [ ] `description` field present and in English
+- [ ] `description` field present, in English, and **double-quoted** (`description: "..."`)
+- [ ] Agent-written content pages carry provenance: `author` + `model` + `effort`
 - [ ] File saved in correct layer folder
 
 ---
@@ -67,9 +80,10 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cla
 > 3. **Mermaid 라벨: 큰따옴표** `A["label"]` / `[/` 로 시작 금지
 > 4. **3 Layers**: Raw Sources (immutable) → Wiki (LLM-maintained) → Schema (this file)
 > 5. **Operations**: Capture Tabs → Inbox → Ingest → Query → Verify/Audit → Lint (+Status/Reindex/Refresh). Codex/Claude 양 harness 공유 — `.codex/commands/` + `.agents/skills/` mirror `.claude/commands/`.
-> 6. **필수 프로퍼티 7개**: type, aliases, description (English), author, date created, date modified, tags
+> 6. **필수 프로퍼티 7개**: type, aliases, description (English, **항상 큰따옴표**), author, date created, date modified, tags
 > 7. **Core Context 먼저 읽기**: 모든 operation 전에 [[Core Context]] 로 사용자 목적·철학 정렬
 > 8. **미래의 나에게 보내는 편지**: `/ingest` 는 반드시 수집 목적 1회 질문 → `collectionPurpose` 프로퍼티에 기록
+> 9. **Provenance 항상 (v6)**: 에이전트 작성 페이지는 `author` + `model`(상세 모델 id) + `effort`(추론 강도) 기록 — Claude/Codex/Grok 교차 참조
 
 ---
 
@@ -327,11 +341,28 @@ CMDS_LLM_Wiki/
 |----------|------|-------------|
 | `type` | text | 노트 유형: `raw-source`, `wiki-page`, `query-result`, `moc`, `log` |
 | `aliases` | list | 대체 이름 |
-| `description` | text | English, 1-2 sentences for LLMs |
+| `description` | text | English, 1-2 sentences for LLMs — **값은 항상 큰따옴표** (`description: "..."`) |
 | `author` | list | 작성자 (LLM인 경우 `Claude`) |
 | `date created` | datetime | ISO 8601 |
 | `date modified` | datetime | ISO 8601 |
 | `tags` | list | 관련 태그 |
+
+### Provenance 프로퍼티 (v6 신설 — 항상 기록)
+
+에이전트가 생성·갱신하는 모든 콘텐츠 페이지(raw-source·wiki-page·query-result·moc·inbox) frontmatter 는 `author` 바로 뒤에 아래 2 키를 **항상** 포함한다. 목적: Claude Code·Codex·Grok 어떤 에이전트가 읽어도 "누가(role) · 어떤 모델(id) · 어떤 강도(effort)로 썼는가" 를 즉시 확인 — cross-agent provenance.
+
+- `author`: **(기존 필수)** 역할/작성자 — `Claude` / `Codex` / `Grok` / `"[[{your-name}]]"` (사람).
+- `model`: **(v6 신설)** 상세 모델 id. 예: `claude-opus-4-8`, `claude-sonnet-5`, `gpt-5.4-codex` (Codex), `grok-4` (Grok). 여러 모델 기여 시 list.
+- `effort`: **(v6 신설)** 작성 시점의 추론 강도·모드. Claude: `low` / `medium` / `high` / `xhigh` / `max`. Codex/Grok: 가장 가까운 등가. 미상은 `default`.
+
+```yaml
+author:
+  - Claude
+model: claude-opus-4-8
+effort: high
+```
+
+harness 정의 파일(`.claude/commands/*`, `.codex/commands/*`, `.agents/skills/*`)의 **자기 frontmatter 에는 provenance 를 넣지 않는다** (슬래시 커맨드/스킬 파서 혼선 방지) — Description Rule(큰따옴표)만 적용.
 
 ### Layer별 추가 프로퍼티
 
@@ -378,7 +409,7 @@ CMDS_LLM_Wiki/
 
 ### 새 YAML 키는 camelCase
 
-- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`, `claimType`, `evidenceScope`, `verificationStatus`, `verifiedAt`, `verifiedBy`, `disputed`
+- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`, `claimType`, `evidenceScope`, `verificationStatus`, `verifiedAt`, `verifiedBy`, `disputed`, `model`, `effort`
 - ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number`, `explored_by`, `claim_type`, `verification-status` — camelCase 네이밍 컨벤션 위반
 
 ### Quality Control Properties (v4)
