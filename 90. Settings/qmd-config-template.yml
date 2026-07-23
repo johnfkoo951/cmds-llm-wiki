@@ -46,3 +46,9 @@ collections:
     pattern: "**/*.md"
     context:
       "/": "Synthesized query results — compounding wiki artifacts per Karpathy's pattern."
+
+  paper_analyses:
+    path: {PATH_TO_YOUR_LLM_WIKI}/40. Paper Analyses
+    pattern: "**/*.md"
+    context:
+      "/": "12-step paper analyses — one {citekey}/ folder per paper: hub (S00) + knowledge atoms (S02-S12) with verbatim quotes for citation and fact-checking."

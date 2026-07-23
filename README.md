@@ -154,10 +154,12 @@ cmds-llm-wiki/
 │   ├── 24. Maps/                # 예시 MOC
 │   └── 25. Questions/           # Research Question 카드 (빈 폴더, RQ-{slug}.md)
 ├── 30. Queries/                 # 합성된 질의 결과 + synthesis (빈 폴더, /query 결과로 채워짐)
+├── 40. Paper Analyses/          # 논문 12단 분석 — {citekey}/ 폴더에 허브 S00 + 지식 원자 (v1.10.0+)
 ├── 80. References/Attachments/  # 모든 이미지 일원화
 └── 90. Settings/
-    ├── Templates/               # Obsidian 노트 템플릿 (7종)
-    ├── Sharing/                 # 18 Web Clipper JSON + Setup Guide.md + CLAUDE-Template.md
+    ├── Templates/               # Obsidian 노트 템플릿 (11종) + 12-Step Analysis Schemes
+    ├── Sharing/                 # 18 Web Clipper JSON + Setup Guide + Paper Ingest Guide + CLAUDE-Template
+    ├── Scripts/                 # p7_verify.py — Paper Mode 검증 게이트
     └── qmd-config-template.yml  # 로컬 검색 엔진 설정
 ```
 

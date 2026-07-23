@@ -8,7 +8,7 @@ description: Show the current state of the Wiki: counts, backlog, Core Context f
 
 1. Read `index.md` stats.
 2. Read the last 5 relevant entries from `log.md`.
-3. Count actual files in Raw Sources, Wiki subfolders, Maps, Queries, and Inbox.
+3. Count actual files in Raw Sources, Wiki subfolders, Maps, Queries, Paper Analyses (citekey folders), and Inbox.
 4. Check `collectionPurpose` coverage in Raw Sources.
 5. Check `mainVaultRelated` coverage in Wiki pages.
 6. Check `explored` coverage in Wiki pages.

@@ -56,4 +56,4 @@ Inbox는 스코프 제외 (아직 ingest 전 staging).
 
 - Auto-reindex hook: `.codex/hooks/qmd-reindex.sh` (PostToolUse, debounced 8초)
 - Config: `~/.config/qmd/index.yml` (template: `90. Settings/qmd-config-template.yml`)
-- Guide: → CMDSPACE `40. Docs/41. Official Docs/qmd 사용 가이드 (CMDS).md`
+- Guide: → qmd README — https://github.com/tobi/qmd

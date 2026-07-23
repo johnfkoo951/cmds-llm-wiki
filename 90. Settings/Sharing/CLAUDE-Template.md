@@ -150,6 +150,7 @@ This file is the **Schema Layer** of this LLM Wiki vault. It governs how LLMs (C
 │   ├── 24. Maps/
 │   └── 25. Questions/      # Research Question 카드
 ├── 30. Queries/            # 합성된 질의 결과 + synthesis
+├── 40. Paper Analyses/     # 논문 12단 분석 ({citekey}/ 허브 S00 + 원자)
 ├── 80. References/         # 첨부 파일
 │   └── Attachments/
 └── 90. Settings/           # 템플릿
@@ -166,7 +167,7 @@ This file is the **Schema Layer** of this LLM Wiki vault. It governs how LLMs (C
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `type` | text | `raw-source`, `wiki-page`, `research-question`, `query-result`, `synthesis`, `moc`, `log` |
+| `type` | text | `raw-source`, `wiki-page`, `research-question`, `query-result`, `synthesis`, `moc`, `paper-hub`, `paper-analysis`, `log` |
 | `aliases` | list | 대체 이름 |
 | `description` | text | English, 1-2 sentences |
 | `author` | list | 작성자 (LLM인 경우 `Claude`) |
@@ -208,6 +209,11 @@ This file is the **Schema Layer** of this LLM Wiki vault. It governs how LLMs (C
 - `sourceCallout`: 승격돼 나온 원본 wiki 페이지 `[[link]]`
 - `explored`: 기본 false
 
+**Paper Hub / Paper Analysis** (`type: paper-hub` / `paper-analysis`, `40. Paper Analyses/{citekey}/`):
+- 허브: `paperType` (6유형) · `citekey` · `targetManuscript` (`"[[RQ-…]]"` 또는 none) 필수
+- 원자: `analysisStep` (2~12) · `analysisStepName` · `paperHub` wikilink · `citekey` 필수
+- 상세는 메인 스키마 + `Paper Ingest Guide` 참고
+
 ---
 
 ## File Naming Convention
@@ -219,6 +225,7 @@ This file is the **Schema Layer** of this LLM Wiki vault. It governs how LLMs (C
 | Query Result | `YYYY-MM-DD-Q-{question}.md` | `2026-04-13-Q-How-does-RLHF-work.md` |
 | MOC | `MOC-{Topic}.md` | `MOC-Large Language Models.md` |
 | Research Question | `RQ-{slug}.md` (`20. Wiki/25. Questions/`) | `RQ-agent-memory-architecture.md` |
+| Paper Hub / 원자 | `{Surname} {Year} - S{NN} {제목}.md` (`40. Paper Analyses/{citekey}/`) | `Wu 2024 - S00 Hub.md` |
 
 ---
 

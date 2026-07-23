@@ -4,6 +4,46 @@
 
 ---
 
+## v1.10.0 — 2026-07-23 (Paper Ingest Mode — 12-step paper atomization)
+
+**Source**: 운영 볼트 schema v6.2 의 Paper Ingest Mode 를 sanitize 하여 이식. v1.9.0 에서 "학술 전용 버티컬이라 의도적 제외" 했던 항목을 **사용자 결정으로 포함** — RQ 카드 (v1.9.0) 와 결합해 논문 → 질문 → 논증의 전체 파이프라인이 킷 안에서 완결된다.
+
+### Added — Paper Ingest Mode (`/ingest` 자동 감지)
+
+- **감지**: DOI/arXiv/저널 URL · Abstract+References 구조 PDF · `00. Inbox/02. Papers/` → Standard 대신 **논문-스코프 12단 분석** (1 Raw Source + 1 Paper Hub + 지식 원자 30~100+ + Wiki 승격). 질문 예산 2개 (P-0 목적/RQ, P-1 유형).
+- **P-0 → P-7 파이프라인 리소스**: `.agents/skills/ingest/resources/paper-ingest.md` (progressive disclosure — 논문 감지 시에만 로드). scope guard 는 개인 도메인 레지스트리 대신 **Core Context 정렬**로 일반화, 모선 단계는 Mode B 옵션.
+- **ingest 3-surface 포인터**: `.claude/commands/ingest.md` + `.codex/commands/ingest.md` (폴백 = 단일 실행 중요도순) + `.agents/skills/ingest/SKILL.md`.
+
+### Added — 12-Step Analysis Schemes + 신규 타입 2종
+
+- `90. Settings/Templates/12-Step Analysis Schemes.md` — 6유형 (quantitative / qualitative / theory-concept / mixed-methods / scale-development / meta-analysis) × 12 좌표 (S01 CITATION ~ S12 WRITING VALUE) 통합 스펙 + Coverage & Exposition Contract + 원자 분해 규칙 + Decomposition Heuristics.
+- `type: paper-hub` (S00 허브 — paperType·citekey·doi·targetManuscript) + `type: paper-analysis` (지식 원자 — analysisStep 2~12·analysisStepName·paperHub). 원자는 `claimType`/`evidenceScope` 면제 — 검증은 p7 인용 충실도로 대체.
+- 새 폴더 `40. Paper Analyses/{citekey}/`. Wiki Page `layer` 확장: `theory` / `method` / `scale`.
+
+### Added — Templates ×4 (7 → 11) + 검증 스크립트
+
+- `Template_Paper Hub` (Coverage Map·Step Map·Atom Catalog) / `Template_Paper Analysis Note` (Analysis Context + 쉬운 도입→정밀 해설→원문 근거 verbatim quote) / `Template_Atomization SPEC` (팬아웃 배포용 작업 명세) / `Template_Scale Page` (measuredConstruct·itemCount + Psychometrics 표 + 저작권 콜아웃).
+- `90. Settings/Scripts/p7_verify.py` — P-7 기계 게이트: YAML·좌표·provenance·인용 전수 verbatim·Coverage·Atom Catalog↔파일 대조. ALL PASS 가 통과 조건 (서브에이전트 자체검증은 게이트 아님).
+
+### Added — Paper Ingest Guide (사용자 매뉴얼)
+
+- `90. Settings/Sharing/Paper Ingest Guide.md` — 12단계 (S01~S12) 공통 골격 + 6유형별 변형 + 산출물 구조 + 인용 규율 + RQ 연계 + 실행 전략 + Zotero 옵션 + FAQ 를 사람 독자용으로 해설.
+
+### Changed
+
+- 스키마 (CLAUDE.md ↔ AGENTS.md parity): type 목록 + provenance 대상 (×2곳) + Layer별 프로퍼티 (Paper Hub/Analysis 블록) + 폴더 트리 (40 + Scripts) + File Naming 3행 + Callout 2종 (Analysis Context·quote) + camelCase 키 8종 (`paperType`·`analysisStep`·`analysisStepName`·`paperHub`·`targetManuscript`·`doi`·`measuredConstruct`·`itemCount`) + Citation Standard 에 "Paper Mode 는 citekey 항상 사용" 명시.
+- `/status` 3-surface 에 Paper Analyses 카운트, `index.md` 에 Paper Analyses (허브만) nav 섹션, qmd config 에 `paper_analyses` 컬렉션, README/Setup Guide/CLAUDE-Template/kit 내부 문서 트리·카운트 정합 (6→7 폴더, 7→11 템플릿).
+
+### Kit adaptations (운영 볼트와 의도적으로 다른 점)
+
+- P-0.1 도메인 가드: 운영 볼트의 9-도메인 레지스트리 → **Core Context §2 재활용 축 정렬 확인**으로 일반화.
+- Zotero Tier-0 는 명시적 **옵션** (미사용자는 provisional citekey 경로 완결).
+- 운영 실증 사례 참조 (특정 논문 허브 wikilink) 는 수치만 남기고 제거.
+
+### Known gaps
+
+- `/autoresearch` 는 여전히 운영 볼트 전용 (v2.0 후보). `/lint` 는 RQ/citation/paper 커버리지 리포팅 미지원 (후속 마이너 후보).
+
 ## v1.9.1 — 2026-07-23 (docs: RQ/Synthesis usage guide + onboarding next-steps)
 
 Docs-only patch — no schema, template, or harness behavior changes.
