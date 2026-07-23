@@ -13,10 +13,12 @@ capture_method:
 capture_status: "captured"
 captureMode: "mixed"
 collectionPurpose: 
-description: 
+description: ""
 author:
   - "[[{your-name}]]"
   - "{Agent}"
+model: 
+effort: 
 date created: <% tp.date.now("YYYY-MM-DD") %>
 date modified: <% tp.date.now("YYYY-MM-DD") %>
 date_clipped: <% tp.date.now("YYYY-MM-DD") %>

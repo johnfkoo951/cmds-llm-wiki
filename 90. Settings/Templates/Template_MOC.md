@@ -2,9 +2,11 @@
 type: moc
 aliases:
   - <% tp.file.title %>
-description: 
+description: ""
 author:
   - Claude
+model: 
+effort: 
 date created: <% tp.date.now("YYYY-MM-DDTHH:mm") %>
 date modified: <% tp.date.now("YYYY-MM-DDTHH:mm") %>
 tags:

@@ -2,9 +2,11 @@
 type: raw-source
 aliases:
   - <% tp.file.title %>
-description: 
+description: ""
 author:
   - "[[{your-name}]]"
+model: 
+effort: 
 date created: <% tp.date.now("YYYY-MM-DDTHH:mm") %>
 date modified: <% tp.date.now("YYYY-MM-DDTHH:mm") %>
 date ingested: <% tp.date.now("YYYY-MM-DDTHH:mm") %>
