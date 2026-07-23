@@ -63,7 +63,8 @@ status: active
 ├── 21. Concepts/     # 추상 개념 (Attention, Transformer, RLHF, ...)
 ├── 22. Entities/     # 사람, 조직, 제품 (OpenAI, Karpathy, GPT-4, ...)
 ├── 23. Guides/       # How-to, 튜토리얼, 실전 가이드
-└── 24. Maps/         # MOC (Map of Content), 주제별 인덱스
+├── 24. Maps/         # MOC (Map of Content), 주제별 인덱스
+└── 25. Questions/    # Research Question — 1급 연구 질문 카드
 ```
 
 - **소유자**: LLM이 전적으로 관리

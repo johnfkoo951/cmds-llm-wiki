@@ -151,11 +151,12 @@ cmds-llm-wiki/
 │   ├── 21. Concepts/            # 예시 (LLM Wiki Pattern 등)
 │   ├── 22. Entities/            # 예시 (Karpathy, Bush, Memex)
 │   ├── 23. Guides/              # 예시 가이드
-│   └── 24. Maps/                # 예시 MOC
-├── 30. Queries/                 # 합성된 질의 결과 (빈 폴더, /query 결과로 채워짐)
+│   ├── 24. Maps/                # 예시 MOC
+│   └── 25. Questions/           # Research Question 카드 (빈 폴더, RQ-{slug}.md)
+├── 30. Queries/                 # 합성된 질의 결과 + synthesis (빈 폴더, /query 결과로 채워짐)
 ├── 80. References/Attachments/  # 모든 이미지 일원화
 └── 90. Settings/
-    ├── Templates/               # Obsidian 노트 템플릿 (4종)
+    ├── Templates/               # Obsidian 노트 템플릿 (7종)
     ├── Sharing/                 # 18 Web Clipper JSON + Setup Guide.md + CLAUDE-Template.md
     └── qmd-config-template.yml  # 로컬 검색 엔진 설정
 ```

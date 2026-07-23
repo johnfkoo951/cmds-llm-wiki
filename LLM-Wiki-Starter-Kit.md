@@ -96,7 +96,8 @@ My-LLM-Wiki/
 │   ├── 21. Concepts/       # 개념
 │   ├── 22. Entities/       # 인물, 조직, 제품
 │   ├── 23. Guides/         # 가이드
-│   └── 24. Maps/           # MOC (주제별 인덱스)
+│   ├── 24. Maps/           # MOC (주제별 인덱스)
+│   └── 25. Questions/      # Research Question 카드 (RQ-{slug}.md)
 ├── 30. Queries/            # 질의 결과 저장
 └── 80. References/         # 첨부 파일
     └── Attachments/

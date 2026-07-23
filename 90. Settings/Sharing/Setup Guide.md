@@ -18,7 +18,7 @@ Karpathy LLM Wiki 패턴을 그대로 실행 가능한 형태로 옮긴 **Obsidi
 
 **2. Claude Code + Codex 듀얼 harness** — `.claude/commands/` 의 11 슬래시 명령어 (`/ingest`, `/query`, `/lint`, `/inbox`, `/status`, `/reindex`, `/refresh-context`, `/onboard`, `/capture-tabs`, `/verify`, `/audit`) + `.claude/hooks/` 의 PostToolUse 훅 2개 (raw source verbatim 검증 + qmd 자동 재인덱스) + `.claude/settings.json`. Codex 사용자는 `.codex/commands/` (10, onboard 제외) + `.agents/skills/` (10) + `AGENTS.md` 미러를 그대로 사용.
 
-**3. 사용자 맥락 템플릿** — `CLAUDE.md` (스키마), `Core Context.md` (사용자 정체성·재활용 축·철학 placeholder 노트), `90. Settings/Templates/` (raw source · wiki page 템플릿), `90. Settings/Sharing/clipper-*.json` 18 개 (Obsidian Web Clipper 사이트별 템플릿).
+**3. 사용자 맥락 템플릿** — `CLAUDE.md` (스키마), `Core Context.md` (사용자 정체성·재활용 축·철학 placeholder 노트), `90. Settings/Templates/` (노트 템플릿 7종 — raw source · wiki page · query result · MOC · AI research capture · research question · synthesis), `90. Settings/Sharing/clipper-*.json` 18 개 (Obsidian Web Clipper 사이트별 템플릿).
 
 ---
 
@@ -264,7 +264,7 @@ claude
 ### 정리 항목
 
 - [ ] 예시 콘텐츠 처리 결정 — Karpathy 예시 raw source 2 개 + wiki 약 16 개를 (a) 그대로 둘지 (b) 삭제하고 빈 상태로 시작할지. 패턴 학습 목적이면 (a), 처음부터 본인 자료만 원하면 (b).
-- [ ] (b) 선택 시: `rm "10. Raw Sources/11. Articles/2026-04-"*.md` 와 `20. Wiki/{21-24}/*.md` 삭제 후 `index.md` 재생성 (`/lint`)
+- [ ] (b) 선택 시: `rm "10. Raw Sources/11. Articles/2026-04-"*.md "20. Wiki"/*/*.md` (21~25 하위 예시 wiki 전체) 삭제 후 `index.md` 재생성 (`/lint`)
 
 ---
 

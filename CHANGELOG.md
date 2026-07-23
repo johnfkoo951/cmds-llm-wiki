@@ -4,6 +4,58 @@
 
 ---
 
+## v1.9.0 — 2026-07-23 (Research Question + Synthesis cards · Citation Standard · CLAUDE.md Operations parity)
+
+**Source**: 운영 볼트(CMDS_LLM_Wiki) schema v6.1 (2026-07-07) 의 "논문 산출층" 중 **일반화 가능한 절반**만 선별 이식 — 질문·논증의 1급 객체화. 학술 전용 버티컬(v6.2 Paper Ingest Mode, 12단 논문 분석)은 의도적으로 제외하고 운영 볼트 전용으로 유지한다.
+
+### Added — Research Question 카드 (`type: research-question`, v6.1)
+
+- 새 폴더 `20. Wiki/25. Questions/` + 파일명 `RQ-{slug}.md`. in-page `> [!question] Open Question` 콜아웃을 1급 카드로 승격 — 반복 등장하거나 산출물(논문·책·블로그 시리즈·제품 결정)로 이어질 질문을 first-class object 로 추적.
+- 프로퍼티: `status`(open/investigating/answered/parked/superseded) · `questionType`(descriptive/causal/comparative/methodological/normative/design) · `feedsInto` · `hypotheses` · `evidenceFor`/`evidenceAgainst` · `cites`(권장) · `sourceCallout`(역추적) · `related`.
+- RQ 는 claim 이 아니라 질문이므로 v5 `claimType`/`verificationStatus` 대신 `status` 를 쓴다.
+
+### Added — Synthesis 카드 (`type: synthesis`, v6.1)
+
+- `30. Queries/` 에 query-result 와 같은 폴더, `type` 으로만 구분 (YAGNI — flat 유지). Query 가 반응형 답변이면 Synthesis 는 능동 논증: `thesis` + 근거 claim + `counters` + gap + `targetVenue`.
+- `/query` operation 에 Step 5 추가: 능동 논증이 필요하면 `type: synthesis` 카드로 저장.
+
+### Added — Citation Standard (v6.1, 옵션)
+
+- BetterBibTeX citekey (`authYearShorttitle`) + Pandoc/CSL `[@citekey]` inline + `cites:` frontmatter + `## References` + Raw Source `citekey` 이중 연결. **옵션 규약** — 채택하지 않아도 볼트 운영에 지장 없음.
+
+### Added — Templates ×2 (5 → 7)
+
+- `Template_Research Question.md` / `Template_Synthesis.md` — v6 provenance (`model`/`effort`) + quoted `description: ""` 포함, 생성 시점부터 스키마 만족.
+
+### Fixed — kit CLAUDE.md Operations parity (v1.7.1 부터 이월된 부채)
+
+- kit `CLAUDE.md` Operations 챕터에 §0 Capture Tabs / §5 Verify / §6 Audit 추가 — kit `AGENTS.md` 와의 비대칭 해소 (Claude-first entrypoint 표기로 적응).
+
+### Fixed — CLAUDE.md ↔ AGENTS.md parity 복원 + AGENTS.md 일반화 (릴리스 전 적대적 검증에서 적발된 pre-1.9 drift)
+
+- **Frontmatter Standards 7곳 동기화**: author 행 (`Claude` → `Claude`/`Codex`/`Grok`), effort 문구 중립화, CLAUDE.md category 에 `AI Research` 누락 보충, `mainVaultRelated` 문구 (URL_ENCODED_PATH 리터럴 예시 제거 → stat 검증 문구), `chapterPart` 예시, camelCase 헤딩의 mothership 내부 alias (`@CMDS-Guide`) 제거, Quality Control v4 의 운영볼트 이력 문장 제거 + Bias Check 콜아웃 표기.
+- **Compatibility Matrix**: AGENTS.md 헤딩 `Codex Compatibility Matrix (v1.3)` → `Cross-Agent Compatibility Matrix` (stale v1.3 태그 제거), 정보량 없는 `Status` 열 제거.
+- **AGENTS.md mothership 옵션화**: Vault Overview·Core Context·ingest Step 0-a·Cross-Vault Reference 를 CLAUDE.md 와 같은 `(옵션)` 프레이밍으로 — standalone Codex 사용자가 모순된 지시를 받지 않도록. 잔존하던 원저자 볼트 구조 예시 링크 2건을 generic placeholder 로 교체.
+- **type 목록 완결**: 필수 프로퍼티 `type` 에 실제 사용 중이던 `documentation`·`inbox` 추가 (양 스키마).
+- **부속 파일 정합**: `CLAUDE-Template.md` (규칙 문구 + RQ/Synthesis 최소 프로퍼티 블록 + naming 행), `index.md` (description 큰따옴표 + Questions 반영 + nav stub), `Setup Guide.md` (템플릿 7종 표기 + 잘못된 brace glob 정리 커맨드 수정), `Template_Synthesis` 의 미선언 `status` 키 제거.
+
+### Changed
+
+- Provenance Rule 대상 타입에 `research-question`·`synthesis` 추가 (양 스키마 ×2곳).
+- 필수 프로퍼티 `type` 목록, Folder Structure 트리, File Naming 표 (`RQ-{slug}.md` 행), camelCase 키 목록 (+11 keys), Parity Contract 문구 (v6/v6.1 키 포함) 갱신.
+- README 트리: `25. Questions/` 추가 + Templates 카운트 stale "4종" → "7종" 정정 (v1.7.1 부터 5종이었음).
+
+### Kit adaptations (운영 볼트와 의도적으로 다른 점)
+
+- `cites` 는 운영 볼트에서 필수지만 킷에서는 **권장** — Citation Standard 자체가 옵션이므로.
+- `feedsInto`/`targetVenue` 예시를 중립화 (논문 / 책 챕터 / 블로그 시리즈 / 제품 결정).
+- `localDev` (v6.1) 는 개인 로컬 경로 패턴이라 미이식.
+
+### Known gaps
+
+- `/autoresearch` 는 운영 볼트 전용 (Generator-Verifier loop — v2.0 후보).
+- `/lint` 는 아직 RQ/synthesis/citation 커버리지를 리포팅하지 않는다 (후속 마이너 후보).
+
 ## v1.8.0 — 2026-07-23 (Description Rule + v6 Provenance schema)
 
 **Source**: 운영 볼트(CMDS_LLM_Wiki) schema v6 (2026-07-05) 에서 검증된 두 규칙을 sanitize 하여 이식. Schema/template edits were staged in the canonical on 2026-07-07; this release publishes them.
