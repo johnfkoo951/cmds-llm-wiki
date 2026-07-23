@@ -98,7 +98,8 @@ My-LLM-Wiki/
 │   ├── 23. Guides/         # 가이드
 │   ├── 24. Maps/           # MOC (주제별 인덱스)
 │   └── 25. Questions/      # Research Question 카드 (RQ-{slug}.md)
-├── 30. Queries/            # 질의 결과 저장
+├── 30. Queries/            # 질의 결과 저장 (+ synthesis)
+├── 40. Paper Analyses/     # 논문 12단 분석 ({citekey}/ 허브 + 원자)
 └── 80. References/         # 첨부 파일
     └── Attachments/
 ```

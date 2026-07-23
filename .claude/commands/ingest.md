@@ -18,6 +18,7 @@ Ingest source material into the LLM Wiki. Follow CLAUDE.md rules strictly (YAML:
 - If a **file path** or **filename**: read that file from the vault (check `00. Inbox/` and its subfolders first)
 - If **blank or "all"**: delegate to `/inbox` (scan all Inbox subfolders)
 - If **raw text**: treat the argument itself as the source content
+- If an **academic paper** (DOI/arXiv/journal URL, PDF with Abstract+References, or a file from `00. Inbox/02. Papers/`): **use Paper Ingest Mode** — read `.agents/skills/ingest/resources/paper-ingest.md` for the full 12-step pipeline (do NOT inline it here — progressive disclosure keeps this command lean).
 - If a **multi-page book/docs site** (mdBook, VitePress, GitBook, Docusaurus, ReadTheDocs, Nextra with 5+ chapters in sidebar/TOC): **use Book Ingest Mode** — see dedicated section below.
 - If a **binary/non-markdown file** (`.pdf`, `.pptx`, `.docx`, `.xlsx`, `.hwp`, `.hwpx`, `.epub`, `.html`, image, etc.): **run Step 0.5 (Format Conversion)** before any other processing.
 
@@ -364,6 +365,16 @@ Summarize the ingest result:
 4. Pages updated: list with what changed
 5. Connections: key cross-references added
 6. Open questions: gaps or contradictions discovered
+
+---
+
+## Paper Ingest Mode (Academic Papers) — pointer
+
+- **Auto-detect**: DOI/arXiv/journal URL, a PDF whose body has an Abstract + References structure, or a file from `00. Inbox/02. Papers/`. Atomizes the paper into a 12-step analysis (hub S00 + knowledge atoms) under `40. Paper Analyses/{citekey}/`.
+- **Read the resource file** `.agents/skills/ingest/resources/paper-ingest.md` for the full P-0 → P-7 pipeline (12-step schemes, citekey naming, RQ linking, `p7_verify.py` gate). Do NOT inline it here — progressive disclosure keeps this command lean.
+- **2-question budget**: P-0 (collection purpose + which RQ this feeds — reads `20. Wiki/25. Questions/` RQ cards) and P-1 (paper type — 6-type classify + confirm). No other blocking questions.
+- **Shared with Standard**: Step 0 (purpose gate) and Step 0-a (mothership search, Mode B only) are identical — Paper Mode extends them, it does not replace them.
+- **User manual**: `90. Settings/Sharing/Paper Ingest Guide.md` — the 12 steps explained for humans.
 
 ---
 

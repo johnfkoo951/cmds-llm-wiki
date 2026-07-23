@@ -17,6 +17,7 @@ Read `.codex/commands/ingest.md` and follow it as the runtime entrypoint. Always
 - Search the mothership vault for 2-5 `mainVaultRelated` candidates.
 - Preserve raw source body verbatim under `## Original Content`.
 - Move Inbox files only after preservation checks pass.
+- Academic papers (DOI/arXiv/Abstract+References) trigger Paper Ingest Mode — read `resources/paper-ingest.md` for the 12-step atomization pipeline and the `p7_verify.py` gate.
 - New Wiki pages get `explored: false`.
 - High-confidence or synthesis-heavy pages get a `> [!note] Bias Check` callout.
 - Update `index.md` and `log.md`.

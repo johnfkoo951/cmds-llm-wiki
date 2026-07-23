@@ -130,6 +130,15 @@ Verify `## Original Content`, inbox cleanup, wikilink targets, and qmd reindex s
 
 **Index sync verification** — for each new Wiki page, `rg -F "[[<newpage>]]" index.md` must find it in the Concepts/Entities/Guides/Maps section; Stats-table counts must match `find "20. Wiki/<subfolder>" -name "*.md" | wc -l`. Fix Step 5 before reporting done.
 
+## Paper Ingest Mode
+
+For academic papers (DOI/arXiv/journal URL, Abstract+References structure, or `00. Inbox/02. Papers/`):
+
+- Read `.agents/skills/ingest/resources/paper-ingest.md` and follow the P-0 → P-7 pipeline (12-step atomization into `40. Paper Analyses/{citekey}/` — hub S00 + knowledge atoms).
+- Question budget is exactly 2: P-0 (purpose + target RQ from `20. Wiki/25. Questions/`) and P-1 (paper type, 6-type classify).
+- Codex fallback execution strategy is ② importance-order single-run (no subagent fan-out); the P-7 gate is still `python3 "90. Settings/Scripts/p7_verify.py" "40. Paper Analyses/{citekey}"` — ALL PASS required.
+- User manual: `90. Settings/Sharing/Paper Ingest Guide.md`.
+
 ## Book Ingest Mode
 
 For multi-page books/docs with 5+ chapters:

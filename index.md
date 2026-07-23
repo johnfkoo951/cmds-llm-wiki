@@ -91,6 +91,14 @@ status: active
 
 ---
 
+## 📄 Paper Analyses (허브만)
+
+> 논문 12단 분석 — `40. Paper Analyses/{citekey}/` 의 허브(S00)만 여기 등록한다 (원자는 허브의 Atom Catalog 참조).
+
+(첫 Paper Ingest 를 실행하면 여기에 기록됩니다.)
+
+---
+
 ## 📥 Recent Ingests
 
 | Date | Source | Pages Touched |

@@ -25,3 +25,7 @@ graphify-out/
 
 # Personal ingest in-flight files
 # (Inbox contents are intentionally NOT gitignored by default — commit if you want them tracked)
+
+# Python bytecode (p7_verify.py)
+__pycache__/
+*.pyc

@@ -13,7 +13,7 @@ tags:
   - schema
   - llm-wiki
 status: active
-version: "1.9.1"
+version: "1.10.0"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -44,7 +44,7 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cla
 - 값 안에 `"` 가 있으면 `\"` 이스케이프하거나 문장을 재작성. 빈 값도 `description: ""`.
 
 ### Provenance Rule (author + model + effort)
-- 에이전트가 쓰는 모든 콘텐츠 페이지(raw-source·wiki-page·research-question·query-result·synthesis·moc·inbox)는 `author` 바로 뒤에 **`model`·`effort` 를 항상 기록** — Claude Code·Codex·Grok 가 누가·어떤 모델·어떤 강도로 썼는지 교차 확인.
+- 에이전트가 쓰는 모든 콘텐츠 페이지(raw-source·wiki-page·research-question·query-result·synthesis·moc·inbox·paper-hub·paper-analysis)는 `author` 바로 뒤에 **`model`·`effort` 를 항상 기록** — Claude Code·Codex·Grok 가 누가·어떤 모델·어떤 강도로 썼는지 교차 확인.
 	- `model`: 상세 모델 id (`claude-opus-4-8`, `claude-sonnet-5`, `gpt-5.4-codex`, `grok-4` …). 복수 기여 시 list.
 	- `effort`: 추론 강도/모드 (`low`/`medium`/`high`/`xhigh`/`max` 또는 타 에이전트 등가). 미상은 `default`.
 	- harness 정의 파일(command/skill)의 자기 frontmatter 엔 넣지 않음 — Description Rule 만 적용.
@@ -188,7 +188,7 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 같은 operation 을 추가할 때는 **반드시** `.claude/commands/{name}.md`, `.codex/commands/{name}.md`, `.agents/skills/{name}/SKILL.md` 를 함께 맞춘다.
 
 > [!warning] Parity Contract (CLAUDE.md ↔ AGENTS.md)
-> 이 두 스키마는 같은 규칙의 미러다. 다음 섹션은 **양쪽이 동일해야** 하며 한쪽만 편집 금지: (1) Cross-Agent Compatibility Matrix, (2) Frontmatter Standards (7 필수 + v2/v3/v4/v5/v6/v6.1 키), (3) Verification Properties (v5) 3 기준, (4) Callout Conventions. 편집 시 CLAUDE.md 와 AGENTS.md 를 함께 고치고 `/lint` + parity 체크리스트로 확인. `.codex/`·`.agents/` 는 untracked 라 diff 에 안 보이므로 수동 대조가 필요하다.
+> 이 두 스키마는 같은 규칙의 미러다. 다음 섹션은 **양쪽이 동일해야** 하며 한쪽만 편집 금지: (1) Cross-Agent Compatibility Matrix, (2) Frontmatter Standards (7 필수 + v2/v3/v4/v5/v6/v6.1/v6.2 키), (3) Verification Properties (v5) 3 기준, (4) Callout Conventions. 편집 시 CLAUDE.md 와 AGENTS.md 를 함께 고치고 `/lint` + parity 체크리스트로 확인. `.codex/`·`.agents/` 는 untracked 라 diff 에 안 보이므로 수동 대조가 필요하다.
 
 | Operation | Claude command | Codex command | Codex skill | Notes |
 |-----------|----------------|---------------|-------------|-------|
@@ -235,6 +235,7 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 > [!info] Variants
 > - **Standard Ingest** (기본): 단일 URL/파일/텍스트 → 1 Raw Source + 10~15 Wiki pages
 > - **Book Ingest (Progressive Stubs)**: 멀티 페이지 책·문서 사이트 (mdBook/VitePress/GitBook/Docusaurus/ReadTheDocs/Nextra, TOC 에 5+ 챕터) → 1 Book Index + N chapter stubs + 소수 Wiki (책·저자·앵커 개념). 사용자가 장을 읽을 때 해당 stub 을 "promote" (verbatim 삽입 + Wiki 컴파일 + `status: stub` → `completed`). 상세: [[Book Ingest Pattern]] + `.claude/commands/ingest.md` "Book Ingest Mode" 섹션.
+> - **Paper Ingest Mode (Academic Papers, v6.2)**: 논문(PDF/DOI/arXiv/Abstract+References) 자동 감지 → `.agents/skills/ingest/resources/paper-ingest.md` 리소스 로드 (12단 원자화, citekey 네이밍, RQ 연결, `p7_verify.py` 게이트). Standard/Book 와 공존, `/ingest` 단일 진입점. 사용자 매뉴얼: `90. Settings/Sharing/Paper Ingest Guide.md`.
 
 새 source가 `00. Inbox/`에 들어오면:
 
@@ -351,15 +352,17 @@ CMDS_LLM_Wiki/
 │   ├── 23. Guides/
 │   ├── 24. Maps/
 │   └── 25. Questions/      # Research Question 카드 (RQ-{slug}.md)
-├── 30. Queries/            # 합성된 질의 결과
+├── 30. Queries/            # 합성된 질의 결과 (+ synthesis)
+├── 40. Paper Analyses/     # 논문별 12단 분석 (folder = {citekey}/) — 허브 S00 + 원자 S02~S12 (v6.2)
 ├── 70. Outputs/            # (옵션) 외부 도구 산출물 (Layer 4: tool outputs)
 │   ├── graphify/           # /graphify 결과 — YYYY-MM-DD-{topic}/ 단위
 │   ├── …/                  # 향후 다른 도구도 같은 패턴
 │   └── .tool-state/        # cross-run 캐시·manifest (gitignore 가능)
 ├── 80. References/         # 첨부 파일
 │   └── Attachments/
-└── 90. Settings/           # 템플릿, 설정
-    └── Templates/
+└── 90. Settings/           # 템플릿, 설정, 스크립트
+    ├── Templates/          # 노트 템플릿 11종 + 12-Step Analysis Schemes
+    └── Scripts/            # p7_verify.py (Paper Mode P-7 게이트)
 ```
 
 ### `70. Outputs/` 규칙 (Tool Output Convention, 옵션)
@@ -388,7 +391,7 @@ CMDS_LLM_Wiki/
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `type` | text | 노트 유형: `documentation`, `raw-source`, `wiki-page`, `research-question` (v6.1), `query-result`, `synthesis` (v6.1), `moc`, `inbox` (capture 단계 pre-ingest), `log` |
+| `type` | text | 노트 유형: `documentation`, `raw-source`, `wiki-page`, `research-question` (v6.1), `query-result`, `synthesis` (v6.1), `moc`, `inbox` (capture 단계 pre-ingest), `paper-hub` (v6.2 — 논문 허브), `paper-analysis` (v6.2 — 논문 원자), `log` |
 | `aliases` | list | 대체 이름 |
 | `description` | text | English, 1-2 sentences for LLMs — **값은 항상 큰따옴표** (`description: "..."`) |
 | `author` | list | 작성자 (LLM인 경우 `Claude` / `Codex` / `Grok`) |
@@ -398,7 +401,7 @@ CMDS_LLM_Wiki/
 
 ### Provenance 프로퍼티 (v6 신설 — 항상 기록)
 
-에이전트가 생성·갱신하는 모든 콘텐츠 페이지(raw-source·wiki-page·research-question·query-result·synthesis·moc·inbox) frontmatter 는 `author` 바로 뒤에 아래 2 키를 **항상** 포함한다. 목적: Claude Code·Codex·Grok 어떤 에이전트가 읽어도 "누가(role) · 어떤 모델(id) · 어떤 강도(effort)로 썼는가" 를 즉시 확인 — cross-agent provenance.
+에이전트가 생성·갱신하는 모든 콘텐츠 페이지(raw-source·wiki-page·research-question·query-result·synthesis·moc·inbox·paper-hub·paper-analysis) frontmatter 는 `author` 바로 뒤에 아래 2 키를 **항상** 포함한다. 목적: Claude Code·Codex·Grok 어떤 에이전트가 읽어도 "누가(role) · 어떤 모델(id) · 어떤 강도(effort)로 썼는가" 를 즉시 확인 — cross-agent provenance.
 
 - `author`: **(기존 필수)** 역할/작성자 — `Claude` / `Codex` / `Grok` / `"[[{your-name}]]"` (사람).
 - `model`: **(v6 신설)** 상세 모델 id. 예: `claude-opus-4-8`, `claude-sonnet-5`, `gpt-5.4-codex` (Codex), `grok-4` (Grok). 여러 모델 기여 시 list.
@@ -434,7 +437,7 @@ harness 정의 파일(`.claude/commands/*`, `.codex/commands/*`, `.agents/skills
 - `source`: 참조한 Raw Source 링크 목록
 - `related`: 관련 Wiki 페이지 링크
 - `confidence`: high / medium / low (정보 신뢰도)
-- `layer`: concepts / entities / guides
+- `layer`: concepts / entities / guides / theory / method / scale (theory/method/scale = v6.2, 논문 승격 재사용 단위 — `21. Concepts` 내 layer 태그로 구분, 별도 폴더 없음. scale 페이지는 `measuredConstruct`·`itemCount` + `Template_Scale Page`)
 - `mainVaultRelated`: **(v2 신설)** 메인 볼트의 관련 에세이·MOC — `[노트명](obsidian://open?vault=...)` 클릭 가능 링크
 - `mainVaultCmds`: **(v2 신설)** 연결될 CMDS 카테고리
 - `explored`: **(v4 신설)** Exploration Gate 상태. 새 Wiki 페이지 기본값은 `false`. 사용자가 직접 읽었거나 에이전트가 별도 검증 루프를 수행한 뒤에만 `true`.
@@ -481,14 +484,31 @@ harness 정의 파일(`.claude/commands/*`, `.codex/commands/*`, `.agents/skills
 - `related`: 관련 RQ·concept
 - 공통 7 필수 + `explored`(기본 false). RQ 는 claim 이 아니라 질문이므로 v5 `claimType`/`verificationStatus` 대신 위 `status` 를 쓴다.
 
+**Paper Hub** (`type: paper-hub`, v6.2 신설 — 논문 12단 분석 앵커):
+- `paperType`: **(필수)** quantitative / qualitative / theory-concept / mixed-methods / scale-development / meta-analysis
+- `citekey`: **(필수)** BetterBibTeX `authYearShorttitle` (Citation Standard). Raw Source·허브·원자 동일 토큰. Zotero 미사용 시 provisional citekey.
+- `doi`: (선택) DOI 문자열
+- `targetManuscript`: **(필수)** 이 논문이 기여할 Research Question — `"[[RQ-…]]"` quoted wikilink 또는 `none`
+- `source`: 논문 Raw Source `"[[…]]"` · `collectionPurpose`: (v2 재사용) · `explored`/`verificationStatus`: v4/v5 그대로
+- provenance(`model`/`effort`) 필수 (에이전트 작성 콘텐츠)
+
+**Paper Analysis** (`type: paper-analysis`, v6.2 신설 — 12단 좌표를 가진 지식 원자):
+- `paperType`: (필수) 허브와 동일값 (자기완결 + "모든 양적논문 S08" 필터)
+- `analysisStep`: **(필수)** 정수 2~12 (S01 CITATION 은 항상 허브가 보유)
+- `analysisStepName`: **(필수)** 유형별 정식 단계명 (`12-Step Analysis Schemes` verbatim)
+- `paperHub`: **(필수)** `"[[{Surname} {Year} - S00 Hub]]"` quoted wikilink
+- `citekey`: (필수) 허브와 동일 · `source`: Raw Source wikilink · `status`: completed / stub
+- `claimType`/`evidenceScope` **면제** (단일 논문 요약은 퇴화) — 검증은 `p7_verify.py` 인용 충실도 검사로 대체
+- provenance(`model`/`effort`) 필수
+
 ### 새 YAML 키는 camelCase
 
-- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`, `claimType`, `evidenceScope`, `verificationStatus`, `verifiedAt`, `verifiedBy`, `disputed`, `model`, `effort`, `citekey`, `cites`, `questionType`, `feedsInto`, `evidenceFor`, `evidenceAgainst`, `sourceCallout`, `thesis`, `targetVenue`, `supports`, `counters`
+- ✅ `collectionPurpose`, `mainVaultRelated`, `mainVaultCmds`, `reusableFor`, `bookIndex`, `chapterNumber`, `chapterPart`, `chapterPrev`, `chapterNext`, `explored`, `exploredBy`, `exploredDate`, `claimType`, `evidenceScope`, `verificationStatus`, `verifiedAt`, `verifiedBy`, `disputed`, `model`, `effort`, `citekey`, `cites`, `questionType`, `feedsInto`, `evidenceFor`, `evidenceAgainst`, `sourceCallout`, `thesis`, `targetVenue`, `supports`, `counters`, `paperType`, `analysisStep`, `analysisStepName`, `paperHub`, `targetManuscript`, `doi`, `measuredConstruct`, `itemCount`
 - ❌ `collection_purpose`, `main-vault-related`, `book_index`, `chapter-number`, `explored_by`, `claim_type`, `verification-status`, `cite_key`, `feeds_into` — camelCase 네이밍 컨벤션 위반
 
 ### Citation Standard (v6.1 — 옵션, Zotero-ready 인용 규약)
 
-논문·책·리포트처럼 **엄밀한 인용이 필요한 산출물**을 목표로 하는 사용자를 위한 옵션 규약이다. 채택하지 않아도 볼트 운영에는 지장 없다 — Research Question / Synthesis 의 `cites` 는 이 규약 채택 시에만 채운다. 진리 원천은 **Zotero (BetterBibTeX)** 이며, Wiki 는 citekey 만 참조 → 나중에 Zotero `.bib` export 가 Pandoc/Obsidian 에서 formatted reference 로 자동 렌더.
+논문·책·리포트처럼 **엄밀한 인용이 필요한 산출물**을 목표로 하는 사용자를 위한 옵션 규약이다. 채택하지 않아도 볼트 운영에는 지장 없다 — Research Question / Synthesis 의 `cites` 는 이 규약 채택 시에만 채운다. 단, **Paper Ingest Mode (v6.2) 는 citekey 를 항상 사용**한다 — Zotero 미사용 시에도 provisional citekey 를 로컬 생성. 진리 원천은 **Zotero (BetterBibTeX)** 이며, Wiki 는 citekey 만 참조 → 나중에 Zotero `.bib` export 가 Pandoc/Obsidian 에서 formatted reference 로 자동 렌더.
 
 - **Citekey 규약**: BetterBibTeX 표준 `authYearShorttitle` (예: `yang2024sweAgent`, `wu2024longMemEval`).
 - **Inline citation**: **Pandoc/CSL 스타일 `[@citekey]`** (필요 시 `[@citekey, p. 12]`) — Zotero·Pandoc 네이티브라 export 시 자동 변환.
@@ -548,6 +568,9 @@ v4 Exploration Gate 가 "누가 읽었나"만 추적하던 한계를 보완 — 
 | Query Result | `YYYY-MM-DD-Q-{question}.md` | `2026-04-10-Q-How-does-RLHF-work.md` |
 | MOC | `MOC-{Topic}.md` | `MOC-Large Language Models.md` |
 | Research Question | `RQ-{slug}.md` (`20. Wiki/25. Questions/`) | `RQ-agent-memory-architecture.md` |
+| Paper Analysis 폴더 | `40. Paper Analyses/{citekey}/` | `40. Paper Analyses/wu2024longMemEval/` |
+| Paper Hub | `{Surname} {Year} - S00 Hub.md` | `Wu 2024 - S00 Hub.md` |
+| Paper 원자 | `{Surname} {Year} - S{NN} {세부주제}.md` | `Wu 2024 - S08 평가 지표 분석.md` |
 | Log | `log.md` (단일 파일) | — |
 
 ### CJK Person Naming Rule
@@ -599,6 +622,12 @@ aliases:
 > [!check] Exploration Gate
 > Status: explored / unexplored / needs-review
 > Evidence: 사용자가 읽은 근거 또는 에이전트 검증 요약
+
+> [!info] Analysis Context
+> (v6.2) Paper Analysis 원자의 자기완결 계약 — H1 직후 4행 (Paper / 수집맥락 / 위치 Step N/12 / 이 원자+인접).
+
+> [!quote] 원문 (p.12, §4.2)
+> (v6.2) Paper Analysis 인용 규율 — Raw Source `## Original Content` 에서 verbatim (grep 대조). 페이지 우선 locator (Zotero PDF 로 복구), 없으면 §섹션. 요약을 quote 안에 넣지 않음.
 ```
 
 ---
