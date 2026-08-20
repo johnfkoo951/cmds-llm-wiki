@@ -1,0 +1,275 @@
+/* ============================================================
+   artifact-reading.css — 본문을 Claude 아티팩트 문서 스타일로
+   활성화: Settings → Appearance → CSS snippets → artifact-reading ON
+   권장: Settings → Editor → "Readable line length" ON
+   ============================================================ */
+
+/* 폰트: IBM Plex Sans KR + IBM Plex Mono (데스크톱에서 원격 로드,
+   실패 시 Pretendard/Apple SD Gothic Neo 로 폴백) */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+/* ── 기본 토큰 ── */
+body {
+	--font-text: "IBM Plex Sans KR", "Pretendard", "Apple SD Gothic Neo",
+		"Malgun Gothic", sans-serif;
+	--font-monospace: "IBM Plex Mono", "SF Mono", Menlo, monospace;
+	--font-text-size: 16.5px;
+	--line-height-normal: 1.75;
+	--p-spacing: 1.1em;
+	--file-line-width: 42em; /* ≈ 68ch, Readable line length ON 일 때 적용 */
+
+	--h1-size: 1.9em;
+	--h1-weight: 700;
+	--h2-size: 1.5em;
+	--h2-weight: 700;
+	--h3-size: 1.25em;
+	--h3-weight: 700;
+	--h4-size: 1.08em;
+	--h4-weight: 700;
+	--heading-spacing: 2.2em;
+
+	--callout-radius: 10px;
+	--code-radius: 4px;
+}
+
+/* ── 액센트: 틸 (라이트 #0E7C7B / 다크 #4FBDB9) ── */
+.theme-light {
+	--accent-h: 179;
+	--accent-s: 80%;
+	--accent-l: 27%;
+	--background-primary: #f6f8f8;
+	--background-secondary: #eef2f2;
+	--text-normal: #1b2528;
+	--text-muted: #5c6e71;
+	--text-faint: #8b9a9c;
+	--code-background: #edf1f1;
+	--background-modifier-border: #dce4e4;
+}
+.theme-dark {
+	--accent-h: 178;
+	--accent-s: 45%;
+	--accent-l: 53%;
+	--background-primary: #101819;
+	--background-secondary: #0c1213;
+	--text-normal: #dfe8e8;
+	--text-muted: #93a5a6;
+	--text-faint: #6c7d7e;
+	--code-background: #1d2a29;
+	--background-modifier-border: #263332;
+}
+
+/* ── 제목 ── */
+.inline-title {
+	font-weight: 700;
+	letter-spacing: -0.015em;
+	line-height: 1.25;
+}
+.markdown-rendered h1,
+.markdown-rendered h2,
+.markdown-rendered h3 {
+	letter-spacing: -0.01em;
+	text-wrap: balance;
+}
+
+/* h2 밑줄 — Reading view + Live Preview 양쪽 */
+.markdown-rendered h2 {
+	padding-bottom: 0.45em;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+.markdown-source-view.mod-cm6 .HyperMD-header-2 {
+	padding-bottom: 0.45em !important;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+/* ── 리스트: 마커 액센트 + 항목 간 호흡 ── */
+.markdown-rendered ul > li::marker,
+.markdown-rendered ol > li::marker {
+	color: var(--color-accent);
+}
+.markdown-rendered li {
+	margin-bottom: 0.45em;
+}
+
+/* ── 내부 링크(위키링크): 점선 밑줄 ── */
+.markdown-rendered a.internal-link,
+.markdown-source-view.mod-cm6 .cm-hmd-internal-link {
+	color: var(--color-accent);
+	text-decoration: none;
+	border-bottom: 1px dotted var(--color-accent);
+}
+.markdown-rendered a.internal-link:hover,
+.markdown-source-view.mod-cm6 .cm-hmd-internal-link:hover {
+	background: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.09);
+	border-bottom-style: solid;
+}
+
+/* ── 인라인 코드 ── */
+.markdown-rendered :not(pre) > code,
+.markdown-source-view.mod-cm6 .cm-inline-code {
+	font-size: 0.85em;
+	padding: 0.1em 0.35em;
+	border-radius: var(--code-radius);
+}
+
+/* ── 콜아웃: 아티팩트 스타일 (좌측 엣지 + 옅은 틴트) ── */
+.callout {
+	border: none;
+	border-left: 3px solid rgb(var(--callout-color));
+	border-radius: var(--callout-radius);
+	background-color: rgba(var(--callout-color), 0.07);
+	padding: 1em 1.2em;
+	margin: 1.4em 0;
+}
+.callout-title {
+	font-size: 0.86em;
+	letter-spacing: 0.02em;
+	margin-bottom: 0.35em;
+}
+.callout-title-inner {
+	font-weight: 700;
+}
+.callout-content p {
+	font-size: 0.94em;
+	margin: 0.3em 0;
+}
+
+/* ── "요약 읽기" 버튼: H1 직후의 접힌 [!summary]- 콜아웃을 pill 버튼처럼 ── */
+.callout[data-callout="summary"] {
+	background: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.07);
+	border: 1px solid hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.35);
+	padding: 0.55em 1em;
+	margin: 0.4em 0 1.6em;
+}
+.callout[data-callout="summary"] .callout-title {
+	color: var(--color-accent);
+	font-size: 0.82em;
+	letter-spacing: 0.02em;
+	margin-bottom: 0;
+	cursor: pointer;
+	user-select: none;
+}
+.callout[data-callout="summary"].is-collapsed {
+	display: inline-block;
+	border-radius: 99px;
+	padding: 0.28em 0.95em;
+}
+.callout[data-callout="summary"]:not(.is-collapsed) {
+	border-radius: 10px;
+}
+.callout[data-callout="summary"]:not(.is-collapsed) .callout-title {
+	margin-bottom: 0.45em;
+}
+.callout[data-callout="summary"] .callout-content p,
+.callout[data-callout="summary"] .callout-content li {
+	font-size: 0.92em;
+	color: var(--text-muted);
+}
+
+/* ── 인용 / 구분선 / 테이블 ── */
+.markdown-rendered blockquote {
+	border-left: 3px solid var(--background-modifier-border);
+	color: var(--text-muted);
+}
+.markdown-rendered hr {
+	border: none;
+	border-top: 1px solid var(--background-modifier-border);
+}
+.markdown-rendered table {
+	font-size: 0.92em;
+}
+.markdown-rendered th {
+	font-weight: 700;
+	color: var(--text-muted);
+	font-size: 0.85em;
+	letter-spacing: 0.03em;
+}
+
+/* ── 태그 pill ── */
+.markdown-rendered a.tag {
+	font-family: var(--font-monospace);
+	font-size: 0.7em;
+	letter-spacing: 0.05em;
+	padding: 0.18em 0.7em;
+	border-radius: 99px;
+	background: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.09);
+	color: var(--color-accent);
+	text-decoration: none;
+}
+
+/* ── Mermaid 다이어그램: Obsidian 기본 렌더링 사용 (노드 배경색·텍스트
+   대비는 mermaid 자체 테마가 처리). 가운데 정렬·가로 스크롤만 정리 ── */
+.block-language-mermaid,
+.markdown-rendered .mermaid {
+	margin: 1.4em 0;
+	overflow-x: auto;
+	display: flex;
+	justify-content: center;
+}
+
+/* ── 표: 카드형 + 줄무늬 ── */
+.markdown-rendered table {
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 10px;
+	overflow: hidden;
+	width: 100%;
+}
+.markdown-rendered th,
+.markdown-rendered td {
+	border: none;
+	border-bottom: 1px solid var(--background-modifier-border);
+	padding: 0.55em 0.9em;
+}
+.markdown-rendered tr:last-child td {
+	border-bottom: none;
+}
+.markdown-rendered thead th {
+	background: var(--background-secondary);
+}
+.markdown-rendered tbody tr:nth-child(even) td {
+	background: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.03);
+}
+
+/* ── compact-source: 한 문장 = 한 단락 형태의 다이제스트 원문을
+   시각적으로 묶어서 렌더 (frontmatter 에 cssclasses: compact-source) ── */
+.compact-source {
+	--p-spacing: 0.4em;
+	--line-height-normal: 1.62;
+}
+
+/* ── Better Mermaid 확대 모달: 우측 하단 모서리 드래그로 크기 조절 ── */
+.modal:has(> .modal-content.better-mermaid-modal) {
+	resize: both;
+	overflow: hidden;
+	max-width: 96vw;
+	max-height: 96vh;
+	min-width: 320px;
+	min-height: 240px;
+}
+.modal:has(> .modal-content.better-mermaid-modal)::after {
+	/* 리사이즈 핸들 시각 힌트 */
+	content: "";
+	position: absolute;
+	right: 4px;
+	bottom: 4px;
+	width: 12px;
+	height: 12px;
+	border-right: 2px solid var(--text-faint);
+	border-bottom: 2px solid var(--text-faint);
+	border-radius: 0 0 3px 0;
+	pointer-events: none;
+}
+
+/* ── Properties 영역: 키 타이포만 정리 (테두리 없음) ── */
+.metadata-container .metadata-properties-heading {
+	font-family: var(--font-monospace);
+	font-size: 0.74em;
+	letter-spacing: 0.06em;
+	color: var(--text-muted);
+}
+.metadata-container .metadata-property-key {
+	font-family: var(--font-monospace);
+	font-size: 0.8em;
+	color: var(--text-faint);
+}
