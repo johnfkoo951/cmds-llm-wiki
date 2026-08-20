@@ -207,19 +207,35 @@ body {
 }
 
 /* ── 표: 카드형 + 줄무늬 ── */
+/* 본문 폭을 넘는 무거운 표는 컬럼을 짓누르는 대신 표만 가로 스크롤 */
+.markdown-rendered .el-table,
+.markdown-source-view.mod-cm6 .cm-table-widget {
+	overflow-x: auto;
+}
 .markdown-rendered table {
 	border-collapse: separate;
 	border-spacing: 0;
 	border: 1px solid var(--background-modifier-border);
 	border-radius: 10px;
 	overflow: hidden;
-	width: 100%;
+	width: auto;
+	min-width: 100%;
 }
 .markdown-rendered th,
 .markdown-rendered td {
 	border: none;
 	border-bottom: 1px solid var(--background-modifier-border);
 	padding: 0.55em 0.9em;
+	min-width: 4.5em; /* 컬럼이 한 글자 폭까지 짓눌리는 것 방지 */
+	word-break: keep-all; /* 한국어: 글자 단위가 아니라 어절 단위로만 줄바꿈 */
+}
+
+/* 표 안 인라인 코드: 필요할 때만 꺾이게 — 꺾이지 않는 코드 토큰이
+   컬럼 최소폭을 독식해 텍스트량 비례 배분(질문 컬럼 등)을 무력화하는 것 방지 */
+.markdown-rendered th code,
+.markdown-rendered td code {
+	overflow-wrap: anywhere;
+	white-space: normal;
 }
 .markdown-rendered tr:last-child td {
 	border-bottom: none;
