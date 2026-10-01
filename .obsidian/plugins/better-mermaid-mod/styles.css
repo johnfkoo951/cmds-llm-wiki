@@ -1,0 +1,100 @@
+div.mermaid {
+  cursor: pointer;
+}
+
+.modal-content.better-mermaid-modal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+
+.better-mermaid-svg {
+  /* 적응형: viewBox 고유 크기 유지 (뷰포트에 늘리지 않음) */
+  width: auto;
+  height: auto;
+  max-width: none;
+  flex-shrink: 0;
+}
+
+.better-mermaid-viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  flex: 1;
+  cursor: grab;
+  background: var(--background-primary);
+}
+
+.better-mermaid-viewport.better-mermaid-grabbing {
+  cursor: grabbing;
+}
+
+.better-mermaid-viewport svg {
+  transform-origin: 0 0;
+}
+
+.better-mermaid-controls {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(128, 128, 128, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(128, 128, 128, 0.16);
+  border-radius: 10px;
+  pointer-events: auto;
+}
+
+.better-mermaid-controls label {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.better-mermaid-controls select {
+  background: transparent;
+  color: var(--text-normal);
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+}
+
+.better-mermaid-controls select:hover {
+  border-color: rgba(128, 128, 128, 0.45);
+}
+
+.better-mermaid-controls button {
+  background: rgba(128, 128, 128, 0.1);
+  color: var(--text-normal);
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 6px;
+  padding: 4px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.better-mermaid-controls button:hover {
+  background: rgba(128, 128, 128, 0.25);
+  border-color: rgba(128, 128, 128, 0.45);
+}
+
+.better-mermaid-controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

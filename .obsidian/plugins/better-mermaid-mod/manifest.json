@@ -1,0 +1,11 @@
+{
+  "id": "better-mermaid-mod",
+  "name": "Better Mermaid (Vault Patched)",
+  "version": "1.0.5",
+  "minAppVersion": "1.0.0",
+  "description": "Enhance Mermaid diagrams with click-to-zoom and custom CSS injection.",
+  "author": "Joven Lynn",
+  "authorUrl": "",
+  "fundingUrl": "",
+  "isDesktopOnly": false
+}

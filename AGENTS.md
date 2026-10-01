@@ -56,6 +56,7 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cod
 - **`[/` 로 시작하는 라벨 금지** — trapezoid 도형 기호로 파싱됨 (lexical error)
 	- ❌ `C[/query 스킬]`
 	- ✅ `C["/query 스킬"]` 또는 `C["query 스킬"]`
+	- ✅ (예외, v6.3) `D[/"입력"/]` — 큰따옴표 라벨 + `/]` 닫힘의 **의도적 ANSI 입출력 평행사변형** 은 허용 (Visual-First Body Convention 참조)
 - **엣지 라벨도 따옴표 권장**: `B -->|"한글 라벨"| C`
 - 라벨 안에 마크다운(`**bold**`, `[[wikilink]]`) 금지 — 렌더 깨짐
 
@@ -84,6 +85,7 @@ This file is the **Schema Layer** of the CMDS LLM Wiki. It governs how LLMs (Cod
 > 7. **Core Context 먼저 읽기**: 모든 operation 전에 [[Core Context]] 로 사용자 목적·철학 정렬
 > 8. **미래의 나에게 보내는 편지**: `/ingest` 는 반드시 수집 목적 1회 질문 → `collectionPurpose` 프로퍼티에 기록
 > 9. **Provenance 항상 (v6)**: 에이전트 작성 페이지는 `author` + `model`(상세 모델 id) + `effort`(추론 강도) 기록 — Claude/Codex/Grok 교차 참조
+> 10. **시각 우선 (v6.3)**: 본문 컴파일 시 비교→표, 흐름·분기→mermaid, 수치→xychart(실측치만), 통찰→callout — 산문 벽 금지 (Visual-First Body Convention)
 
 ---
 
@@ -197,7 +199,7 @@ Mothership 볼트가 없는 standalone 사용자는 이 표를 건너뛰어도 �
 Codex 에서 가능한 작업은 아래 10개 operation 으로 표준화한다. 새 operation 을 추가할 때는 **반드시** `.codex/commands/{name}.md`, `.agents/skills/{name}/SKILL.md`, 필요 시 `.claude/commands/{name}.md` mirror 를 함께 맞춘다.
 
 > [!warning] Parity Contract (CLAUDE.md ↔ AGENTS.md)
-> 이 두 스키마는 같은 규칙의 미러다. 다음 섹션은 **양쪽이 동일해야** 하며 한쪽만 편집 금지: (1) Cross-Agent Compatibility Matrix, (2) Frontmatter Standards (7 필수 + v2/v3/v4/v5/v6/v6.1/v6.2 키), (3) Verification Properties (v5) 3 기준, (4) Callout Conventions. 편집 시 CLAUDE.md 와 AGENTS.md 를 함께 고치고 `/lint` + parity 체크리스트로 확인. `.codex/`·`.agents/` 는 untracked 라 diff 에 안 보이므로 수동 대조가 필요하다.
+> 이 두 스키마는 같은 규칙의 미러다. 다음 섹션은 **양쪽이 동일해야** 하며 한쪽만 편집 금지: (1) Cross-Agent Compatibility Matrix, (2) Frontmatter Standards (7 필수 + v2/v3/v4/v5/v6/v6.1/v6.2 키), (3) Verification Properties (v5) 3 기준, (4) Callout Conventions, (5) Visual-First Body Convention (v6.3). 편집 시 CLAUDE.md 와 AGENTS.md 를 함께 고치고 `/lint` + parity 체크리스트로 확인. `.codex/`·`.agents/` 는 untracked 라 diff 에 안 보이므로 수동 대조가 필요하다.
 
 | Operation | Codex command | Codex skill | Claude mirror | Notes |
 |-----------|---------------|-------------|---------------|-------|
@@ -661,7 +663,57 @@ aliases:
 
 > [!quote] 원문 (p.12, §4.2)
 > (v6.2) Paper Analysis 인용 규율 — Raw Source `## Original Content` 에서 verbatim (grep 대조). 페이지 우선 locator (Zotero PDF 로 복구), 없으면 §섹션. 요약을 quote 안에 넣지 않음.
+
+> [!summary]- 요약 읽기
+> (v6.3) 본문 요약 버튼 — 모든 wiki-page·guide 는 **H1 직후** 접힌 summary 콜아웃(`[!summary]-` 의 `-` 필수)으로 **3줄 이내 한국어 요약** 을 둔다. 기본 접힘 = 버튼처럼 동작, 클릭 시 펼침. raw-source 에는 넣지 않는다 (원문 불변).
 ```
+
+---
+
+## Visual-First Body Convention (v6.3)
+
+텍스트 벽(wall of text)은 가독성을 해친다. 에이전트가 wiki-page·query-result·synthesis 본문을 컴파일할 때는 **산문보다 구조화된 시각 요소를 우선**한다. Obsidian 이 네이티브 렌더링하는 요소만 사용한다 (Markdown 표 · Mermaid · Callout — 플러그인 의존 금지).
+
+### 선택 기준 (내용 구조 → 시각 형식)
+
+| 내용 구조 | 시각 형식 | 비고 |
+|-----------|----------|------|
+| 항목 비교·속성 나열 (3+ 항목 × 2+ 속성) | Markdown 표 | 표 셀에 `[[wikilink]]` 허용 |
+| 순서·흐름·파이프라인 | Mermaid flowchart | `flowchart LR` / `flowchart TD` |
+| 의사결정·분기 | Mermaid flowchart + 다이아몬드 노드 | `B{"분기?"}` |
+| 시간 순서·연혁 | Mermaid timeline | `timeline` |
+| 수치 비교·추이 | Mermaid xychart | `xychart-beta` — **출처 있는 실측치만** |
+| 비율·구성 | Mermaid pie | `pie` — **출처 있는 실측치만** |
+| 2축 포지셔닝 (경쟁 구도·우선순위) | Mermaid quadrantChart | `quadrantChart` |
+| 개념 위계·연관망 | Mermaid mindmap | `mindmap` |
+| 핵심 통찰·경고·출처·미해결 질문 | Callout | Callout Conventions 참조 |
+
+### 규칙
+
+- **산문 상한**: 4문장 이상 단락이 한 섹션에 2개 연속이면 표·다이어그램·리스트로 재구성을 검토한다. Overview 정의 단락은 예외 — 정의는 산문이 옳다.
+- **시각 요소는 정보를 인코딩해야 한다** — 장식 금지. 2항목 표, 노드 2개 다이어그램은 산문이 낫다.
+- **중복 금지**: 다이어그램이 보여주는 흐름을 산문으로 반복하지 않는다. 다이어그램 아래 보충은 1~2문장.
+- **Fabrication 금지**: xychart/pie 의 수치는 Raw Source 에 실재하는 실측치만. 수치가 없으면 차트를 그리지 않는다.
+- **Flowchart 적격성**: flowchart 는 방향 있는 흐름(순서·의존·분기)에만 쓴다. **분류·소속 관계(taxonomy — "N종 전체 지형도", 카테고리별 항목 나열)는 flowchart 금지** — Markdown 표(카테고리 × 항목)가 기본, 계층 강조가 꼭 필요하면 mindmap.
+- **Flowchart 규모 상한**: 노드 15개 초과, subgraph 4개 초과, 또는 세로 단(rank) 8단 초과가 예상되면 flowchart 를 한 장으로 그리지 않는다 — 렌더 높이가 화면 1.5배를 넘어 조망 자체가 불가능해진다.
+- **부분화 우선, 불가 시 전환**: 상한을 넘는 알고리즘은 상위 개요 flowchart 1개 + 단계별 하위 flowchart N개로 분할한다. 분할이 불가능하면(단계 경계가 없거나 전 노드 상호 연결) flowchart 를 포기하고 표(단계 × 처리 × 분기 조건) + 산문으로 전환한다.
+- Mermaid 는 CRITICAL RULES 의 Mermaid Rules 준수 — 라벨 큰따옴표, `[/` 시작 금지, 라벨 내 마크다운·wikilink 금지.
+
+### ANSI 순서도 기호 (알고리즘·프로세스 flowchart)
+
+알고리즘 관계(시작→처리→판단→종료)를 flowchart 로 그릴 때는 **ANSI/ISO 5807 순서도 기호**를 mermaid 도형으로 대응시켜 따른다. 단순 개념 연결도(파이프라인 개요, 관계망)에는 강제하지 않는다.
+
+| 의미 (ANSI) | 도형 | Mermaid 문법 |
+|-------------|------|--------------|
+| 시작/종료 (Terminator) | 둥근 캡슐 | `A(["시작"])` |
+| 처리 (Process) | 직사각형 | `B["처리"]` |
+| 판단 (Decision) | 마름모 | `C{"조건?"}` |
+| 입출력 (Input/Output) | 평행사변형 | `D[/"입력"/]` — 큰따옴표 필수 |
+| 서브루틴 (Predefined Process) | 이중 직사각형 | `E[["서브루틴"]]` |
+| 데이터 저장 (Database/Storage) | 실린더 | `F[("DB")]` |
+
+- 판단 노드의 분기 엣지에는 라벨을 단다: `C -->|"예"| D` / `C -->|"아니오"| E`
+- 시작·종료 terminator 는 알고리즘 flowchart 에만 사용 — 개념 연결도에 넣으면 노이즈다.
 
 ---
 
