@@ -7,13 +7,13 @@ description: "Schema and harness document for the CMDS LLM Wiki vault. Defines t
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-08-27
+date modified: 2026-10-10
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.11.1"
+version: "1.12.0"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -323,14 +323,43 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 
 ---
 
+## Agent Settings 정본과 점폴더 링크 (v1.12.0)
+
+에이전트 설정의 정본은 일반 폴더 `90. Settings/94. Agent Settings/` 에 있고, 점폴더(`.claude/`, `.codex/`, `.agents/`)의 하위 폴더는 그 정본을 가리키는 **상대경로 symlink** 다.
+
+| 점폴더 경로 (symlink) | 정본 |
+|---|---|
+| `.claude/commands` · `.claude/hooks` | `90. Settings/94. Agent Settings/claude/{commands,hooks}` |
+| `.codex/commands` · `.codex/hooks` | `90. Settings/94. Agent Settings/codex/{commands,hooks}` |
+| `.agents/skills` | `90. Settings/94. Agent Settings/agents/skills` |
+
+- **경로 표기**: 이 문서의 Operations 표와 커맨드·스킬 본문은 계속 `.claude/commands/{op}.md` · `.codex/commands/{op}.md` · `.agents/skills/{op}/SKILL.md` 로 적는다. symlink 를 거쳐 정본으로 해석되므로 어느 경로로 열어도 같은 파일이다.
+- **머신 전용 실제 파일** (symlink 아님, 동기화하지 않음): `.claude/settings.json`, `.claude/settings.local.json` (gitignore), `.codex/hooks.json`, (쓴다면) `.codex/config.toml`.
+- **링크 복구**: `bash "90. Settings/Scripts/setup-agent-links.sh"` (Windows: `90. Settings/Scripts/setup-agent-links.ps1`). 링크 확인만 하려면 `--check`. 이전 레이아웃(점폴더 안 실제 폴더)도 이 스크립트가 정본 폴더로 옮겨 준다.
+
+### 왜 이렇게 하나 — 점폴더 동기화 정책
+Obsidian Sync 는 `.obsidian` 을 뺀 점폴더를 동기화하지 않는다. 점폴더를 다른 도구로 실시간 동기화하면 `.git` 손상, `settings.local.json`·세션 기록 속 비밀값 유출, 머신 전용 훅 경로가 다른 머신에서 실행되는 문제, symlink 가 실제 폴더로 복제되어 두 사본이 갈라지는 문제, 캐시 폴더의 잦은 변경과 JSON 병합 충돌이 생긴다. 그래서:
+1. 공유할 에이전트 설정은 일반 폴더(정본)에 두고 Obsidian Sync·git 으로 옮긴다.
+2. 각 머신에서 점폴더 symlink 를 한 번만 만든다 (setup 스크립트).
+3. 머신 전용 설정은 동기화하지 않는다.
+4. `.git` 은 git 으로만 옮긴다.
+5. osync·rsync 를 쓸 때는 `.git .claude .codex .agents .smart-env .trash node_modules` 를 제외한다.
+
+### 주의
+- Obsidian Sync 는 실행 권한을 떨어뜨린다 — 다른 머신에서는 setup 스크립트를 한 번 돌리면 훅 `chmod +x` 까지 처리된다.
+- 훅 `.sh` 는 Obsidian Sync 설정에서 **"기타 파일 유형(other file types)"** 동기화를 켜야 넘어온다.
+- ZIP 으로 받았거나 Windows 에서 `git clone` 했다면 symlink 가 일반 폴더나 짧은 텍스트 파일로 풀려 있을 수 있다. setup 스크립트를 돌린다. Windows 에서 symlink 를 만들려면 개발자 모드(설정 → 시스템 → 개발자용) 또는 관리자 PowerShell 이 필요하며, 둘 다 없으면 스크립트가 디렉터리 junction 으로 대신 연결한다. git 에서 symlink 를 그대로 받으려면 `git clone -c core.symlinks=true ...`.
+
+---
+
 ## Folder Structure
 
 ```
 CMDS_LLM_Wiki/
 ├── .obsidian/              # Obsidian 설정
-├── .claude/                # Claude Code commands/hooks (+ settings.json)
-├── .codex/                 # Codex command + hook harness (commands/ · hooks/ · hooks.json)
-├── .agents/skills/         # Codex reusable operation skills ({operation}/SKILL.md)
+├── .claude/                # commands/ · hooks/ → symlink (정본: 90. Settings/94. Agent Settings/claude/) + settings.json (머신 전용)
+├── .codex/                 # commands/ · hooks/ → symlink (정본: …/codex/) + hooks.json (머신 전용)
+├── .agents/skills/         # → symlink (정본: …/agents/skills/) — {operation}/SKILL.md
 ├── CLAUDE.md               # Schema — Claude Code (이 파일)
 ├── AGENTS.md               # Schema — Codex / 타 에이전트 (mirror)
 ├── index.md                # 마스터 인덱스
@@ -364,8 +393,9 @@ CMDS_LLM_Wiki/
 ├── 80. References/         # 첨부 파일
 │   └── Attachments/
 └── 90. Settings/           # 템플릿, 설정, 스크립트
+    ├── 94. Agent Settings/ # 에이전트 설정 정본 (claude/ · codex/ · agents/) — 점폴더가 symlink 로 가리킴
     ├── Templates/          # 노트 템플릿 11종 + 12-Step Analysis Schemes
-    └── Scripts/            # p7_verify.py (Paper Mode P-7 게이트)
+    └── Scripts/            # p7_verify.py (Paper Mode P-7 게이트) · setup-agent-links.sh/.ps1 (점폴더 링크 복구)
 ```
 
 ### `70. Outputs/` 규칙 (Tool Output Convention, 옵션)

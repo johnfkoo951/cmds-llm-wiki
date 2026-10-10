@@ -4,6 +4,16 @@
 
 ---
 
+## v1.12.0 — 2026-10-10 (에이전트 설정 정본 폴더 + 점폴더 symlink)
+
+- **레이아웃 변경**: `.claude/{commands,hooks}` · `.codex/{commands,hooks}` · `.agents/skills` 의 실제 파일을 일반 폴더 `90. Settings/94. Agent Settings/{claude,codex,agents}/` 로 옮기고, 점폴더 자리에는 그 정본을 가리키는 **상대경로 symlink** 를 두었다 (git mode 120000). 파일 37개는 이동 전후 내용이 같다. 커맨드·스킬·훅의 내용 변경 없음.
+- 머신 전용 파일은 점폴더 안의 실제 파일로 유지: `.claude/settings.json`, `.claude/settings.local.json` (gitignore), `.codex/hooks.json`.
+- **왜**: Obsidian Sync 는 `.obsidian` 을 뺀 점폴더를 동기화하지 않는다. 점폴더를 통째로 동기화하면 `.git` 손상, `settings.local.json`·세션 기록 속 비밀값 유출, 머신 전용 훅 경로 실행, symlink 가 실제 폴더로 복제되어 사본이 갈라지는 문제가 생긴다. 공유할 설정은 일반 폴더에서 Sync·git 으로 옮기고, 각 기기에서 링크를 한 번만 만든다. 원 저자의 운영 볼트 두 곳(메인·위성)에서 먼저 검증한 구조다.
+- **신규 `90. Settings/Scripts/setup-agent-links.sh`** — 링크 생성·복구(풀린 폴더, 텍스트 파일로 풀린 링크, v1.11.x 레이아웃 이관), 훅 `chmod +x`, `--check` 확인 모드. Windows 용 `setup-agent-links.ps1` 은 symlink 권한(개발자 모드·관리자)이 없으면 디렉터리 junction 으로 대체한다.
+- **문서**: `CLAUDE.md`·`AGENTS.md` 에 § Agent Settings 정본과 점폴더 링크 (정본 표, 머신 전용 파일, 점폴더 동기화 정책, 주의) 신설, Folder Structure 트리 갱신. Operations 표의 `.claude/commands/...` 경로는 symlink 로 해석되므로 그대로 둔다. `README.md` Quick Start 1-1 단계, `Setup Guide.md` Step 2.5·체크리스트·훅 FAQ 갱신. `AGENTS.md` frontmatter 버전이 1.11.0 에 머물던 것도 1.12.0 으로 맞췄다.
+- **업그레이드 (v1.11.x → v1.12.0)**: 새 파일을 받은 뒤 `bash "90. Settings/Scripts/setup-agent-links.sh"` 한 번. 점폴더 안에 직접 고친 커맨드가 있으면 스크립트가 `*_backup-<시각>` 으로 보존하니 정본으로 옮겨 합친다.
+- **ZIP 사용자**: 릴리스 ZIP 은 symlink 를 보존해 압축했다(`zip -y`). 압축 해제 도구가 링크를 풀어도 setup 스크립트가 다시 만든다.
+
 ## v1.11.1 — 2026-08-27 (Cross-vault 링크 형식 — advanced-uri 표준 + 폴백)
 
 - **`mainVaultRelated` 링크 형식 갱신** (CLAUDE.md·AGENTS.md 정의 2곳씩 + paper-ingest 스킬): 표준은 `obsidian://advanced-uri?vault=...&filepath=....md` (모선 볼트에 Advanced URI 플러그인 필요), 미설치 시 기존 `obsidian://open?vault=...&file=...` 폴백. 기존 open 형 링크는 계속 유효 — 마이그레이션 불요.

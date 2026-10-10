@@ -76,6 +76,19 @@ git commit -m "init: my llm wiki from cmds-llm-wiki template"
 
 업스트림 템플릿 업데이트를 추적하고 싶다면 `git remote add upstream https://github.com/johnfkoo951/cmds-llm-wiki.git` 추가하고 가끔 `git fetch upstream` 으로 변경사항 확인.
 
+### Step 2.5 — 에이전트 설정 링크 만들기 (v1.12.0+)
+
+에이전트 설정의 정본은 `90. Settings/94. Agent Settings/{claude,codex,agents}/` 이고, `.claude/commands` · `.claude/hooks` · `.codex/commands` · `.codex/hooks` · `.agents/skills` 는 그 정본을 가리키는 상대경로 symlink 다. 머신 전용 파일(`.claude/settings.json`, `.claude/settings.local.json`, `.codex/hooks.json`)은 점폴더 안의 실제 파일로 둔다.
+
+```bash
+cd ~/DEV/my-llm-wiki
+bash "90. Settings/Scripts/setup-agent-links.sh"   # 링크가 이미 맞으면 ok 만 출력
+```
+
+- ZIP 다운로드·Windows checkout·Obsidian Sync 복사본에서는 링크가 풀려 있을 수 있다. 스크립트가 다시 만들고 훅 실행권한도 켠다. Windows 는 `setup-agent-links.ps1` (개발자 모드 또는 관리자 권한이 없으면 junction 으로 대체).
+- 왜 이런 구조인가: Obsidian Sync 는 `.obsidian` 외 점폴더를 동기화하지 않고, 점폴더를 통째로 동기화하면 `.git` 손상·비밀값 유출·머신 전용 훅 경로 실행·symlink 가 실제 폴더로 복제되는 문제가 생긴다. 공유할 설정만 일반 폴더에 두고, 각 기기에서 링크를 한 번 만든다. rsync 류를 쓸 때는 `.git .claude .codex .agents .smart-env .trash node_modules` 를 제외한다.
+- 여러 기기에서 Obsidian Sync 를 쓴다면 Sync 설정의 **"기타 파일 유형(other file types)"** 을 켜야 훅 `.sh` 가 넘어온다.
+
 ### Step 3 — Obsidian 볼트로 열기
 
 Obsidian → `Open folder as vault` → `~/DEV/my-llm-wiki/` 선택.
@@ -246,7 +259,7 @@ claude
 - [ ] `Core Context.md` §2 재활용 축 5~9 개 정의
 - [ ] `Core Context.md` frontmatter `status: active` + `snapshot_date` 오늘 날짜
 - [ ] `index.md` 의 카운트 (현재 예시 wiki 약 16 개) 가 본인 볼트 실제 카운트로 업데이트되도록 첫 `/lint` 실행
-- [ ] `.claude/hooks/*.sh` 실행권한 확인 (`chmod +x .claude/hooks/*.sh`)
+- [ ] 에이전트 설정 링크 확인 (`bash "90. Settings/Scripts/setup-agent-links.sh" --check` — 실행권한까지 확인)
 
 ### 권장 항목
 
@@ -314,8 +327,8 @@ Obsidian 은 **폴더명을 볼트명으로 사용**. 별도 설정 파일 없�
 ### Q. PostToolUse 훅이 동작 안 한다
 
 ```bash
-ls -la .claude/hooks/
-chmod +x .claude/hooks/*.sh
+ls -la .claude/              # hooks 가 symlink(l) 로 보여야 함
+bash "90. Settings/Scripts/setup-agent-links.sh"   # 링크 복구 + chmod +x
 cat .claude/settings.json  # PostToolUse 블록 확인
 ```
 
