@@ -54,6 +54,19 @@ git clone https://github.com/johnfkoo951/cmds-llm-wiki.git my-llm-wiki
 cd my-llm-wiki
 ```
 
+### 1-1. 에이전트 설정 링크 확인
+
+에이전트 설정의 정본은 `90. Settings/94. Agent Settings/` 이고, `.claude/` · `.codex/` · `.agents/` 의 하위 폴더는 그 정본을 가리키는 상대경로 symlink 다 (v1.12.0+). git clone 은 macOS·Linux 에서 symlink 를 그대로 받는다. ZIP 으로 받았거나 Windows 라면 링크가 풀려 있을 수 있으니 한 번 실행한다.
+
+```bash
+bash "90. Settings/Scripts/setup-agent-links.sh"          # 링크 복구 + 훅 실행권한
+bash "90. Settings/Scripts/setup-agent-links.sh" --check  # 확인만
+```
+
+- **Windows**: `powershell -ExecutionPolicy Bypass -File "90. Settings\Scripts\setup-agent-links.ps1"`. symlink 에는 개발자 모드(설정 → 시스템 → 개발자용) 또는 관리자 권한이 필요하고, 없으면 스크립트가 디렉터리 junction 으로 대신 연결한다. git 으로 받을 때 `git clone -c core.symlinks=true ...` 를 쓰면 링크가 그대로 온다. 훅은 bash 스크립트라 Git Bash 또는 WSL 에서 돌아간다.
+- **여러 기기 + Obsidian Sync**: Sync 는 점폴더(`.obsidian` 제외)를 옮기지 않는다. 정본 폴더만 Sync 로 넘어오므로 새 기기에서 위 스크립트를 한 번 실행한다. 훅 `.sh` 는 Sync 설정의 "기타 파일 유형(other file types)" 을 켜야 넘어온다. 자세한 이유는 `CLAUDE.md` § Agent Settings 정본과 점폴더 링크.
+- **v1.11.x 에서 올라왔다면**: 같은 스크립트가 점폴더 안의 실제 폴더를 정본 위치로 옮기고 링크를 만든다.
+
 ### 2. Obsidian 볼트로 열기
 
 Obsidian → Open folder as vault → `my-llm-wiki/` 선택.
@@ -133,15 +146,15 @@ cmds-llm-wiki/
 ├── CHANGELOG.md                 # 템플릿 버전 이력
 ├── LLM-Wiki-Starter-Kit.md      # 간이 공유용 킷
 ├── .claude/
-│   ├── commands/                # 11 slash commands
-│   ├── hooks/                   # 2 PostToolUse hooks
-│   └── settings.json
+│   ├── commands/  → symlink     # 11 slash commands (정본: 90. Settings/94. Agent Settings/claude/commands)
+│   ├── hooks/     → symlink     # 2 PostToolUse hooks (정본: …/claude/hooks)
+│   └── settings.json            # 머신 전용 실제 파일
 ├── .codex/                      # Codex harness (Claude 미러)
-│   ├── commands/                # 10 commands (onboard 제외)
-│   ├── hooks/                   # 2 hooks
-│   └── hooks.json
+│   ├── commands/  → symlink     # 10 commands, onboard 제외 (정본: …/codex/commands)
+│   ├── hooks/     → symlink     # 2 hooks (정본: …/codex/hooks)
+│   └── hooks.json               # 머신 전용 실제 파일
 ├── .agents/
-│   └── skills/                  # 10 Codex reusable operation skills
+│   └── skills/    → symlink     # 10 Codex reusable operation skills (정본: …/agents/skills)
 ├── .obsidian/
 │   └── hotkeys.json             # 73개 Obsidian hotkey 바인딩 (선택 — 마음에 안 들면 삭제)
 ├── 00. Inbox/                   # Web Clipper 수신 (02~05 서브폴더)
@@ -160,7 +173,8 @@ cmds-llm-wiki/
 └── 90. Settings/
     ├── Templates/               # Obsidian 노트 템플릿 (11종) + 12-Step Analysis Schemes
     ├── Sharing/                 # 18 Web Clipper JSON + Setup Guide + Paper Ingest Guide + CLAUDE-Template
-    ├── Scripts/                 # p7_verify.py — Paper Mode 검증 게이트
+    ├── 94. Agent Settings/      # 에이전트 설정 정본 (claude/ · codex/ · agents/) — 점폴더가 symlink 로 가리킴
+    ├── Scripts/                 # p7_verify.py (Paper Mode 검증) · setup-agent-links.sh/.ps1 (점폴더 링크 복구)
     └── qmd-config-template.yml  # 로컬 검색 엔진 설정
 ```
 
