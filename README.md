@@ -23,6 +23,7 @@
   - **Codex 미러**: `.codex/commands/` (10) + `.agents/skills/` (10) + `AGENTS.md` — 같은 operation 을 Codex·Cursor·Windsurf 등에서도 동일하게 실행
   - 18 Obsidian Web Clipper JSON 템플릿 (Article / YouTube / Substack / X / arXiv / Stibee 등)
   - 73개 Obsidian hotkey 바인딩 (`.obsidian/hotkeys.json`) — heading shortcuts, wikilink/callout 삽입, 사이드바 토글 등
+- **Explored 학습 보드** (v1.13.0) — `20. Wiki/24. Maps/Explored 학습 보드.base`. `explored` 메타데이터로 읽은 카드와 안 읽은 카드를 주제 영역(MOC)·유형별로 모아 보고, 체크박스로 바로 읽음 표시. Obsidian 1.9+ Bases
 - **선택적 mothership 볼트 연계** — 별도 PKM 볼트가 있다면 satellite 로 운영 가능
 
 ---

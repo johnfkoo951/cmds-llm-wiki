@@ -65,6 +65,7 @@ Check the 미래의 나에게 보내는 편지 fields introduced with [[Core Con
 - **Exploration Gate (v4)**: every Wiki page should have `explored: true|false`
 	- Missing `explored` → flag as "pre-v4 page — add `explored: false` during next touch"
 	- `explored: false` → count as review backlog, not an error
+	- Backlog / read-progress denominators count claim-card types only (`wiki-page`, `research-question`, `persona`), decided by `type`, not folder. For `type: moc`, `explored` is optional and means *map review* — report it on its own line (e.g., `MOC map review: 1/2`), never inside the claim backlog, and do not flag a MOC that lacks the key.
 	- `explored: true` without `exploredBy` or `exploredDate` → flag as incomplete review metadata
 - **Bias check (v4)**: high-confidence Wiki pages and synthesis-heavy guides should include `> [!note] Bias Check`
 	- Missing bias check → flag as "quality-control gap"

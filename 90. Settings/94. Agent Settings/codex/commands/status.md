@@ -11,7 +11,7 @@ description: Show the current state of the Wiki: counts, backlog, Core Context f
 3. Count actual files in Raw Sources, Wiki subfolders, Maps, Queries, Paper Analyses (citekey folders), and Inbox.
 4. Check `collectionPurpose` coverage in Raw Sources.
 5. Check `mainVaultRelated` coverage in Wiki pages.
-6. Check `explored` coverage in Wiki pages.
+6. Check `explored` coverage in Wiki pages; read progress counts claim-card types only, and `type: moc` is reported separately as MOC map review.
 7. Check `verificationStatus` coverage in Wiki pages.
 8. Read `Core Context.md` `snapshot_date`.
 9. Report index drift if actual counts differ from `index.md`.
@@ -26,7 +26,7 @@ Queries: {n}
 Inbox: {n}
 collectionPurpose: {n}/{N}
 mainVaultRelated: {n}/{N}
-explored: {n}/{N}
+explored: {n}/{N} (read {r}/{C} claim cards · MOC map review {m}/{M})
 verificationStatus: {n}/{N}
 Core Context: snapshot {date} ({days} days ago)
 Issues: ...
