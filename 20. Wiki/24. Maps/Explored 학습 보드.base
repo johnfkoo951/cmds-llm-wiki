@@ -1,0 +1,264 @@
+summaries:
+  진행률: (values.filter(value == true).length / values.length * 100).round(1).toString() + "%"
+filters:
+  and:
+    - file.ext == "md"
+    - or:
+        - file.inFolder("20. Wiki")
+        - and:
+            - file.hasProperty("explored")
+            - file.inFolder("30. Queries") || file.inFolder("40. Paper Analyses")
+formulas:
+  read: explored == true
+  state: if(explored == true, "✅ 읽음", "📖 안 읽음")
+  category: if(type == "moc", "6. 🗺️ 지도 (MOC)", if(type == "research-question", "4. ❓ 연구 질문", if(type == "persona", "5. 🎭 페르소나", if(type == "paper-hub", "7. 📄 논문 허브", if(type == "paper-analysis", "8. 🧩 논문 분석", if(type == "query-result" || type == "synthesis", "9. 💬 질의·합성", if(file.inFolder("20. Wiki/21. Concepts"), "1. 💡 개념", if(file.inFolder("20. Wiki/23. Guides"), "2. 🛠️ 가이드", if(file.inFolder("20. Wiki/22. Entities"), "3. 🏷️ 엔티티", "기타")))))))))
+  domains: '["LLM Wiki Guide", "Knowledge Management"].filter(file("20. Wiki/24. Maps/MOC-" + value + ".md").hasLink(file))'
+  domain: if(type == "moc", file.basename.replace("MOC-", ""), if(formula.domains.length > 0, formula.domains.slice(0, 1).join(""), "· MOC 미연결"))
+  alsoIn: formula.domains.slice(1).join(", ")
+  conf: if(confidence == "high", "●●●", if(confidence == "medium", "●●○", if(confidence == "low", "●○○", "—")))
+  verify: if(disputed == true, "⚠️ 충돌", if(verificationStatus == "verified", "✔︎ 검증", if(verificationStatus == "partial", "◐ 부분", "○ 미검증")))
+  links: if(related, list(related).length, 0)
+  sources: if(source, list(source).length, 0)
+  mapNotes: file.links.map(value.asFile()).filter(value && value.inFolder("20. Wiki") && value.properties.type != "moc").unique()
+  mapRead: formula.mapNotes.filter(value.properties.explored == true).length
+  mapProgress: if(formula.mapNotes.length > 0, formula.mapRead.toString() + " / " + formula.mapNotes.length.toString() + " (" + (formula.mapRead / formula.mapNotes.length * 100).round(0).toString() + "%)", "—")
+properties:
+  file.name:
+    displayName: 노트
+  note.description:
+    displayName: 요약
+  note.explored:
+    displayName: 읽음
+  note.exploredDate:
+    displayName: 읽은 날
+  note.exploredBy:
+    displayName: 읽은 사람
+  note.date created:
+    displayName: 생성일
+  formula.state:
+    displayName: 상태
+  formula.read:
+    displayName: 진행률
+  formula.category:
+    displayName: 유형
+  formula.domain:
+    displayName: 주제 영역
+  formula.alsoIn:
+    displayName: 함께 속한 영역
+  formula.conf:
+    displayName: 신뢰도
+  formula.verify:
+    displayName: 검증
+  formula.links:
+    displayName: 연결
+  formula.sources:
+    displayName: 출처
+  formula.mapProgress:
+    displayName: 지도 속 읽은 노트
+views:
+  - type: table
+    name: 📖 주제별 대기열
+    filters:
+      and:
+        - formula.read == false
+        - file.inFolder("20. Wiki")
+        - type != "moc"
+    groupBy:
+      property: formula.domain
+      direction: ASC
+    order:
+      - explored
+      - file.name
+      - formula.category
+      - description
+      - formula.conf
+      - formula.verify
+      - formula.links
+      - formula.alsoIn
+    sort:
+      - property: file.name
+        direction: ASC
+      - property: formula.conf
+        direction: ASC
+      - property: formula.links
+        direction: DESC
+  - type: table
+    name: 🗂️ 유형별 대기열
+    filters:
+      and:
+        - formula.read == false
+        - type != "paper-analysis"
+    groupBy:
+      property: formula.category
+      direction: ASC
+    order:
+      - explored
+      - file.name
+      - formula.domain
+      - description
+      - formula.conf
+      - formula.links
+    sort:
+      - property: formula.links
+        direction: DESC
+  - type: table
+    name: 🎯 먼저 읽을 것
+    filters:
+      and:
+        - formula.read == false
+        - file.inFolder("20. Wiki")
+        - or:
+            - confidence == "high"
+            - disputed == true
+    groupBy:
+      property: formula.domain
+      direction: ASC
+    order:
+      - explored
+      - file.name
+      - formula.category
+      - description
+      - formula.conf
+      - formula.verify
+      - formula.sources
+    sort:
+      - property: formula.sources
+        direction: DESC
+  - type: table
+    name: 🆕 최근 2주 유입
+    filters:
+      and:
+        - formula.read == false
+        - type != "paper-analysis"
+        - note["date created"] >= today() - "14d"
+    groupBy:
+      property: formula.category
+      direction: ASC
+    order:
+      - explored
+      - file.name
+      - formula.domain
+      - description
+      - date created
+    sort:
+      - property: date created
+        direction: DESC
+  - type: table
+    name: ✅ 읽은 것
+    filters:
+      and:
+        - formula.read == true
+    order:
+      - explored
+      - file.name
+      - formula.category
+      - formula.domain
+      - exploredDate
+      - exploredBy
+      - description
+    sort:
+      - property: exploredDate
+        direction: DESC
+  - type: table
+    name: 📊 영역별 진행률
+    filters:
+      and:
+        - file.inFolder("20. Wiki")
+        - type != "moc"
+    groupBy:
+      property: formula.domain
+      direction: ASC
+    order:
+      - explored
+      - formula.read
+      - file.name
+      - formula.category
+      - formula.state
+    summaries:
+      explored: Checked
+      formula.read: 진행률
+  - type: table
+    name: ❓ 연구 질문
+    filters:
+      and:
+        - type == "research-question"
+    groupBy:
+      property: status
+      direction: DESC
+    order:
+      - explored
+      - file.name
+      - questionType
+      - feedsInto
+      - description
+    sort:
+      - property: explored
+        direction: ASC
+  - type: table
+    name: 📄 논문 12단 분석
+    filters:
+      or:
+        - type == "paper-hub"
+        - type == "paper-analysis"
+    groupBy:
+      property: citekey
+      direction: ASC
+    order:
+      - explored
+      - analysisStep
+      - file.name
+      - analysisStepName
+      - paperType
+    sort:
+      - property: analysisStep
+        direction: ASC
+  - type: table
+    name: 🧭 이어 읽기
+    filters:
+      and:
+        - this.file.hasLink(file)
+    groupBy:
+      property: formula.state
+      direction: DESC
+    order:
+      - explored
+      - file.name
+      - formula.category
+      - description
+      - formula.conf
+    sort:
+      - property: formula.links
+        direction: DESC
+  - type: table
+    name: 🗺️ 지도 검토
+    filters:
+      and:
+        - type == "moc"
+    order:
+      - explored
+      - file.name
+      - formula.mapProgress
+      - description
+      - exploredDate
+    sort:
+      - property: explored
+        direction: ASC
+      - property: file.name
+        direction: ASC
+    summaries:
+      explored: Checked
+  - type: cards
+    name: 🃏 카드로 훑어보기
+    filters:
+      and:
+        - formula.read == false
+        - file.inFolder("20. Wiki")
+        - type != "moc"
+    groupBy:
+      property: formula.domain
+      direction: ASC
+    order:
+      - file.name
+      - description
+      - formula.category
+      - formula.conf

@@ -17,7 +17,7 @@ Follow [[AGENTS.md]] and read [[Core Context]] first. The local skill `.agents/s
 7. Check MOC coverage.
 8. Check raw-source `collectionPurpose`, `mainVaultRelated`, and `mainVaultCmds`.
 9. Check Wiki-page `mainVaultRelated` and `mainVaultCmds`.
-10. Check `explored` coverage and list pages missing the property.
+10. Check `explored` coverage and list pages missing the property. Count read backlog over claim-card types only (`wiki-page`, `research-question`, `persona`); report `type: moc` map review on a separate line (the key is optional for MOCs).
 11. Check v5 verification coverage: `claimType`, `evidenceScope`, `verificationStatus`, `verifiedAt`, `verifiedBy`, `disputed`.
 12. Check bias coverage for high-confidence pages and synthesis-heavy guides.
 13. Check cross-vault links: `mainVaultRelated` Obsidian URLs and `mainVaultCmds` format.

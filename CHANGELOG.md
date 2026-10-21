@@ -4,6 +4,16 @@
 
 ---
 
+## v1.13.0 — 2026-10-21 (Explored 학습 보드 + MOC 지도 검토)
+
+- **신규 `20. Wiki/24. Maps/Explored 학습 보드.base`** (Obsidian 1.9+ Bases) — `explored` 메타데이터로 읽은 카드와 안 읽은 카드를 모아 보는 학습 대시보드. 뷰 11개: 📖 주제별 대기열 · 🗂️ 유형별 대기열 · 🎯 먼저 읽을 것(`confidence: high`/`disputed` 인데 아직 안 읽음) · 🆕 최근 2주 유입 · ✅ 읽은 것 · 📊 영역별 진행률(그룹별 요약 행) · ❓ 연구 질문 · 📄 논문 12단 분석 · 🧭 이어 읽기(노트에 임베드하면 그 노트가 링크한 카드만) · 🗺️ 지도 검토 · 🃏 카드로 훑어보기. 표의 `읽음` 체크박스를 누르면 `explored: true` 가 노트에 바로 기록된다.
+- **주제 영역 = MOC 역조회**: 각 MOC 가 그 카드를 링크하는지를 MOC 쪽에서 확인해 영역을 정한다(`file.backlinks` 보다 가볍다). 여러 MOC 에 걸친 카드는 보드의 `domains` 공식 목록 순서로 대표 영역을 정한다. MOC 를 새로 만들면 그 목록에 이름을 추가한다. 사용법은 [[MOC-LLM Wiki Guide]] § Explored 학습 보드.
+- **MOC 의 `explored` = 지도 검토** (`CLAUDE.md`·`AGENTS.md` MOC 절 + Quality Control 절): MOC 는 claim 카드가 아니므로, 읽기 backlog 와 진행률의 분모는 claim 카드 type(`wiki-page`·`research-question`·`persona`)만 센다. MOC 의 `explored` 는 선택이며 "사용자가 지도를 열어 구조를 훑었나" 를 뜻한다. 대상 판정은 폴더가 아니라 `type` 으로 한다.
+- **`/lint`·`/status`** (Claude + Codex): claim 카드 읽기 backlog 와 MOC 지도 검토를 서로 다른 줄로 보고. 키가 없는 MOC 는 누락으로 보고하지 않는다.
+- **문서**: `README.md` 기능 목록, `index.md` Maps, [[MOC-LLM Wiki Guide]] 에 보드 안내 추가.
+- **업그레이드 (v1.12.x → v1.13.0)**: 새 파일만 받으면 된다. 링크 구조 변경 없음 (`setup-agent-links.sh` 재실행 불필요).
+- 원 저자의 운영 위키 볼트(카드 1,100여 개, MOC 32개)에서 먼저 검증한 구성이다.
+
 ## v1.12.0 — 2026-10-10 (에이전트 설정 정본 폴더 + 점폴더 symlink)
 
 - **레이아웃 변경**: `.claude/{commands,hooks}` · `.codex/{commands,hooks}` · `.agents/skills` 의 실제 파일을 일반 폴더 `90. Settings/94. Agent Settings/{claude,codex,agents}/` 로 옮기고, 점폴더 자리에는 그 정본을 가리키는 **상대경로 symlink** 를 두었다 (git mode 120000). 파일 37개는 이동 전후 내용이 같다. 커맨드·스킬·훅의 내용 변경 없음.

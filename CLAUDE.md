@@ -7,13 +7,13 @@ description: "Schema and harness document for the CMDS LLM Wiki vault. Defines t
 author:
   - "[[{your-name}]]"
 date created: 2026-04-10T21:30
-date modified: 2026-10-10
+date modified: 2026-10-21
 tags:
   - system
   - schema
   - llm-wiki
 status: active
-version: "1.12.0"
+version: "1.13.0"
 ---
 
 # CLAUDE.md — LLM Wiki Schema
@@ -156,7 +156,7 @@ Mothership pattern 예시: [cmds-system-files](https://github.com/johnfkoo951/cm
 ├── 21. Concepts/     # 추상 개념 (Attention, Transformer, RLHF, ...)
 ├── 22. Entities/     # 사람, 조직, 제품 (OpenAI, Karpathy, GPT-4, ...)
 ├── 23. Guides/       # How-to, 튜토리얼, 실전 가이드
-├── 24. Maps/         # MOC (Map of Content), 주제별 인덱스
+├── 24. Maps/         # MOC (Map of Content), 주제별 인덱스 + Explored 학습 보드(.base)
 ├── 25. Questions/    # Research Question — 1급 연구 질문 카드 (v6.1)
 └── 26. Personas/     # Persona — 실존 인물의 사고·발화 컴파일 (v6.3, perspective-taking 층)
 ```
@@ -504,6 +504,7 @@ harness 정의 파일(`.claude/commands/*`, `.codex/commands/*`, `.agents/skills
 **MOC** (`type: moc`):
 - `topic`: 주제 영역
 - `related`: 하위 MOC 또는 관련 MOC
+- `explored`: (선택) 의미는 **지도 검토** — 사용자가 MOC 를 열어 구조를 훑었는가. claim 카드의 읽기 backlog·진행률과 분리 집계하며, 키가 없어도 `/lint` 가 누락으로 보고하지 않는다 (v1.13.0).
 
 **Research Question** (`type: research-question`, v6.1 신설 — 질문의 1급 객체화):
 - 볼트의 5번째 Wiki 카드 타입. `20. Wiki/25. Questions/` 에 저장. 파일명 `RQ-{slug}.md`. in-page `> [!question] Open Question` 콜아웃을 **1급 카드로 승격** — 반복 등장하거나 산출물(논문·책·블로그 시리즈·제품 결정)로 이어질 질문을 first-class object 로 다뤄 답이 아니라 질문 자체를 추적한다.
@@ -567,6 +568,7 @@ harness 정의 파일(`.claude/commands/*`, `.codex/commands/*`, `.agents/skills
 - `explored: true` 는 사람이 읽었거나, 별도 검증 루프에서 source-backed review 를 끝낸 뒤에만 사용한다.
 - `confidence: high` 로 올리는 페이지는 반대해석 또는 데이터 공백을 최소 1 줄 기록한다 (Bias Check 콜아웃).
 - `/lint` 는 `explored` 누락, `explored: false` backlog, high-confidence 페이지의 bias check 누락을 보고한다.
+- 읽기 **backlog 와 진행률**(`explored: true` 비율)의 분모는 claim 카드 type(`wiki-page`·`research-question`·`persona`)만 센다. `type: moc` 의 `explored` 는 **지도 검토** 지표로 별도 보고한다. 대상 판정은 폴더가 아니라 `type` 으로 한다. 읽기 현황은 `20. Wiki/24. Maps/Explored 학습 보드.base` 로 조망한다 (v1.13.0).
 
 ### Verification Properties (v5)
 

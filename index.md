@@ -74,6 +74,7 @@ status: active
 
 - [[MOC-Knowledge Management]] — 지식 관리 개념, 패턴, 역사 종합
 - [[MOC-LLM Wiki Guide]] — 이 볼트 사용 온보딩 가이드
+- [[Explored 학습 보드.base|Explored 학습 보드]] — `explored` 기준 읽기 현황 보드 (Obsidian Bases, v1.13.0)
 
 ### Questions (RQ)
 

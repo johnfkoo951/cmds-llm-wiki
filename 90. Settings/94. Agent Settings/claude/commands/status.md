@@ -25,7 +25,7 @@ Show the current state of the wiki at a glance.
 4. Check for discrepancies between index.md counts and actual counts
 5. **Coverage check**: grep `^collectionPurpose:` across `10. Raw Sources/**/*.md` → coverage % (미래의 나에게 보내는 편지)
 6. **Cross-vault check**: grep `^mainVaultRelated:` across `20. Wiki/**/*.md` → coverage %
-7. **Exploration Gate check**: grep `^explored:` across `20. Wiki/**/*.md` → coverage %
+7. **Exploration Gate check**: grep `^explored:` across `20. Wiki/**/*.md` → key coverage %; read progress = `explored: true` over claim-card types (`wiki-page`·`research-question`·`persona`); `type: moc` reported separately as MOC map review
 8. **Core Context age**: read `Core Context.md` frontmatter `snapshot_date` → days since snapshot
 
 ## Output
@@ -40,7 +40,7 @@ Queries:      {n}    (filed-back ratio: {queries}/{wiki} = {pct}%)
 Inbox:        {n} pending
 
 mainVault*:   {n/N} wiki pages = {pct}%
-explored:     {n/N} wiki pages = {pct}%
+explored:     {n/N} wiki pages = {pct}%  (read {r/C} claim cards · MOC map review {m/M})
 
 🧭 Core Context: snapshot {snapshot_date} ({n} days ago)
 ──────────────────────────
